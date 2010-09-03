@@ -3,4 +3,6 @@
     <string name="app_name">Send to SD card</string>
     <string name="sd_card">SD card</string>
     <string name="unsupported_file">Unsupported file</string>
+    <string name="save_here">Save here</string>
+    <string name="folders">Folders</string>
 </resources>

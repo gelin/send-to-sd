@@ -1,17 +1,15 @@
 package ru.gelin.android.sendtosd;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceActivity;
 import android.widget.Toast;
-import android.webkit.MimeTypeMap;
 
 /**
- *  Activity which displayes the list of folders
+ *  Activity which displays the list of folders
  *  and allows to save the file to folder.
  */
-public class SendToFolderActivity extends Activity implements Constants {
+public class SendToFolderActivity extends PreferenceActivity implements Constants {
     
     /** Filename to save */
     String fileName;
@@ -37,6 +35,8 @@ public class SendToFolderActivity extends Activity implements Constants {
             return;
         }
         setTitle(fileName);
+        
+        addPreferencesFromResource(R.xml.folder_preferences);
     }
     
     /**
