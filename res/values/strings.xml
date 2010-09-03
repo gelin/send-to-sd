@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World!</string>
     <string name="app_name">Send to SD card</string>
+    <string name="sd_card">SD card</string>
+    <string name="unsupported_file">Unsupported file</string>
 </resources>
