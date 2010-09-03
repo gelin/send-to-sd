@@ -1,0 +1,8 @@
+syntax: glob
+bin/*
+gen/*
+tmp/*
+.settings/*
+local.properties
+build.properties
+
