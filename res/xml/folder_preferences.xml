@@ -2,10 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     
     <Preference android:key="save_here"
-            android:title="@string/save_here"/>
+            android:title="@string/save_here"
+            android:persistent="false"/>
     
     <PreferenceCategory android:key="folders" 
-            android:title="@string/folders">
+            android:title="@string/folders"
+            android:persistent="false">
     </PreferenceCategory>
     
 </PreferenceScreen>

@@ -1,6 +1,7 @@
 package ru.gelin.android.sendtosd;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +73,11 @@ public class IntentUtils implements Constants {
         if (path == null) {
             return Environment.getExternalStorageDirectory();
         }
-        return new File(path);
+        try {
+            return new File(path).getCanonicalFile();
+        } catch (IOException e) {
+            return new File(path);
+        }
     }
     
     /**

@@ -12,6 +12,9 @@ import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.preference.PreferenceScreen;
+import android.provider.OpenableColumns;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -47,7 +50,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         try {
             fileName = utils.getFileName();
         } catch (Exception e) {
-            error(R.string.unsupported_file);
+            error(R.string.unsupported_file, e);
             return;
         }
         setTitle(fileName);
@@ -63,6 +66,34 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         saveHere.setSummary(path.toString());
         
         listFolder();
+    }
+    
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
+            Preference preference) {
+        if (PREF_SAVE_HERE.equals(preference.getKey())) {
+            saveFile();
+            return true;
+        }
+        changeFolder(preference.getTitle().toString());
+        return true;
+    }
+    
+    /**
+     *  Changes the current folder.
+     */
+    void changeFolder(String folder) {
+        Intent intent = getIntent();
+        intent.putExtra(EXTRA_PATH, new File(path, folder).toString());
+        intent.setClass(this, SendToFolderActivity.class);
+        startActivity(intent);
+    }
+    
+    /**
+     *  Saves the file.
+     */
+    void saveFile() {
+        
     }
     
     /**
@@ -94,6 +125,15 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      *  Shows error message and exits the activity.
      */
     void error(int messageId) {
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG);
+        finish();
+    }
+    
+    /**
+     *  Shows error message and exits the activity.
+     */
+    void error(int messageId, Throwable exception) {
+        Log.e(TAG, exception.toString(), exception);
         Toast.makeText(this, messageId, Toast.LENGTH_LONG);
         finish();
     }
