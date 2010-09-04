@@ -1,8 +1,11 @@
 package ru.gelin.android.sendtosd;
 
+import java.io.File;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -59,6 +62,17 @@ public class IntentUtils implements Constants {
      */
     public Uri getStreamUri() {
         return (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
+    }
+    
+    /**
+     *  Returns path on external storage provided with the intent.
+     */
+    public File getPath() {
+        String path = intent.getStringExtra(EXTRA_PATH);
+        if (path == null) {
+            return Environment.getExternalStorageDirectory();
+        }
+        return new File(path);
     }
     
     /**

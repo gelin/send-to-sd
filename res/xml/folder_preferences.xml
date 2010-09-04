@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <EditTextPreference android:title="@string/save_here"/>
+    <Preference android:key="save_here"
+            android:title="@string/save_here"/>
     
-    <PreferenceCategory android:title="@string/folders">
+    <PreferenceCategory android:key="folders" 
+            android:title="@string/folders">
     </PreferenceCategory>
     
 </PreferenceScreen>
