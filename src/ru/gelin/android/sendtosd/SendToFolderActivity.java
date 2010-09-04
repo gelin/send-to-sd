@@ -192,7 +192,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      *  Shows error message and exits the activity.
      */
     void error(int messageId) {
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG);
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);
         finish();
     }
@@ -202,7 +202,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      */
     void error(int messageId, Throwable exception) {
         Log.e(TAG, exception.toString(), exception);
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG);
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);
         finish();
     }
@@ -211,7 +211,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      *  Complete the action.
      */
     void complete() {
-        Toast.makeText(this, R.string.file_is_saved, Toast.LENGTH_LONG);
+        Toast.makeText(this, R.string.file_is_saved, Toast.LENGTH_LONG).show();
         setResult(RESULT_OK);
         finish();
     }
