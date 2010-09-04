@@ -8,4 +8,5 @@
     <string name="no_sd_card">Please insert the SD card</string>
     <string name="choose_file_name">Choose file name</string>
     <string name="save_file">Save file</string>
+    <string name="file_is_saved">File is saved</string>
 </resources>

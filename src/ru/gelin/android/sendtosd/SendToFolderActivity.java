@@ -19,7 +19,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
-import android.provider.OpenableColumns;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,6 +33,8 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
     public static final String PREF_SAVE_HERE = "save_here";
     /** "Folders" preference key */
     public static final String PREF_FOLDERS = "folders";
+    /** Request code for directory traversing */
+    public static final int REQ_CODE_FOLDER = 0;
     
     /** Filename to save */
     String fileName;
@@ -81,7 +82,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
         if (PREF_SAVE_HERE.equals(preference.getKey())) {
-            saveFile();
+            showFileNameDialog();
             return true;
         }
         changeFolder(preference.getTitle().toString());
@@ -95,27 +96,8 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         Intent intent = getIntent();
         intent.putExtra(EXTRA_PATH, new File(path, folder).toString());
         intent.setClass(this, SendToFolderActivity.class);
-        startActivity(intent);
-    }
-    
-    /**
-     *  Saves the file.
-     */
-    void saveFile() {
-        showFileNameDialog();
-        try {
-            InputStream in = utils.getFileStream();
-            OutputStream out = new FileOutputStream(new File(path, fileName));
-            byte[] buf = new byte[1024];
-            int read;
-            while ((read = in.read(buf)) > 0) {
-                out.write(buf, 0, read);
-            }
-            out.close();
-            in.close();
-        } catch (Exception e) {
-            error(R.string.unsupported_file, e);
-        }
+        intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivityForResult(intent, REQ_CODE_FOLDER);
     }
     
     /**
@@ -131,10 +113,32 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 fileName = view.getText().toString();
+                saveFile();
             }
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+    
+    /**
+     *  Saves the file.
+     */
+    void saveFile() {
+        try {
+            InputStream in = utils.getFileStream();
+            OutputStream out = new FileOutputStream(new File(path, fileName));
+            byte[] buf = new byte[1024];
+            int read;
+            while ((read = in.read(buf)) > 0) {
+                out.write(buf, 0, read);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            error(R.string.unsupported_file, e);
+            return;
+        }
+        complete();
     }
     
     /**
@@ -179,6 +183,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
                 newName = fileName.substring(0, dotIndex) + "-" + index + 
                     fileName.substring(dotIndex);
             }
+            index++;
         } while (new File(path, newName).exists());
         fileName = newName;
     }
@@ -188,6 +193,7 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      */
     void error(int messageId) {
         Toast.makeText(this, messageId, Toast.LENGTH_LONG);
+        setResult(RESULT_CANCELED);
         finish();
     }
     
@@ -197,7 +203,25 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
     void error(int messageId, Throwable exception) {
         Log.e(TAG, exception.toString(), exception);
         Toast.makeText(this, messageId, Toast.LENGTH_LONG);
+        setResult(RESULT_CANCELED);
         finish();
+    }
+    
+    /**
+     *  Complete the action.
+     */
+    void complete() {
+        Toast.makeText(this, R.string.file_is_saved, Toast.LENGTH_LONG);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            finish();
+        }
     }
 
 }
