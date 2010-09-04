@@ -1,12 +1,17 @@
 package ru.gelin.android.sendtosd;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.widget.Toast;
 
 /**
@@ -57,14 +62,32 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         Preference saveHere = findPreference(PREF_SAVE_HERE);
         saveHere.setSummary(path.toString());
         
-        //listFolder();
+        listFolder();
     }
     
     /**
      *  Fills the list of subfolders.
      */
-    void listFolders() {
-        //path.list(filter)
+    void listFolder() {
+        PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
+        if (!"/".equals(path.getAbsolutePath())) {
+            Preference upFolder = new Preference(this);
+            upFolder.setTitle("..");
+            folders.addPreference(upFolder);
+        }
+        File[] subFolders = path.listFiles(new FileFilter() {
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+        List<File> sortedFolders = Arrays.asList(subFolders);
+        Collections.sort(sortedFolders);
+        for (File subFolder : sortedFolders) {
+            Preference folderPref = new Preference(this);
+            folderPref.setTitle(subFolder.getName());
+            folderPref.setEnabled(subFolder.canWrite());
+            folders.addPreference(folderPref);
+        }
     }
     
     /**
