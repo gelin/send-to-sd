@@ -2,6 +2,7 @@ package ru.gelin.android.sendtosd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import android.content.Context;
 import android.content.Intent;
@@ -78,6 +79,13 @@ public class IntentUtils implements Constants {
         } catch (IOException e) {
             return new File(path);
         }
+    }
+    
+    /**
+     *  Returns the file as stream.
+     */
+    public InputStream getFileStream() {
+        return null;    //TODO
     }
     
     /**

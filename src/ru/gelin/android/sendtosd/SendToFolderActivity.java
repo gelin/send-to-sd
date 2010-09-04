@@ -2,11 +2,15 @@ package ru.gelin.android.sendtosd;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -15,6 +19,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 /**
@@ -65,6 +70,8 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         Preference saveHere = findPreference(PREF_SAVE_HERE);
         saveHere.setSummary(path.toString());
         
+        updateFileNameIfExists();
+        
         listFolder();
     }
     
@@ -93,7 +100,27 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      *  Saves the file.
      */
     void saveFile() {
-        
+        showFileNameDialog();
+        InputStream file = utils.getFileStream();
+    }
+    
+    /**
+     *  Displays dialog which allows to edit the file name.
+     */
+    void showFileNameDialog() {
+        final EditText view = new EditText(this);
+        view.setText(fileName);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.choose_file_name);
+        builder.setView(view);
+        builder.setPositiveButton(R.string.save_file, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fileName = view.getText().toString();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
     
     /**
@@ -119,6 +146,27 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
             folderPref.setEnabled(subFolder.canWrite());
             folders.addPreference(folderPref);
         }
+    }
+    
+    /**
+     *  Update file name if it is already exists.
+     */
+    void updateFileNameIfExists() {
+        if (!new File(path, fileName).exists()) {
+            return;
+        }
+        int index = 1;
+        int dotIndex = fileName.lastIndexOf('.');
+        String newName;
+        do {
+            if (dotIndex < 0) {
+                newName = fileName + "-" + index;
+            } else {
+                newName = fileName.substring(0, dotIndex) + "-" + index + 
+                    fileName.substring(dotIndex);
+            }
+        } while (new File(path, newName).exists());
+        fileName = newName;
     }
     
     /**
