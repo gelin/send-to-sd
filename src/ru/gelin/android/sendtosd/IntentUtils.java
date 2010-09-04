@@ -1,8 +1,11 @@
 package ru.gelin.android.sendtosd;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 
 import android.content.Context;
 import android.content.Intent;
@@ -84,8 +87,16 @@ public class IntentUtils implements Constants {
     /**
      *  Returns the file as stream.
      */
-    public InputStream getFileStream() {
-        return null;    //TODO
+    public InputStream getFileStream() throws FileNotFoundException {
+        if (isTextIntent()) {
+            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (text == null) {
+                text = "";
+            }
+            return new ByteArrayInputStream(text.getBytes());
+        }
+        Uri uri = getStreamUri();
+        return context.getContentResolver().openInputStream(uri);
     }
     
     /**

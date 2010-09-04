@@ -2,7 +2,9 @@ package ru.gelin.android.sendtosd;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -101,7 +103,19 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      */
     void saveFile() {
         showFileNameDialog();
-        InputStream file = utils.getFileStream();
+        try {
+            InputStream in = utils.getFileStream();
+            OutputStream out = new FileOutputStream(new File(path, fileName));
+            byte[] buf = new byte[1024];
+            int read;
+            while ((read = in.read(buf)) > 0) {
+                out.write(buf, 0, read);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            error(R.string.unsupported_file, e);
+        }
     }
     
     /**
