@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Отправить на SD карту</string>
+    <string name="sd_card">SD карта</string>
+    <string name="unsupported_file">Не удается сохранить этот файл</string>
+    <string name="save_here">Сохранить сюда</string>
+    <string name="folders">Папки</string>
+    <string name="no_sd_card">Пожалуйста, подключите SD карту</string>
+    <string name="choose_file_name">Укажите имя файла</string>
+    <string name="save_file">Сохранить файл</string>
+    <string name="file_is_saved">Файл сохранен</string>
+</resources>
