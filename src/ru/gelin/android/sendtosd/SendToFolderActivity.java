@@ -20,6 +20,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -195,6 +197,22 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);
         finish();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_preferences:
+            startActivity(new Intent(this, PreferencesActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
     }
     
     /**

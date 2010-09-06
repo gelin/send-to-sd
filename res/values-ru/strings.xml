@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Отправить на SD карту</string>
+    <string name="app_name">Отправка на SD карту</string>
     <string name="sd_card">SD карта</string>
     <string name="unsupported_file">Не удается сохранить этот файл</string>
     <string name="save_here">Сохранить сюда</string>
@@ -9,4 +9,7 @@
     <string name="choose_file_name">Укажите имя файла</string>
     <string name="save_file">Сохранить файл</string>
     <string name="file_is_saved">Файл сохранен</string>
+    <string name="preferences">Настройки</string>
+    <string name="app_preferences">Настройки отправки на SD карту</string>
+    <string name="how_to_use">Как пользоваться</string>
 </resources>
