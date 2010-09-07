@@ -12,4 +12,14 @@
     <string name="preferences">Настройки</string>
     <string name="app_preferences">Настройки отправки на SD карту</string>
     <string name="how_to_use">Как пользоваться</string>
+    <string name="how_to_use_1_1">Это не то приложение, которое запускается как обычно. Его не видно в списке установленных приложений.</string>
+    <string name="how_to_use_1_2">Эта программа добавляет новый пункт в меню Отправить или Поделиться других приложений.</string>
+    <string name="how_to_use_1_3">Попробуйте, к примеру, отправить фотографию из Галереи (или Фотоальбома), как вы это обычно делаете, отправляя фотографии в альбом Picasa. Вы увидите новый пункт \"SD карта\" в списке возможных получателей фотографии.</string>
+    <string name="how_to_use_2_0">Шаг за шагом:</string>
+    <string name="how_to_use_2_1">* Выберите пункт меню \"Отправить\" или \"Поделиться\" в любом приложении</string>
+    <string name="how_to_use_2_2">* Выберите пункт \"SD карта\"</string>
+    <string name="how_to_use_2_3">* Выберите папку на карте</string>
+    <string name="how_to_use_2_4">* Нажмите \"Сохранить сюда\"</string>
+    <string name="how_to_use_2_5">* Поправьте имя файла (если необходимо)</string>
+    <string name="how_to_use_2_6">* Нажмите \"Сохранить файл\"</string>
 </resources>

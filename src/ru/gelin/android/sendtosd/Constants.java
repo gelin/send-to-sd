@@ -7,5 +7,8 @@ public interface Constants {
     
     /** Extra name for current path */
     public static final String EXTRA_PATH = "path";
+    
+    /** "How to use" preference key */
+    public static final String PREF_HOW_TO_USE = "how_to_use";
 
 }

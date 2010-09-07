@@ -12,4 +12,14 @@
     <string name="preferences">Preferences</string>
     <string name="app_preferences">Send to SD card preferences</string>
     <string name="how_to_use">How to use</string>
+    <string name="how_to_use_1_1">It is not the application which can be run from the Launcher. It cannot be found in the list of the installed applications.</string>
+    <string name="how_to_use_1_2">It adds the new item to the Send or Share menu of the other applications.</string>
+    <string name="how_to_use_1_3">Try, for example, to Send a photo from the Gallery (or Albums), like you usually do it to send the photo to your Picasa album. The \"SD card\" item should appear in the list of available targets to send.</string>
+    <string name="how_to_use_2_0">Step by step:</string>
+    <string name="how_to_use_2_1">* Choose \"Send\" or \"Share\" menu item in any application</string>
+    <string name="how_to_use_2_2">* Choose \"SD card\"</string>
+    <string name="how_to_use_2_3">* Choose the folder on SD card</string>
+    <string name="how_to_use_2_4">* Tap \"Save here\"</string>
+    <string name="how_to_use_2_5">* Modify the file name (if necessary)</string>
+    <string name="how_to_use_2_6">* Tap \"Save file\"</string>
 </resources>
