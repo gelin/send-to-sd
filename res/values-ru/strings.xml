@@ -22,4 +22,7 @@
     <string name="how_to_use_2_4">* Нажмите \"Сохранить сюда\"</string>
     <string name="how_to_use_2_5">* Поправьте имя файла (если необходимо)</string>
     <string name="how_to_use_2_6">* Нажмите \"Сохранить файл\"</string>
+    <string name="initial_folder">Начальная папка</string>
+    <string name="sd_card_root">Корень SD карты</string>
+    <string name="last_folder">Последняя папка</string>
 </resources>

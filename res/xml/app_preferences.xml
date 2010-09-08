@@ -4,5 +4,17 @@
     <Preference android:key="how_to_use"
             android:title="@string/how_to_use"
             android:persistent="false"/>
+            
+    <PreferenceCategory
+            android:title="@string/initial_folder">
+
+        <ListPreference android:key="initial_folder"
+            android:title="@string/initial_folder"
+            android:entries="@array/initial_folder_entries"
+            android:entryValues="@array/initial_folder_values"
+            android:defaultValue="sd_card_root"
+            android:summary="@string/sd_card_root"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

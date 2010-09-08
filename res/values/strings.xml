@@ -22,4 +22,7 @@
     <string name="how_to_use_2_4">* Tap \"Save here\"</string>
     <string name="how_to_use_2_5">* Modify the file name (if necessary)</string>
     <string name="how_to_use_2_6">* Tap \"Save file\"</string>
+    <string name="initial_folder">Initial folder</string>
+    <string name="sd_card_root">SD card root</string>
+    <string name="last_folder">Last folder</string>
 </resources>

@@ -8,8 +8,10 @@ import java.io.InputStream;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -24,6 +26,8 @@ public class IntentUtils implements Constants {
     Context context;
     /** Processing intent */
     Intent intent;
+    /** Application preferences */
+    SharedPreferences preferences;
     
     /**
      *  Creates the utils.
@@ -33,6 +37,7 @@ public class IntentUtils implements Constants {
     public IntentUtils(Context context, Intent intent) {
         this.context = context;
         this.intent = intent;
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
     
     /**
@@ -74,13 +79,30 @@ public class IntentUtils implements Constants {
     public File getPath() {
         String path = intent.getStringExtra(EXTRA_PATH);
         if (path == null) {
-            return Environment.getExternalStorageDirectory();
+            return getDefaultPath();
         }
         try {
             return new File(path).getCanonicalFile();
         } catch (IOException e) {
             return new File(path);
         }
+    }
+    
+    /**
+     *  Returns default path. The return value can differs for different preferences. 
+     */
+    File getDefaultPath() {
+        String initialFolder = preferences.getString(PREF_INITIAL_FOLDER, 
+                VAL_SD_CARD_ROOT);
+        File root = Environment.getExternalStorageDirectory();
+        if (VAL_LAST_FOLDER.equals(initialFolder)) {
+            String lastFolder = preferences.getString(PREF_LAST_FOLDER, null);
+            if (lastFolder == null) {
+                return root;
+            }
+            return new File(lastFolder);
+        }
+        return root;
     }
     
     /**

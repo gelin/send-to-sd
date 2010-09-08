@@ -12,12 +12,15 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.Menu;
@@ -126,6 +129,10 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
      *  Saves the file.
      */
     void saveFile() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Editor editor = preferences.edit();
+        editor.putString(PREF_LAST_FOLDER, path.toString());
+        editor.commit();
         try {
             InputStream in = utils.getFileStream();
             OutputStream out = new FileOutputStream(new File(path, fileName));
@@ -190,15 +197,6 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
         fileName = newName;
     }
     
-    /**
-     *  Shows error message and exits the activity.
-     */
-    void error(int messageId) {
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
-        setResult(RESULT_CANCELED);
-        finish();
-    }
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -216,13 +214,22 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
     }
     
     /**
-     *  Shows error message and exits the activity.
+     *  Shows the error message.
+     */
+    void error(int messageId) {
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
+        setResult(RESULT_CANCELED);
+        //finish();
+    }
+    
+    /**
+     *  Shows and logs the error message.
      */
     void error(int messageId, Throwable exception) {
         Log.e(TAG, exception.toString(), exception);
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);
-        finish();
+        //finish();
     }
     
     /**

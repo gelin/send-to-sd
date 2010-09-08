@@ -1,10 +1,14 @@
 package ru.gelin.android.sendtosd;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,6 +21,10 @@ public class PreferencesActivity extends PreferenceActivity implements Constants
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.app_preferences);
+        
+        ListPreference initialFolder = (ListPreference)findPreference(PREF_INITIAL_FOLDER);
+        initialFolder.setSummary(initialFolder.getEntry());
+        initialFolder.setOnPreferenceChangeListener(new InitialFolderChangeListener());
     }
     
     @Override
@@ -40,6 +48,19 @@ public class PreferencesActivity extends PreferenceActivity implements Constants
                 (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
         dialog.setContentView(layout);
         dialog.show();
+    }
+
+    class InitialFolderChangeListener implements OnPreferenceChangeListener {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            ListPreference initialFolder = (ListPreference)preference;
+            int selectedIndex = initialFolder.findIndexOfValue(String.valueOf(newValue));
+            if (selectedIndex < 0) {
+                return false;
+            }
+            initialFolder.setSummary(initialFolder.getEntries()[selectedIndex]);
+            return true;
+        }
     }
     
 }
