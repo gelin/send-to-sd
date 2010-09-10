@@ -3,31 +3,25 @@ package ru.gelin.android.sendtosd;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 /**
@@ -35,7 +29,7 @@ import android.widget.Toast;
  *  and allows to save the file to folder.
  */
 public class SendToFolderActivity extends PreferenceActivity 
-        implements Constants, FileSaver {
+        implements Constants, FileSaver, FolderChanger {
     
     /** "Save here" preference key */
     public static final String PREF_SAVE_HERE = "save_here";
@@ -109,19 +103,12 @@ public class SendToFolderActivity extends PreferenceActivity
         this.fileName = fileName;
     }
     
-    @Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
-            Preference preference) {
-        //changeFolder(preference.getTitle().toString());
-        return true;
-    }
-    
     /**
      *  Changes the current folder.
      */
-    void changeFolder(String folder) {
+    public void changeFolder(File folder) {
         Intent intent = getIntent();
-        intent.putExtra(EXTRA_PATH, new File(path, folder).toString());
+        intent.putExtra(EXTRA_PATH, folder.toString());
         intent.setClass(this, SendToFolderActivity.class);
         intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivityForResult(intent, REQ_CODE_FOLDER);
@@ -158,7 +145,7 @@ public class SendToFolderActivity extends PreferenceActivity
     void listFolder() {
         PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
         if (!"/".equals(path.getAbsolutePath())) {
-            Preference upFolder = new Preference(this);
+            Preference upFolder = new FolderPreference(this, path.getParentFile(), this);
             upFolder.setTitle("..");
             folders.addPreference(upFolder);
         }
@@ -173,9 +160,13 @@ public class SendToFolderActivity extends PreferenceActivity
         List<File> sortedFolders = Arrays.asList(subFolders);
         Collections.sort(sortedFolders);
         for (File subFolder : sortedFolders) {
-            Preference folderPref = new Preference(this);
-            folderPref.setTitle(subFolder.getName());
-            folderPref.setEnabled(subFolder.canWrite());
+            File folder;
+            try {
+                folder = subFolder.getCanonicalFile();
+            } catch (IOException e) {
+                folder = subFolder;
+            }
+            Preference folderPref = new FolderPreference(this, folder, this);
             folders.addPreference(folderPref);
         }
     }
