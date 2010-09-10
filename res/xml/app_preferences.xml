@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference android:key="how_to_use"
+    <ru.gelin.android.sendtosd.DialogPreference
             android:title="@string/how_to_use"
-            android:persistent="false"/>
+            android:dialogLayout="@layout/how_to_use_dialog"
+            android:negativeButtonText="@null"/>
             
     <PreferenceCategory
             android:title="@string/initial_folder">
