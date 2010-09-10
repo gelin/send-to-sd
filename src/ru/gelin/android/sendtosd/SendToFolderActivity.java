@@ -9,22 +9,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,7 +34,8 @@ import android.widget.Toast;
  *  Activity which displays the list of folders
  *  and allows to save the file to folder.
  */
-public class SendToFolderActivity extends PreferenceActivity implements Constants {
+public class SendToFolderActivity extends PreferenceActivity 
+        implements Constants, FileSaver {
     
     /** "Save here" preference key */
     public static final String PREF_SAVE_HERE = "save_here";
@@ -75,22 +78,41 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
             error(R.string.no_sd_card);
         }
         path = utils.getPath();
-        Preference saveHere = findPreference(PREF_SAVE_HERE);
-        saveHere.setSummary(path.toString());
         
         updateFileNameIfExists();
         
+        SaveHerePreference saveHerePreference = (SaveHerePreference)findPreference(PREF_SAVE_HERE);
+        saveHerePreference.setFileSaver(this);
+        if (!path.canWrite()) {
+            saveHerePreference.setEnabled(false);
+        }
+        
         listFolder();
+    }
+    
+    /**
+     *  Returns the current folder.
+     */
+    public File getPath() {
+        return path;
+    }
+    /**
+     *  Returns the file name to save.
+     */
+    public String getFileName() {
+        return fileName;
+    }
+    /**
+     *  Sets the file name to save.
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
     
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
             Preference preference) {
-        if (PREF_SAVE_HERE.equals(preference.getKey())) {
-            showFileNameDialog();
-            return true;
-        }
-        changeFolder(preference.getTitle().toString());
+        //changeFolder(preference.getTitle().toString());
         return true;
     }
     
@@ -106,29 +128,9 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
     }
     
     /**
-     *  Displays dialog which allows to edit the file name.
-     */
-    void showFileNameDialog() {
-        final EditText view = new EditText(this);
-        view.setText(fileName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_file_name);
-        builder.setView(view);
-        builder.setPositiveButton(R.string.save_file, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                fileName = view.getText().toString();
-                saveFile();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-    
-    /**
      *  Saves the file.
      */
-    void saveFile() {
+    public void saveFile() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = preferences.edit();
         editor.putString(PREF_LAST_FOLDER, path.toString());
@@ -165,6 +167,9 @@ public class SendToFolderActivity extends PreferenceActivity implements Constant
                 return pathname.isDirectory();
             }
         });
+        if (subFolders == null) {
+            return;
+        }
         List<File> sortedFolders = Arrays.asList(subFolders);
         Collections.sort(sortedFolders);
         for (File subFolder : sortedFolders) {
