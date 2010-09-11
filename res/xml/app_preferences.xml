@@ -17,5 +17,23 @@
                 android:defaultValue="last_folder"/>
 
     </PreferenceCategory>
+    
+    <PreferenceCategory
+            android:title="@string/last_folders">
+            
+        <CheckBoxPreference
+                android:key="show_last_folders"
+                android:title="@string/show_last_folders"
+                android:disableDependentsState="false"/>
+            
+        <ru.gelin.android.sendtosd.LastFoldersNumberPreference
+                android:key="last_folders_number"
+                android:title="@string/last_folders_number"
+                android:dependency="show_last_folders"
+                android:entries="@array/last_folders_number_values"
+                android:entryValues="@array/last_folders_number_values"
+                android:defaultValue="5"/>
+    
+    </PreferenceCategory>
 
 </PreferenceScreen>

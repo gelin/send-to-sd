@@ -25,4 +25,8 @@
     <string name="initial_folder">Начальная папка</string>
     <string name="sd_card_root">Корень SD карты</string>
     <string name="last_folder">Последняя папка</string>
+    <string name="last_folders">Последние папки</string>
+    <string name="show_last_folders">Показывать последние папки</string>
+    <string name="last_folders_number">Количество последних папок</string>
+    <string name="show_last_folders_number">Показывать {0} {0,choice,1#последнюю папку|1&lt;последних папки|4&lt;последних папок}</string>
 </resources>

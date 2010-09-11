@@ -25,4 +25,8 @@
     <string name="initial_folder">Initial folder</string>
     <string name="sd_card_root">SD card root</string>
     <string name="last_folder">Last folder</string>
+    <string name="last_folders">Last folders</string>
+    <string name="show_last_folders">Show last folders</string>
+    <string name="last_folders_number">Number of last folders</string>
+    <string name="show_last_folders_number">Show {0} last {0,choice,1#folder|1&lt;folders}</string>
 </resources>
