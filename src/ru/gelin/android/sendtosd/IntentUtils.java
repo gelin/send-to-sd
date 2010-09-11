@@ -100,7 +100,11 @@ public class IntentUtils implements Constants {
             if (lastFolder == null) {
                 return root;
             }
-            return new File(lastFolder);
+            File lastFolderFile = new File(lastFolder);
+            if (!lastFolderFile.isDirectory() || !lastFolderFile.canWrite()) {
+                return root;
+            }
+            return lastFolderFile;
         }
         return root;
     }
