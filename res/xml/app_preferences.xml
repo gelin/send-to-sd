@@ -24,7 +24,8 @@
         <CheckBoxPreference
                 android:key="show_last_folders"
                 android:title="@string/show_last_folders"
-                android:disableDependentsState="false"/>
+                android:disableDependentsState="false"
+                android:defaultValue="true"/>
             
         <ru.gelin.android.sendtosd.LastFoldersNumberPreference
                 android:key="last_folders_number"

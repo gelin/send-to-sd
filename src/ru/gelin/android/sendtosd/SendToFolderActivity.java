@@ -81,7 +81,10 @@ public class SendToFolderActivity extends PreferenceActivity
             saveHerePreference.setEnabled(false);
         }
         
-        listFolder();
+        if (utils.isInitial()) {
+            listLastFolders();
+        }
+        listFolders();
     }
     
     /**
@@ -118,10 +121,8 @@ public class SendToFolderActivity extends PreferenceActivity
      *  Saves the file.
      */
     public void saveFile() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Editor editor = preferences.edit();
-        editor.putString(PREF_LAST_FOLDER, path.toString());
-        editor.commit();
+        LastFolders lastFolders = LastFolders.getInstance(this);
+        lastFolders.put(path);
         try {
             InputStream in = utils.getFileStream();
             OutputStream out = new FileOutputStream(new File(path, fileName));
@@ -140,9 +141,39 @@ public class SendToFolderActivity extends PreferenceActivity
     }
     
     /**
+     *  Fills the list of last folders.
+     */
+    void listLastFolders() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.getBoolean(PREF_SHOW_LAST_FOLDERS, true)) {
+            return;
+        }
+        LastFolders lastFolders = LastFolders.getInstance(this);
+        if (lastFolders.isEmpty()) {
+            return;
+        }
+        PreferenceCategory lastFoldersCategory = new PreferenceCategory(this);
+        lastFoldersCategory.setTitle(getString(R.string.last_folders));
+        lastFoldersCategory.setOrder(1);
+        getPreferenceScreen().addPreference(lastFoldersCategory);
+        int lastFoldersNumber;
+        try {
+            lastFoldersNumber = Integer.parseInt(preferences.getString(
+                    PREF_LAST_FOLDERS_NUMBER, DEFAULT_LAST_FOLDERS_NUMBER));
+        } catch (NumberFormatException e) {
+            lastFoldersNumber = DEFAULT_LAST_FOLDERS_NUMBER_INT;
+        }
+        for (File folder : lastFolders.get(lastFoldersNumber)) {
+            //Log.d(TAG, folder.toString());
+            PathFolderPreference folderPref = new PathFolderPreference(this, folder, this);
+            lastFoldersCategory.addPreference(folderPref);
+        }
+    }
+    
+    /**
      *  Fills the list of subfolders.
      */
-    void listFolder() {
+    void listFolders() {
         PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
         if (!"/".equals(path.getAbsolutePath())) {
             Preference upFolder = new FolderPreference(this, path.getParentFile(), this);

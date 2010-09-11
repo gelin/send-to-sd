@@ -24,5 +24,9 @@ public interface Constants {
     public static final String PREF_SHOW_LAST_FOLDERS = "show_last_folders";
     /** Last folders number preference key */
     public static final String PREF_LAST_FOLDERS_NUMBER = "last_folders_number";
+    /** Default value for last folders number */
+    public static final String DEFAULT_LAST_FOLDERS_NUMBER = "5";
+    /** Default value for last folders number */
+    public static final int DEFAULT_LAST_FOLDERS_NUMBER_INT = 5;
 
 }

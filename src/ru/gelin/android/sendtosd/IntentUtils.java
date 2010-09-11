@@ -125,6 +125,14 @@ public class IntentUtils implements Constants {
     }
     
     /**
+     *  Returns true if the intent is initial intent for the application.
+     *  I.e. not modified intent for sub-activities.
+     */
+    public boolean isInitial() {
+        return !intent.hasExtra(EXTRA_PATH);
+    }
+    
+    /**
      *  Logs debug information about the intent.
      */
     void logIntentInfo() {
