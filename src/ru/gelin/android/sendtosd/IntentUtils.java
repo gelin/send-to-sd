@@ -93,7 +93,7 @@ public class IntentUtils implements Constants {
      */
     File getDefaultPath() {
         String initialFolder = preferences.getString(PREF_INITIAL_FOLDER, 
-                VAL_SD_CARD_ROOT);
+                VAL_LAST_FOLDER);
         File root = Environment.getExternalStorageDirectory();
         if (VAL_LAST_FOLDER.equals(initialFolder)) {
             String lastFolder = preferences.getString(PREF_LAST_FOLDER, null);
