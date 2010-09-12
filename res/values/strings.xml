@@ -29,4 +29,8 @@
     <string name="show_last_folders">Show last folders</string>
     <string name="last_folders_number">Number of last folders</string>
     <string name="show_last_folders_number">Show {0} last {0,choice,1#folder|1&lt;folders}</string>
+    <string name="new_folder">New folder</string>
+    <string name="create_folder">Create folder</string>
+    <string name="folder_created">The folder is created</string>
+    <string name="folder_not_created">Cannot create the folder</string>
 </resources>

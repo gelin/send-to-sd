@@ -4,7 +4,6 @@ import java.io.File;
 
 import android.content.Context;
 import android.preference.Preference;
-import android.view.View;
 
 /**
  *  Preference which displays one folder.

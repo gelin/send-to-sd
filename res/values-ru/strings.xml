@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Отправка на SD карту</string>
     <string name="sd_card">SD карта</string>
-    <string name="unsupported_file">Не удается сохранить этот файл</string>
+    <string name="unsupported_file">Не удалось сохранить файл</string>
     <string name="save_here">Сохранить сюда</string>
     <string name="folders">Папки</string>
     <string name="no_sd_card">Пожалуйста, подключите SD карту</string>
@@ -29,4 +29,8 @@
     <string name="show_last_folders">Показывать последние папки</string>
     <string name="last_folders_number">Количество последних папок</string>
     <string name="show_last_folders_number">Показывать {0} {0,choice,1#последнюю папку|1&lt;последних папки|4&lt;последних папок}</string>
+    <string name="new_folder">Новая папка</string>
+    <string name="create_folder">Создать папку</string>
+    <string name="folder_created">Папка создана</string>
+    <string name="folder_not_created">Не удалось создать папку</string>
 </resources>

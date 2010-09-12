@@ -10,9 +10,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -22,6 +25,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 /**
@@ -175,6 +181,7 @@ public class SendToFolderActivity extends PreferenceActivity
      */
     void listFolders() {
         PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
+        folders.removeAll();
         if (!"/".equals(path.getAbsolutePath())) {
             Preference upFolder = new FolderPreference(this, path.getParentFile(), this);
             upFolder.setTitle("..");
@@ -234,10 +241,50 @@ public class SendToFolderActivity extends PreferenceActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        case R.id.menu_new_folder:
+            showNewFolderDialog();
+            break;
         case R.id.menu_preferences:
             startActivity(new Intent(this, PreferencesActivity.class));
+            break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     *  Displays the New Folder dialog.
+     */
+    void showNewFolderDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.new_folder);
+        final EditText edit = new EditText(this);
+        builder.setView(edit);
+        builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                createFolder(edit.getText().toString());
+            }
+        });
+        Dialog dialog = builder.create();
+        //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
+        Window window = dialog.getWindow();
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.show();
+    }
+    
+    /**
+     *  Creates the new folder.
+     */
+    void createFolder(String folderName) {
+        File newFolder = new File(path, folderName);
+        boolean result = newFolder.mkdirs();
+        if (result) {
+            Toast.makeText(this, R.string.folder_created, Toast.LENGTH_LONG).show();
+            listFolders();
+        } else {
+            Toast.makeText(this, R.string.folder_not_created, Toast.LENGTH_LONG).show();
+        }
     }
     
     /**
