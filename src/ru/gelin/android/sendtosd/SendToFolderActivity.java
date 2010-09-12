@@ -87,10 +87,15 @@ public class SendToFolderActivity extends PreferenceActivity
             saveHerePreference.setEnabled(false);
         }
         
+        listFolders();
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (utils.isInitial()) {
             listLastFolders();
         }
-        listFolders();
     }
     
     /**
@@ -150,6 +155,12 @@ public class SendToFolderActivity extends PreferenceActivity
      *  Fills the list of last folders.
      */
     void listLastFolders() {
+        PreferenceCategory oldCategory = 
+                (PreferenceCategory)findPreference(PREF_LAST_FOLDERS);
+        if (oldCategory != null) {
+            getPreferenceScreen().removePreference(oldCategory);
+        }
+        
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.getBoolean(PREF_SHOW_LAST_FOLDERS, true)) {
             return;
@@ -158,10 +169,13 @@ public class SendToFolderActivity extends PreferenceActivity
         if (lastFolders.isEmpty()) {
             return;
         }
+        
         PreferenceCategory lastFoldersCategory = new PreferenceCategory(this);
+        lastFoldersCategory.setKey(PREF_LAST_FOLDERS);
         lastFoldersCategory.setTitle(getString(R.string.last_folders));
         lastFoldersCategory.setOrder(1);
         getPreferenceScreen().addPreference(lastFoldersCategory);
+        
         int lastFoldersNumber;
         try {
             lastFoldersNumber = Integer.parseInt(preferences.getString(

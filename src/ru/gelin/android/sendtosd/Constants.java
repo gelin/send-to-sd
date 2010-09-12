@@ -20,6 +20,8 @@ public interface Constants {
     
     /** Last folder preference key */
     public static final String PREF_LAST_FOLDER = "last_folder";
+    /** Last folders preference category key */
+    public static final String PREF_LAST_FOLDERS = "last_folders";
     /** Show last folders preference key */
     public static final String PREF_SHOW_LAST_FOLDERS = "show_last_folders";
     /** Last folders number preference key */
