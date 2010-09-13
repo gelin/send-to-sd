@@ -9,6 +9,7 @@
     <string name="choose_file_name">Choose file name</string>
     <string name="save_file">Save file</string>
     <string name="file_is_saved">File is saved</string>
+    <string name="file_is_not_saved">Cannot save the file</string>
     <string name="preferences">Preferences</string>
     <string name="app_preferences">Send to SD card preferences</string>
     <string name="how_to_use">How to use</string>

@@ -2,13 +2,14 @@
 <resources>
     <string name="app_name">Отправка на SD карту</string>
     <string name="sd_card">SD карта</string>
-    <string name="unsupported_file">Не удалось сохранить файл</string>
+    <string name="unsupported_file">Невозможно сохранить этот файл</string>
     <string name="save_here">Сохранить сюда</string>
     <string name="folders">Папки</string>
     <string name="no_sd_card">Пожалуйста, подключите SD карту</string>
     <string name="choose_file_name">Укажите имя файла</string>
     <string name="save_file">Сохранить файл</string>
     <string name="file_is_saved">Файл сохранен</string>
+    <string name="file_is_not_saved">Не удалось сохранить файл</string>
     <string name="preferences">Настройки</string>
     <string name="app_preferences">Настройки отправки на SD карту</string>
     <string name="how_to_use">Как пользоваться</string>

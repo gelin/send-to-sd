@@ -62,6 +62,10 @@ public class SendToFolderActivity extends PreferenceActivity
         }
         utils = new IntentUtils(this, intent);
         utils.logIntentInfo();
+        if (!utils.validate()) {
+            error(R.string.unsupported_file);
+            return;
+        }
         
         try {
             fileName = utils.getFileName();
@@ -145,7 +149,7 @@ public class SendToFolderActivity extends PreferenceActivity
             out.close();
             in.close();
         } catch (Exception e) {
-            error(R.string.unsupported_file, e);
+            error(R.string.file_is_not_saved, e);
             return;
         }
         complete();

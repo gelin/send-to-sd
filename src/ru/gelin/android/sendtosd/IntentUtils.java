@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -41,6 +42,14 @@ public class IntentUtils implements Constants {
     }
     
     /**
+     *  Returns false if this intent doesn't contain STREAM or TEXT extras.
+     */
+    public boolean validate() {
+        return intent.hasExtra(Intent.EXTRA_STREAM) || 
+                intent.hasExtra(Intent.EXTRA_TEXT);
+    }
+    
+    /**
      *  Tries to guess the filename from the intent.
      */
     public String getFileName() {
@@ -63,7 +72,9 @@ public class IntentUtils implements Constants {
      *  Returns true if the intent is plain/text intent.
      */
     public boolean isTextIntent() {
-        return "text/plain".equals(intent.getType());
+        //return "text/plain".equals(intent.getType());
+        return intent.hasExtra(Intent.EXTRA_TEXT) && 
+                !intent.hasExtra(Intent.EXTRA_STREAM);  //stream is more preferable
     }
     
     /**
@@ -137,7 +148,6 @@ public class IntentUtils implements Constants {
      */
     void logIntentInfo() {
         Log.i(TAG, "intent: " + intent);
-        return;
         /*
         Log.d(TAG, "data: " + intent.getData());
         Bundle extras = intent.getExtras();
