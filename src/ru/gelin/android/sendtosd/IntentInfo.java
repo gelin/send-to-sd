@@ -1,26 +1,19 @@
 package ru.gelin.android.sendtosd;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 /**
- *  Utilities to manipulate intents.
+ *  Extracts some necessary information from the intent.
  */
-public class IntentUtils implements Constants {
-    
-    private static final String TEXT_FILE_NAME = "text.txt";
+public class IntentInfo implements Constants {
     
     /** Current context */
     Context context;
@@ -34,7 +27,7 @@ public class IntentUtils implements Constants {
      *  @param  context current context
      *  @param  intent  intent to process
      */
-    public IntentUtils(Context context, Intent intent) {
+    public IntentInfo(Context context, Intent intent) {
         this.context = context;
         this.intent = intent;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -49,42 +42,7 @@ public class IntentUtils implements Constants {
     }
     
     /**
-     *  Tries to guess the filename from the intent.
-     */
-    public String getFileName() {
-        if (isTextIntent()) {
-            return TEXT_FILE_NAME;
-        }
-        Uri uri = getStreamUri();
-        String fileName = uri.getLastPathSegment();
-        if (fileName.contains(".")) {   //has extension
-            return fileName;
-        }
-        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(intent.getType());
-        if (extension != null) {
-            return fileName + "." + extension;
-        }
-        return fileName;
-    }
-    
-    /**
-     *  Returns true if the intent is plain/text intent.
-     */
-    public boolean isTextIntent() {
-        //return "text/plain".equals(intent.getType());
-        return intent.hasExtra(Intent.EXTRA_TEXT) && 
-                !intent.hasExtra(Intent.EXTRA_STREAM);  //stream is more preferable
-    }
-    
-    /**
-     *  Returns the Uri of the stream of the intent.
-     */
-    public Uri getStreamUri() {
-        return (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
-    }
-    
-    /**
-     *  Returns path on external storage provided with the intent.
+     *  Returns path on the external storage provided with the intent.
      */
     public File getPath() {
         String path = intent.getStringExtra(EXTRA_PATH);
@@ -96,6 +54,21 @@ public class IntentUtils implements Constants {
         } catch (IOException e) {
             return new File(path);
         }
+    }
+    
+    /**
+     *  Returns true if the intent is initial intent for the application.
+     *  I.e. not modified intent for sub-activities.
+     */
+    public boolean isInitial() {
+        return !intent.hasExtra(EXTRA_PATH);
+    }
+    
+    /**
+     *  Returns the file provided with the SEND intent.
+     */
+    public IntentFile getFile() {
+        return new IntentFile(context, intent);
     }
     
     /**
@@ -117,29 +90,6 @@ public class IntentUtils implements Constants {
             return lastFolderFile;
         }
         return root;
-    }
-    
-    /**
-     *  Returns the file as stream.
-     */
-    public InputStream getFileStream() throws FileNotFoundException {
-        if (isTextIntent()) {
-            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-            if (text == null) {
-                text = "";
-            }
-            return new ByteArrayInputStream(text.getBytes());
-        }
-        Uri uri = getStreamUri();
-        return context.getContentResolver().openInputStream(uri);
-    }
-    
-    /**
-     *  Returns true if the intent is initial intent for the application.
-     *  I.e. not modified intent for sub-activities.
-     */
-    public boolean isInitial() {
-        return !intent.hasExtra(EXTRA_PATH);
     }
     
     /**

@@ -2,10 +2,7 @@ package ru.gelin.android.sendtosd;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,11 +42,13 @@ public class SendToFolderActivity extends PreferenceActivity
     public static final String PREF_FOLDERS = "folders";
     /** Request code for directory traversing */
     public static final int REQ_CODE_FOLDER = 0;
-    
+
+    /** Intent information */
+    IntentInfo intentInfo;
+    /** File to save from intent */
+    IntentFile intentFile;
     /** Filename to save */
     String fileName;
-    /** Intent utilities */
-    IntentUtils utils;
     /** Current path */
     File path;
     
@@ -62,15 +61,16 @@ public class SendToFolderActivity extends PreferenceActivity
             error(R.string.unsupported_file);
             return;
         }
-        utils = new IntentUtils(this, intent);
-        utils.logIntentInfo();
-        if (!utils.validate()) {
+        intentInfo = new IntentInfo(this, intent);
+        intentInfo.logIntentInfo();
+        if (!intentInfo.validate()) {
             error(R.string.unsupported_file);
             return;
         }
+        intentFile = intentInfo.getFile();
         
         try {
-            fileName = utils.getFileName();
+            fileName = intentFile.getName();
         } catch (Exception e) {
             error(R.string.unsupported_file, e);
             return;
@@ -83,7 +83,7 @@ public class SendToFolderActivity extends PreferenceActivity
                 Environment.MEDIA_MOUNTED)) {
             error(R.string.no_sd_card);
         }
-        path = utils.getPath();
+        path = intentInfo.getPath();
         
         updateFileNameIfExists();
         
@@ -99,7 +99,7 @@ public class SendToFolderActivity extends PreferenceActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (utils.isInitial()) {
+        if (intentInfo.isInitial()) {
             listLastFolders();
         }
     }
@@ -141,17 +141,9 @@ public class SendToFolderActivity extends PreferenceActivity
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
         try {
-            InputStream in = utils.getFileStream();
-            OutputStream out = new FileOutputStream(new File(path, fileName));
-            byte[] buf = new byte[1024];
-            int read;
-            while ((read = in.read(buf)) > 0) {
-                out.write(buf, 0, read);
-            }
-            out.close();
-            in.close();
+            intentFile.saveAs(new File(path, fileName));
         } catch (Exception e) {
-            error(R.string.file_is_not_saved, e);
+            warn(R.string.file_is_not_saved, e);
             return;
         }
         complete();
@@ -312,19 +304,41 @@ public class SendToFolderActivity extends PreferenceActivity
     /**
      *  Shows the error message.
      */
+    void warn(int messageId) {
+        error(messageId, true, null);
+    }
+    
+    /**
+     *  Shows the error message and disables the activity.
+     */
     void error(int messageId) {
-        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
-        setResult(RESULT_CANCELED);
-        //finish();
+        error(messageId, false, null);
     }
     
     /**
      *  Shows and logs the error message.
      */
+    void warn(int messageId, Throwable exception) {
+        error(messageId, true, exception);
+    }
+    
+    /**
+     *  Shows and logs the error message and disables the activity.
+     */
     void error(int messageId, Throwable exception) {
-        Log.e(TAG, exception.toString(), exception);
+        error(messageId, false, exception);
+    }
+    
+    /**
+     *  Shows and logs the error message and disables the activity.
+     */
+    void error(int messageId, boolean enabled, Throwable exception) {
+        if (exception != null) {
+            Log.e(TAG, exception.toString(), exception);
+        }
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);
+        getPreferenceScreen().setEnabled(enabled);
         //finish();
     }
     
