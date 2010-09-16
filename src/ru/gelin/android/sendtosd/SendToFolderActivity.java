@@ -25,6 +25,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -275,8 +277,10 @@ public class SendToFolderActivity extends PreferenceActivity
     void showNewFolderDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.new_folder);
-        final EditText edit = new EditText(this);
-        builder.setView(edit);
+        View content = getLayoutInflater().inflate(R.layout.new_folder_dialog, 
+                (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
+        final EditText edit = (EditText)content.findViewById(R.id.new_folder_name);
+        builder.setView(content);
         builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
