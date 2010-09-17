@@ -87,7 +87,7 @@ public class SendToFolderActivity extends PreferenceActivity
         
         updateFileNameIfExists();
         
-        SaveHerePreference saveHerePreference = (SaveHerePreference)findPreference(PREF_SAVE_HERE);
+        CopyHerePreference saveHerePreference = (CopyHerePreference)findPreference(PREF_SAVE_HERE);
         saveHerePreference.setFileSaver(this);
         if (!path.canWrite()) {
             saveHerePreference.setEnabled(false);
@@ -137,13 +137,13 @@ public class SendToFolderActivity extends PreferenceActivity
     /**
      *  Saves the file.
      */
-    public void saveFile() {
+    public void copyFile() {
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
         try {
             intentFile.saveAs(new File(path, fileName));
         } catch (Exception e) {
-            warn(R.string.file_is_not_saved, e);
+            warn(R.string.file_is_not_copied, e);
             return;
         }
         complete();
@@ -346,7 +346,7 @@ public class SendToFolderActivity extends PreferenceActivity
      *  Complete the action.
      */
     void complete() {
-        Toast.makeText(this, R.string.file_is_saved, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.file_is_copied, Toast.LENGTH_LONG).show();
         setResult(RESULT_OK);
         finish();
     }

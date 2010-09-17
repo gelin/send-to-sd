@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <ru.gelin.android.sendtosd.SaveHerePreference
+    <ru.gelin.android.sendtosd.CopyHerePreference
             android:key="save_here"
             android:persistent="false"
-            android:title="@string/save_here"
+            android:title="@string/copy_here"
             android:dialogTitle="@string/choose_file_name"
-            android:positiveButtonText="@string/save_file"
+            android:positiveButtonText="@string/copy_file"
             android:negativeButtonText="@null"/>
     
     <PreferenceCategory android:key="folders"

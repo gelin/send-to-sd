@@ -2,14 +2,19 @@
 <resources>
     <string name="app_name">Отправка на SD карту</string>
     <string name="sd_card">SD карта</string>
-    <string name="unsupported_file">Невозможно сохранить этот файл</string>
-    <string name="save_here">Сохранить сюда</string>
+    <string name="unsupported_file">Невозможно отправить этот файл</string>
+    <string name="copy_here">Скопировать сюда</string>
+    <string name="move_here">Переместить сюда</string>
     <string name="folders">Папки</string>
     <string name="no_sd_card">Пожалуйста, подключите SD карту</string>
     <string name="choose_file_name">Укажите имя файла</string>
-    <string name="save_file">Сохранить файл</string>
-    <string name="file_is_saved">Файл сохранен</string>
-    <string name="file_is_not_saved">Не удалось сохранить файл</string>
+    <string name="copy_file">Скопировать файл</string>
+    <string name="move_file">Переместить файл</string>
+    <string name="file_is_copied">Файл скопирован</string>
+    <string name="file_is_moved">Файл перемещен</string>
+    <string name="file_is_not_copied">Не удалось скопировать файл</string>
+    <string name="file_is_not_moved">Не удалось переместить файл</string>
+    <string name="file_is_not_deleted">Файл скопирован. Не удалось удалить оригинальный файл</string> 
     <string name="preferences">Настройки</string>
     <string name="app_preferences">Настройки отправки на SD карту</string>
     <string name="how_to_use">Как пользоваться</string>
@@ -20,9 +25,9 @@
     <string name="how_to_use_2_1">* Выберите пункт меню \"Отправить\" или \"Поделиться\" в любом приложении</string>
     <string name="how_to_use_2_2">* Выберите пункт \"SD карта\"</string>
     <string name="how_to_use_2_3">* Выберите папку на карте</string>
-    <string name="how_to_use_2_4">* Нажмите \"Сохранить сюда\"</string>
+    <string name="how_to_use_2_4">* Нажмите \"Скопировать сюда\"</string>
     <string name="how_to_use_2_5">* Поправьте имя файла (если необходимо)</string>
-    <string name="how_to_use_2_6">* Нажмите \"Сохранить файл\"</string>
+    <string name="how_to_use_2_6">* Нажмите \"Скопировать файл\"</string>
     <string name="initial_folder">Начальная папка</string>
     <string name="sd_card_root">Корень SD карты</string>
     <string name="last_folder">Последняя папка</string>

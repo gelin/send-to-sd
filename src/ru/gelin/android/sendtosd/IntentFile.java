@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.net.URI;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
 /**
@@ -20,6 +22,13 @@ import android.webkit.MimeTypeMap;
 public class IntentFile {
     
     private static final String TEXT_FILE_NAME = "text.txt";
+    
+    /** content:// URIs which are writable */
+    static final String[] WRITABLE_URIS = {
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
+        MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
+    };
     
     /** The intent which contains information about the file */
     Intent intent;
@@ -84,9 +93,49 @@ public class IntentFile {
     }
     
     /**
+     *  Returns true if the file is file:// on filesystem.
+     */
+    boolean isFile() {
+        if (isText()) {
+            return false;
+        }
+        Uri uri = getStreamUri();
+        return "file".equals(uri.getScheme());
+    }
+    
+    /**
+     *  Returns true if the file can be deleted.
+     *  plain/text content cannot be deleted.
+     *  file:// content can be deleted if the original file is writable.
+     *  content:// is checked for supported providers.
+     */
+    boolean isDeletable() {
+        if (isText()) {
+            return false;
+        } else if (isFile()) {
+            try {
+                Uri uri = getStreamUri();
+                URI javaUri = new URI(uri.toString());
+                File file = new File(javaUri);      //why so ugly???
+                return file.isFile() && file.canWrite();
+            } catch (Exception e) {
+                return false;
+            }
+        } else {
+            String uri = getStreamUri().toString();
+            for (String contentUri : WRITABLE_URIS) {
+                if (uri.startsWith(contentUri)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
      *  Returns the Uri of the stream of the intent.
      */
-    public Uri getStreamUri() {
+    Uri getStreamUri() {
         return (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
     }
     

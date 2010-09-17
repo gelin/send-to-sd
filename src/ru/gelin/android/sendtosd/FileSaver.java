@@ -24,6 +24,6 @@ public interface FileSaver {
     /**
      *  Saves the file.
      */
-    public void saveFile(); 
+    public void copyFile(); 
 
 }

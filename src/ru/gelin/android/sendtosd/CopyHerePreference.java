@@ -6,12 +6,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 
-public class SaveHerePreference extends EditTextPreference {
+public class CopyHerePreference extends EditTextPreference {
     
     /** File saver */
     FileSaver fileSaver;
     
-    public SaveHerePreference(Context context, AttributeSet attrs) {
+    public CopyHerePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
     
@@ -33,7 +33,7 @@ public class SaveHerePreference extends EditTextPreference {
         if (positiveResult) {
             EditText fileNameEdit = getEditText();
             fileSaver.setFileName(fileNameEdit.getText().toString());
-            fileSaver.saveFile();
+            fileSaver.copyFile();
         }
         super.onDialogClosed(positiveResult);
     }
