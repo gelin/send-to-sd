@@ -85,9 +85,22 @@ public class IntentFile {
     
     /**
      *  Deleted the original file via ContentResolver.
+     *  @throws IOException if the file was not deleted
      */
-    public void delete() {
-        context.getContentResolver().delete(getStreamUri(), null, null);
+    public void delete() throws IOException {
+        if (isFile()) {
+            File file = getFile();
+            boolean result = file.delete();
+            if (!result) {
+                throw new IOException(file + " was not deleted");
+            }
+        } else {
+            Uri uri = getStreamUri();
+            int result = context.getContentResolver().delete(uri, null, null);
+            if (result <= 0) {
+                throw new IOException(uri + " was not deleted");
+            }
+        }
     }
     
     /**
@@ -121,9 +134,7 @@ public class IntentFile {
             return false;
         } else if (isFile()) {
             try {
-                Uri uri = getStreamUri();
-                URI javaUri = new URI(uri.toString());
-                File file = new File(javaUri);      //why so ugly???
+                File file = getFile();
                 return file.isFile() && file.canWrite();
             } catch (Exception e) {
                 return false;
@@ -159,6 +170,22 @@ public class IntentFile {
     InputStream getStream() throws FileNotFoundException {
         Uri uri = getStreamUri();
         return context.getContentResolver().openInputStream(uri);
+    }
+    
+    /**
+     *  Returns the file as File for file:/// URIs
+     */
+    File getFile() {
+        if (!isFile()) {
+            return null;
+        }
+        try {
+            Uri uri = getStreamUri();
+            URI javaUri = new URI(uri.toString());
+            return new File(javaUri);      //why so ugly???
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
