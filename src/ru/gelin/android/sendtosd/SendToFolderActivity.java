@@ -36,8 +36,12 @@ import android.widget.Toast;
 public class SendToFolderActivity extends PreferenceActivity 
         implements Constants, FileSaver, FolderChanger {
     
-    /** "Save here" preference key */
-    public static final String PREF_SAVE_HERE = "save_here";
+    /** "Copy here" preference key */
+    public static final String PREF_COPY_HERE = "copy_here";
+    /** "Move here" preference key */
+    public static final String PREF_MOVE_HERE = "move_here";
+    /** Last folders preference category key */
+    public static final String PREF_LAST_FOLDERS = "last_folders";
     /** "Folders" preference key */
     public static final String PREF_FOLDERS = "folders";
     /** Request code for directory traversing */
@@ -87,10 +91,16 @@ public class SendToFolderActivity extends PreferenceActivity
         
         updateFileNameIfExists();
         
-        CopyHerePreference saveHerePreference = (CopyHerePreference)findPreference(PREF_SAVE_HERE);
-        saveHerePreference.setFileSaver(this);
+        CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
+        MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
+        copyHerePreference.setFileSaver(this);
+        moveHerePreference.setFileSaver(this);
         if (!path.canWrite()) {
-            saveHerePreference.setEnabled(false);
+            copyHerePreference.setEnabled(false);
+            moveHerePreference.setEnabled(false);
+        }
+        if (!intentFile.isDeletable()) {
+            getPreferenceScreen().removePreference(moveHerePreference);
         }
         
         listFolders();
@@ -101,6 +111,11 @@ public class SendToFolderActivity extends PreferenceActivity
         super.onResume();
         if (intentInfo.isInitial()) {
             listLastFolders();
+        } else {
+            Preference lastFolders = findPreference(PREF_LAST_FOLDERS);
+            if (lastFolders != null) {
+                getPreferenceScreen().removePreference(lastFolders);
+            }
         }
     }
     
@@ -135,7 +150,7 @@ public class SendToFolderActivity extends PreferenceActivity
     }
     
     /**
-     *  Saves the file.
+     *  Copies the file.
      */
     public void copyFile() {
         LastFolders lastFolders = LastFolders.getInstance(this);
@@ -146,33 +161,48 @@ public class SendToFolderActivity extends PreferenceActivity
             warn(R.string.file_is_not_copied, e);
             return;
         }
-        complete();
+        complete(R.string.file_is_copied);
+    }
+    
+    /**
+     *  Moves the file.
+     */
+    public void moveFile() {
+        LastFolders lastFolders = LastFolders.getInstance(this);
+        lastFolders.put(path);
+        try {
+            intentFile.saveAs(new File(path, fileName));
+        } catch (Exception e) {
+            warn(R.string.file_is_not_moved, e);
+            return;
+        }
+        try {
+            intentFile.delete();
+        } catch (Exception e) {
+            Log.w(TAG, e.toString(), e);
+            complete(R.string.file_is_not_deleted);
+            return;
+        }
+        complete(R.string.file_is_moved);
     }
     
     /**
      *  Fills the list of last folders.
      */
     void listLastFolders() {
-        PreferenceCategory oldCategory = 
+        PreferenceCategory lastFoldersCategory = 
                 (PreferenceCategory)findPreference(PREF_LAST_FOLDERS);
-        if (oldCategory != null) {
-            getPreferenceScreen().removePreference(oldCategory);
-        }
         
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.getBoolean(PREF_SHOW_LAST_FOLDERS, true)) {
+            getPreferenceScreen().removePreference(lastFoldersCategory);
             return;
         }
         LastFolders lastFolders = LastFolders.getInstance(this);
         if (lastFolders.isEmpty()) {
+            getPreferenceScreen().removePreference(lastFoldersCategory);
             return;
         }
-        
-        PreferenceCategory lastFoldersCategory = new PreferenceCategory(this);
-        lastFoldersCategory.setKey(PREF_LAST_FOLDERS);
-        lastFoldersCategory.setTitle(getString(R.string.last_folders));
-        lastFoldersCategory.setOrder(1);
-        getPreferenceScreen().addPreference(lastFoldersCategory);
         
         int lastFoldersNumber;
         try {
@@ -345,8 +375,8 @@ public class SendToFolderActivity extends PreferenceActivity
     /**
      *  Complete the action.
      */
-    void complete() {
-        Toast.makeText(this, R.string.file_is_copied, Toast.LENGTH_LONG).show();
+    void complete(int messageId) {
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_OK);
         finish();
     }

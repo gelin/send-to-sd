@@ -33,8 +33,13 @@ public class CopyHerePreference extends EditTextPreference {
         if (positiveResult) {
             EditText fileNameEdit = getEditText();
             fileSaver.setFileName(fileNameEdit.getText().toString());
-            fileSaver.copyFile();
+            action();
         }
         super.onDialogClosed(positiveResult);
     }
+    
+    protected void action() {
+        fileSaver.copyFile();
+    }
+
 }

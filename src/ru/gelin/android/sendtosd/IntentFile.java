@@ -84,6 +84,13 @@ public class IntentFile {
     }
     
     /**
+     *  Deleted the original file via ContentResolver.
+     */
+    public void delete() {
+        context.getContentResolver().delete(getStreamUri(), null, null);
+    }
+    
+    /**
      *  Returns true if the file is plain/text.
      */
     boolean isText() {

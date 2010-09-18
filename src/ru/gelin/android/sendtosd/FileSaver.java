@@ -22,8 +22,13 @@ public interface FileSaver {
     public void setFileName(String fileName);
     
     /**
-     *  Saves the file.
+     *  Copies the file to the new location.
      */
-    public void copyFile(); 
+    public void copyFile();
+    
+    /**
+     *  Moves the file to the new location.
+     */
+    public void moveFile();
 
 }
