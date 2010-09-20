@@ -3,6 +3,8 @@ package ru.gelin.android.sendtosd.intent;
 import java.io.File;
 import java.io.IOException;
 
+import ru.gelin.android.sendtosd.Constants;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,7 +12,7 @@ import android.net.Uri;
 /**
  *  A file provided with the intent to be saved on SD card.
  */
-public abstract class IntentFile {
+public abstract class IntentFile implements Constants {
     
     /** The intent which contains information about the file */
     Intent intent;

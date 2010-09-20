@@ -1,10 +1,13 @@
 package ru.gelin.android.sendtosd.intent;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.provider.MediaStore;
+import android.util.Log;
 
 /**
  *  File for content:// URI.
@@ -19,8 +22,40 @@ public class ContentFile extends StreamFile {
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
     };
     
+    /** Projection to select some useful data */
+    String[] projection = {
+            MediaStore.MediaColumns.DATA,
+            //MediaStore.MediaColumns.DISPLAY_NAME,
+            //MediaStore.MediaColumns.TITLE,
+    };
+    
+    /** File which contains the content data (if can be selected from the content provider) */
+    File data;
+    
     public ContentFile(Context context, Intent intent) {
         super(context, intent);
+        try {
+            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            int dataIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            if (cursor.moveToFirst()) {
+                String data = cursor.getString(dataIndex);
+                this.data = new File(data);
+            }
+            cursor.close();
+        } catch (Exception e) {
+            //nothing to do, we have default behaviour
+            Log.w(TAG, "cannot query content", e);
+        }
+    }
+    
+    /**
+     *  Makes the query to the content provider to select the file name.
+     */
+    public String getName() {
+        if (data == null) {
+            return super.getName();
+        }
+        return addExtension(data.getName());
     }
     
     /**
