@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import ru.gelin.android.sendtosd.intent.IntentFile;
+import ru.gelin.android.sendtosd.intent.IntentInfo;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

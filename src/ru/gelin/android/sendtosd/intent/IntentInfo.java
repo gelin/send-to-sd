@@ -1,7 +1,9 @@
-package ru.gelin.android.sendtosd;
+package ru.gelin.android.sendtosd.intent;
 
 import java.io.File;
 import java.io.IOException;
+
+import ru.gelin.android.sendtosd.Constants;
 
 import android.content.Context;
 import android.content.Intent;
@@ -68,7 +70,7 @@ public class IntentInfo implements Constants {
      *  Returns the file provided with the SEND intent.
      */
     public IntentFile getFile() {
-        return new IntentFile(context, intent);
+        return IntentFile.getInstance(context, intent);
     }
     
     /**
@@ -95,7 +97,7 @@ public class IntentInfo implements Constants {
     /**
      *  Logs debug information about the intent.
      */
-    void logIntentInfo() {
+    public void logIntentInfo() {
         Log.i(TAG, "intent: " + intent);
         /*
         Log.d(TAG, "data: " + intent.getData());
