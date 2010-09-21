@@ -58,6 +58,8 @@ public class SendToFolderActivity extends PreferenceActivity
     String fileName;
     /** Current path */
     File path;
+    /** Last folders preference. Saved here to remove from or add to hierarchy. */
+    Preference lastFolders;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,17 +108,22 @@ public class SendToFolderActivity extends PreferenceActivity
             getPreferenceScreen().removePreference(moveHerePreference);
         }
         
+        lastFolders = findPreference(PREF_LAST_FOLDERS);
+        
         listFolders();
     }
     
     @Override
     protected void onResume() {
         super.onResume();
+        Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
         if (intentInfo.isInitial()) {
+            if (existedLastFolders == null) {
+                getPreferenceScreen().addPreference(lastFolders);
+            }
             listLastFolders();
         } else {
-            Preference lastFolders = findPreference(PREF_LAST_FOLDERS);
-            if (lastFolders != null) {
+            if (existedLastFolders != null) {
                 getPreferenceScreen().removePreference(lastFolders);
             }
         }
@@ -145,7 +152,7 @@ public class SendToFolderActivity extends PreferenceActivity
      *  Changes the current folder.
      */
     public void changeFolder(File folder) {
-        Intent intent = getIntent();
+        Intent intent = new Intent(getIntent());
         intent.putExtra(EXTRA_PATH, folder.toString());
         intent.setClass(this, SendToFolderActivity.class);
         intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
@@ -214,6 +221,7 @@ public class SendToFolderActivity extends PreferenceActivity
         } catch (NumberFormatException e) {
             lastFoldersNumber = DEFAULT_LAST_FOLDERS_NUMBER_INT;
         }
+        lastFoldersCategory.removeAll();
         for (File folder : lastFolders.get(lastFoldersNumber)) {
             //Log.d(TAG, folder.toString());
             PathFolderPreference folderPref = new PathFolderPreference(this, folder, this);
