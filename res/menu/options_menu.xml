@@ -4,6 +4,10 @@
     <item android:id="@+id/menu_new_folder"
             android:title="@string/new_folder"
             android:icon="@android:drawable/ic_menu_add"/>
+            
+    <item android:id="@+id/menu_choose_file_name"
+            android:title="@string/choose_file_name_menu"
+            android:icon="@android:drawable/ic_menu_edit"/>
 
     <item android:id="@+id/menu_preferences"
             android:title="@string/preferences"

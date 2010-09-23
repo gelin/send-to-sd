@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/new_folder_dialog_root"
+        android:id="@+id/edit_text_dialog_root"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="5sp">
     
-    <EditText android:id="@+id/new_folder_name"
+    <EditText android:id="@+id/edit_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
     

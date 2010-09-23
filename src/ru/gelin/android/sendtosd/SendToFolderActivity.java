@@ -94,8 +94,6 @@ public class SendToFolderActivity extends PreferenceActivity
         }
         path = intentInfo.getPath();
         
-        updateFileNameIfExists();
-        
         CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
         MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
         copyHerePreference.setFileSaver(this);
@@ -166,7 +164,7 @@ public class SendToFolderActivity extends PreferenceActivity
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
         try {
-            intentFile.saveAs(new File(path, fileName));
+            intentFile.saveAs(new File(path, getUniqueFileName()));
         } catch (Exception e) {
             warn(R.string.file_is_not_copied, e);
             return;
@@ -181,7 +179,7 @@ public class SendToFolderActivity extends PreferenceActivity
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
         try {
-            intentFile.saveAs(new File(path, fileName));
+            intentFile.saveAs(new File(path, getUniqueFileName()));
         } catch (Exception e) {
             warn(R.string.file_is_not_moved, e);
             return;
@@ -263,11 +261,15 @@ public class SendToFolderActivity extends PreferenceActivity
     }
     
     /**
-     *  Update file name if it is already exists.
+     *  Returns unique file name for this folder.
+     *  If the filename is not exists in the current folder,
+     *  it returns unchanged.
+     *  Otherwise the integer suffix will be added to the filename:
+     *  "-1", "-2" etc...
      */
-    void updateFileNameIfExists() {
+    String getUniqueFileName() {
         if (!new File(path, fileName).exists()) {
-            return;
+            return fileName;
         }
         int index = 1;
         int dotIndex = fileName.lastIndexOf('.');
@@ -281,7 +283,7 @@ public class SendToFolderActivity extends PreferenceActivity
             }
             index++;
         } while (new File(path, newName).exists());
-        fileName = newName;
+        return newName;
     }
     
     @Override
@@ -297,6 +299,9 @@ public class SendToFolderActivity extends PreferenceActivity
         case R.id.menu_new_folder:
             showNewFolderDialog();
             break;
+        case R.id.menu_choose_file_name:
+            showChooseFileNameDialog();
+            break;
         case R.id.menu_preferences:
             startActivity(new Intent(this, PreferencesActivity.class));
             break;
@@ -310,9 +315,9 @@ public class SendToFolderActivity extends PreferenceActivity
     void showNewFolderDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.new_folder);
-        View content = getLayoutInflater().inflate(R.layout.new_folder_dialog, 
-                (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
-        final EditText edit = (EditText)content.findViewById(R.id.new_folder_name);
+        View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
+                (ViewGroup)findViewById(R.id.edit_text_dialog_root));
+        final EditText edit = (EditText)content.findViewById(R.id.edit_text);
         builder.setView(content);
         builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
             @Override
@@ -342,6 +347,32 @@ public class SendToFolderActivity extends PreferenceActivity
         }
     }
     
+    /**
+     *  Displays the Choose File Name dialog.
+     */
+    void showChooseFileNameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.choose_file_name);
+        View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
+                (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
+        final EditText edit = (EditText)content.findViewById(R.id.edit_text);
+        edit.setText(fileName);
+        builder.setView(content);
+        builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fileName = edit.getText().toString();
+                setTitle(fileName);
+            }
+        });
+        Dialog dialog = builder.create();
+        //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
+        Window window = dialog.getWindow();
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        dialog.show();
+    }
+
     /**
      *  Shows the error message.
      */
