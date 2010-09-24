@@ -1,12 +1,10 @@
 package ru.gelin.android.sendtosd;
 
 import android.content.Context;
-import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.EditText;
 
-public class CopyHerePreference extends EditTextPreference {
+public class CopyHerePreference extends Preference {
     
     /** File saver */
     FileSaver fileSaver;
@@ -14,7 +12,7 @@ public class CopyHerePreference extends EditTextPreference {
     public CopyHerePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    
+
     /**
      *  Sets the file saver.
      */
@@ -22,23 +20,9 @@ public class CopyHerePreference extends EditTextPreference {
         this.fileSaver = fileSaver;
         setSummary(fileSaver.getPath().toString());
     }
-    @Override
-    protected void onBindDialogView(View view) {
-        super.onBindDialogView(view);
-        EditText fileNameEdit = getEditText();
-        fileNameEdit.setText(fileSaver.getFileName());
-    }
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        if (positiveResult) {
-            EditText fileNameEdit = getEditText();
-            fileSaver.setFileName(fileNameEdit.getText().toString());
-            action();
-        }
-        super.onDialogClosed(positiveResult);
-    }
     
-    protected void action() {
+    @Override
+    protected void onClick() {
         fileSaver.copyFile();
     }
 

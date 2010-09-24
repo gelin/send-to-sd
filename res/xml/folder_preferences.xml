@@ -4,18 +4,12 @@
     <ru.gelin.android.sendtosd.CopyHerePreference
             android:key="copy_here"
             android:persistent="false"
-            android:title="@string/copy_here"
-            android:dialogTitle="@string/choose_file_name"
-            android:positiveButtonText="@string/copy_file"
-            android:negativeButtonText="@null"/>
+            android:title="@string/copy_here"/>
             
     <ru.gelin.android.sendtosd.MoveHerePreference
             android:key="move_here"
             android:persistent="false"
-            android:title="@string/move_here"
-            android:dialogTitle="@string/choose_file_name"
-            android:positiveButtonText="@string/move_file"
-            android:negativeButtonText="@null"/>
+            android:title="@string/move_here"/>
     
     <PreferenceCategory android:key="last_folders"
             android:persistent="false"

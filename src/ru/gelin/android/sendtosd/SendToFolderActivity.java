@@ -9,7 +9,6 @@ import java.util.List;
 
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -133,19 +132,7 @@ public class SendToFolderActivity extends PreferenceActivity
     public File getPath() {
         return path;
     }
-    /**
-     *  Returns the file name to save.
-     */
-    public String getFileName() {
-        return fileName;
-    }
-    /**
-     *  Sets the file name to save.
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-    
+
     /**
      *  Changes the current folder.
      */

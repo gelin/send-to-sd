@@ -13,15 +13,6 @@ public interface FileSaver {
     public File getPath();
     
     /**
-     *  Returns the file name to be saved in the folder
-     */
-    public String getFileName();
-    /**
-     *  Sets the file name to be saved in the folder.
-     */
-    public void setFileName(String fileName);
-    
-    /**
      *  Copies the file to the new location.
      */
     public void copyFile();
