@@ -28,10 +28,6 @@
         android:layout_width="fill_parent" android:layout_height="wrap_content"/>
     <TextView android:text="@string/how_to_use_2_4"
         android:layout_width="fill_parent" android:layout_height="wrap_content"/>
-    <TextView android:text="@string/how_to_use_2_5"
-        android:layout_width="fill_parent" android:layout_height="wrap_content"/>
-    <TextView android:text="@string/how_to_use_2_6"
-        android:layout_width="fill_parent" android:layout_height="wrap_content"/>
     
 </LinearLayout>
 

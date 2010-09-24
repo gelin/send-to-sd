@@ -25,8 +25,6 @@
     <string name="how_to_use_2_2">* Выберите пункт \"SD карта\"</string>
     <string name="how_to_use_2_3">* Выберите папку на карте</string>
     <string name="how_to_use_2_4">* Нажмите \"Скопировать сюда\"</string>
-    <string name="how_to_use_2_5">* Поправьте имя файла (если необходимо)</string>
-    <string name="how_to_use_2_6">* Нажмите \"Скопировать файл\"</string>
     <string name="initial_folder">Начальная папка</string>
     <string name="sd_card_root">Корень SD карты</string>
     <string name="last_folder">Последняя папка</string>
