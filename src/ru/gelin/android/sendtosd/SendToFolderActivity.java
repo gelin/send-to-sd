@@ -78,7 +78,7 @@ public class SendToFolderActivity extends PreferenceActivity
         intentFile = intentInfo.getFile();
         
         try {
-            fileName = intentFile.getName();
+            fileName = intentInfo.getFileName();
         } catch (Exception e) {
             error(R.string.unsupported_file, e);
             return;
@@ -139,6 +139,7 @@ public class SendToFolderActivity extends PreferenceActivity
     public void changeFolder(File folder) {
         Intent intent = new Intent(getIntent());
         intent.putExtra(EXTRA_PATH, folder.toString());
+        intent.putExtra(EXTRA_FILE_NAME, fileName);
         intent.setClass(this, SendToFolderActivity.class);
         intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivityForResult(intent, REQ_CODE_FOLDER);

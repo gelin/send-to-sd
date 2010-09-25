@@ -7,6 +7,8 @@ public interface Constants {
     
     /** Extra name for current path */
     public static final String EXTRA_PATH = "path";
+    /** Extra name for the file name */
+    public static final String EXTRA_FILE_NAME = "file_name";
     
     /** "How to use" preference key */
     public static final String PREF_HOW_TO_USE = "how_to_use";

@@ -59,6 +59,19 @@ public class IntentInfo implements Constants {
     }
     
     /**
+     *  Returns the filename provided with the intent as EXTRA_FILE_NAME
+     *  or the filename of the sent file.
+     */
+    public String getFileName() {
+        String fileName = intent.getStringExtra(EXTRA_FILE_NAME);
+        if (fileName == null) {
+            return getFile().getName();
+        } else {
+            return fileName;
+        }
+    }
+    
+    /**
      *  Returns true if the intent is initial intent for the application.
      *  I.e. not modified intent for sub-activities.
      */
