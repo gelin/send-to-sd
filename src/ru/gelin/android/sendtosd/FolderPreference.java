@@ -21,7 +21,7 @@ public class FolderPreference extends Preference {
         this.folder = folder;
         this.changer = changer;
         setTitle(folder.getName());
-        setEnabled(folder.canWrite());
+        setEnabled(folder.canRead());
     }
     
     @Override
