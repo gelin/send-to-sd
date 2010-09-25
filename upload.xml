@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sendtosd-android-upload" default="all">
+
+    <property file="local.properties"/>
+    <property file="upload.credentials.properties"/>
+    <xmlproperty file="AndroidManifest.xml"/>
+
+    <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload"
+	classpath="${sdk.dir}/ant-googlecode-0.0.2.jar"/>
+
+    <target name="all" depends="debug, release"/>
+
+    <target name="debug" description="Upload sendtosd-android-debug.apk">
+
+	<gcupload 
+	    username="${gc.username}"
+	    password="${gc.password}"
+    	    projectname="sendtosd-android" 
+    	    filename="bin/sendtosd-android-debug.apk" 
+    	    targetfilename="sendtosd-android-debug.apk"
+    	    summary="Latest build (${manifest(android:versionName)}, signed by debug key)"
+    	    labels="Type-Package, OpSys-Android_1.5" />
+    
+    </target>
+    
+    <target name="release" description="Upload sendtosd-android.apk">
+
+	<gcupload 
+	    username="${gc.username}"
+	    password="${gc.password}"
+    	    projectname="sendtosd-android" 
+    	    filename="bin/sendtosd-android.apk" 
+    	    targetfilename="sendtosd-android.apk"
+    	    summary="Latest build (${manifest(android:versionName)})"
+    	    labels="Featured, Type-Package, OpSys-Android_1.5" />
+    
+    </target>
+
+</project>

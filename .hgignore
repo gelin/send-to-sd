@@ -5,4 +5,4 @@ tmp/*
 .settings/*
 local.properties
 build.properties
-
+upload.credentials.properties
