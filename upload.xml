@@ -17,22 +17,31 @@
 	    password="${gc.password}"
     	    projectname="sendtosd-android" 
     	    filename="bin/sendtosd-android-debug.apk" 
-    	    targetfilename="sendtosd-android-debug.apk"
+    	    targetfilename="sendtosd-android-debug-${manifest(android:versionName)}.apk"
     	    summary="Latest build (${manifest(android:versionName)}, signed by debug key)"
     	    labels="Type-Package, OpSys-Android_1.5" />
+
+	<copy file="bin/sendtosd-android-debug.apk"
+	    todir="/home/gelin/Dropbox/android@gelin"/>
     
     </target>
     
     <target name="release" description="Upload sendtosd-android.apk">
+
+	<copy file="bin/sendtosd-android-release.apk"
+	    tofile="bin/sendtosd-android.apk"/>
 
 	<gcupload 
 	    username="${gc.username}"
 	    password="${gc.password}"
     	    projectname="sendtosd-android" 
     	    filename="bin/sendtosd-android.apk" 
-    	    targetfilename="sendtosd-android.apk"
+    	    targetfilename="sendtosd-android-${manifest(android:versionName)}.apk"
     	    summary="Latest build (${manifest(android:versionName)})"
     	    labels="Featured, Type-Package, OpSys-Android_1.5" />
+
+	<copy file="bin/sendtosd-android-debug.apk"
+	    todir="/home/gelin/Dropbox/android@gelin"/>
     
     </target>
 
