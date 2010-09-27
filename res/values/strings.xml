@@ -3,6 +3,7 @@
     <string name="app_name">Send to SD card</string>
     <string name="sd_card">SD card</string>
     <string name="unsupported_file">Cannot send this file</string>
+    <string name="unsupported_files">Cannot send these files</string>
     <string name="copy_here">Copy here</string>
     <string name="move_here">Move here</string>
     <string name="folders">Folders</string>

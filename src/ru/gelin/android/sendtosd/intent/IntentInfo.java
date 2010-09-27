@@ -25,7 +25,7 @@ public class IntentInfo implements Constants {
     SharedPreferences preferences;
     
     /**
-     *  Creates the utils.
+     *  Creates the intent info.
      *  @param  context current context
      *  @param  intent  intent to process
      */
@@ -57,20 +57,7 @@ public class IntentInfo implements Constants {
             return new File(path);
         }
     }
-    
-    /**
-     *  Returns the filename provided with the intent as EXTRA_FILE_NAME
-     *  or the filename of the sent file.
-     */
-    public String getFileName() {
-        String fileName = intent.getStringExtra(EXTRA_FILE_NAME);
-        if (fileName == null) {
-            return getFile().getName();
-        } else {
-            return fileName;
-        }
-    }
-    
+
     /**
      *  Returns true if the intent is initial intent for the application.
      *  I.e. not modified intent for sub-activities.
@@ -78,14 +65,7 @@ public class IntentInfo implements Constants {
     public boolean isInitial() {
         return !intent.hasExtra(EXTRA_PATH);
     }
-    
-    /**
-     *  Returns the file provided with the SEND intent.
-     */
-    public IntentFile getFile() {
-        return IntentFile.getInstance(context, intent);
-    }
-    
+
     /**
      *  Returns default path. The return value can differs for different preferences. 
      */
@@ -110,7 +90,7 @@ public class IntentInfo implements Constants {
     /**
      *  Logs debug information about the intent.
      */
-    public void logIntentInfo() {
+    public void log() {
         Log.i(TAG, "intent: " + intent);
         /*
         Log.d(TAG, "data: " + intent.getData());

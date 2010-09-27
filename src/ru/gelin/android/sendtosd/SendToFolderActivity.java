@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,8 +31,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- *  Activity which displays the list of folders
- *  and allows to save the file to folder.
+ *  Base class for activities to copy/move file/files to folder.
+ *  Responses for the directory listing and traversing.
  */
 public class SendToFolderActivity extends PreferenceActivity 
         implements Constants, FileSaver, FolderChanger {
@@ -51,10 +50,6 @@ public class SendToFolderActivity extends PreferenceActivity
 
     /** Intent information */
     IntentInfo intentInfo;
-    /** File to save from intent */
-    IntentFile intentFile;
-    /** Filename to save */
-    String fileName;
     /** Current path */
     File path;
     /** Last folders preference. Saved here to remove from or add to hierarchy. */
@@ -64,33 +59,18 @@ public class SendToFolderActivity extends PreferenceActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Intent intent = getIntent();
-        if (intent == null) {
-            error(R.string.unsupported_file);
-            return;
-        }
-        intentInfo = new IntentInfo(this, intent);
-        intentInfo.logIntentInfo();
-        if (!intentInfo.validate()) {
-            error(R.string.unsupported_file);
-            return;
-        }
-        intentFile = intentInfo.getFile();
-        
-        try {
-            fileName = intentInfo.getFileName();
-        } catch (Exception e) {
-            error(R.string.unsupported_file, e);
-            return;
-        }
-        setTitle(fileName);
-        
         addPreferencesFromResource(R.xml.folder_preferences);
         
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             error(R.string.no_sd_card);
         }
+    }
+    
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        
         path = intentInfo.getPath();
         
         CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
@@ -101,7 +81,7 @@ public class SendToFolderActivity extends PreferenceActivity
             copyHerePreference.setEnabled(false);
             moveHerePreference.setEnabled(false);
         }
-        if (!intentFile.isDeletable()) {
+        if (!hasDeletableFile()) {
             getPreferenceScreen().removePreference(moveHerePreference);
         }
         
@@ -134,52 +114,45 @@ public class SendToFolderActivity extends PreferenceActivity
     }
 
     /**
-     *  Changes the current folder.
+     *  Return true if the intent has deletable file which can be moved.
+     *  This implementation always returns false.
      */
-    public void changeFolder(File folder) {
-        Intent intent = new Intent(getIntent());
-        intent.putExtra(EXTRA_PATH, folder.toString());
-        intent.putExtra(EXTRA_FILE_NAME, fileName);
-        intent.setClass(this, SendToFolderActivity.class);
-        intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivityForResult(intent, REQ_CODE_FOLDER);
+    public boolean hasDeletableFile() {
+        return false;
     }
     
     /**
-     *  Copies the file.
+     *  Changes the current folder.
+     */
+    public void changeFolder(File folder) {
+        startActivityForResult(getChangeFolderIntent(folder), REQ_CODE_FOLDER);
+    }
+    
+    /**
+     *  Creates the intent to change the folder.
+     */
+    Intent getChangeFolderIntent(File folder) {
+        Intent intent = new Intent(getIntent());
+        intent.putExtra(EXTRA_PATH, folder.toString());
+        //intent.setComponent(getIntent().getComponent());
+        intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        return intent;
+    }
+
+    /**
+     *  Saves the current folder to the list of last folders.
      */
     public void copyFile() {
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
-        try {
-            intentFile.saveAs(new File(path, getUniqueFileName()));
-        } catch (Exception e) {
-            warn(R.string.file_is_not_copied, e);
-            return;
-        }
-        complete(R.string.file_is_copied);
     }
     
     /**
-     *  Moves the file.
+     *  Saves the current folder to the list of last folders.
      */
     public void moveFile() {
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
-        try {
-            intentFile.saveAs(new File(path, getUniqueFileName()));
-        } catch (Exception e) {
-            warn(R.string.file_is_not_moved, e);
-            return;
-        }
-        try {
-            intentFile.delete();
-        } catch (Exception e) {
-            Log.w(TAG, e.toString(), e);
-            complete(R.string.file_is_not_deleted);
-            return;
-        }
-        complete(R.string.file_is_moved);
     }
     
     /**
@@ -255,7 +228,7 @@ public class SendToFolderActivity extends PreferenceActivity
      *  Otherwise the integer suffix will be added to the filename:
      *  "-1", "-2" etc...
      */
-    String getUniqueFileName() {
+    String getUniqueFileName(String fileName) {
         if (!new File(path, fileName).exists()) {
             return fileName;
         }
@@ -274,9 +247,7 @@ public class SendToFolderActivity extends PreferenceActivity
         return newName;
     }
     
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.options_menu, menu);
         return true;
     }
@@ -286,9 +257,6 @@ public class SendToFolderActivity extends PreferenceActivity
         switch (item.getItemId()) {
         case R.id.menu_new_folder:
             showNewFolderDialog();
-            break;
-        case R.id.menu_choose_file_name:
-            showChooseFileNameDialog();
             break;
         case R.id.menu_preferences:
             startActivity(new Intent(this, PreferencesActivity.class));
@@ -333,32 +301,6 @@ public class SendToFolderActivity extends PreferenceActivity
         } else {
             Toast.makeText(this, R.string.folder_not_created, Toast.LENGTH_LONG).show();
         }
-    }
-    
-    /**
-     *  Displays the Choose File Name dialog.
-     */
-    void showChooseFileNameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_file_name);
-        View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
-                (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
-        final EditText edit = (EditText)content.findViewById(R.id.edit_text);
-        edit.setText(fileName);
-        builder.setView(content);
-        builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                fileName = edit.getText().toString();
-                setTitle(fileName);
-            }
-        });
-        Dialog dialog = builder.create();
-        //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
-        Window window = dialog.getWindow();
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.show();
     }
 
     /**
