@@ -1,11 +1,7 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 
 /**
  *  Extracts some necessary information from the SEND_MULTIPLE intent.
