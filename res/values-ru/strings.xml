@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Отправка на SD карту</string>
     <string name="sd_card">SD карта</string>
+    <string name="unsupported_intent">Невозможно произвести отправку</string>
     <string name="unsupported_file">Невозможно отправить этот файл</string>
     <string name="unsupported_files">Невозможно отправить эти файлы</string>
     <string name="copy_here">Скопировать сюда</string>
