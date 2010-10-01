@@ -6,6 +6,7 @@ import java.net.URI;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 /**
  *  File for file:// URI.
@@ -17,6 +18,11 @@ public class FileFile extends StreamFile {
     
     public FileFile(Context context, Intent intent) {
         super(context, intent);
+        file = getFile();
+    }
+    
+    public FileFile(Context context, Uri uri) {
+        super(context, uri);
         file = getFile();
     }
     

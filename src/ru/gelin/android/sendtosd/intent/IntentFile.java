@@ -14,25 +14,12 @@ import android.net.Uri;
  */
 public abstract class IntentFile implements Constants {
     
-    /** The intent which contains information about the file */
-    Intent intent;
-    /** Current context */
-    Context context;
-    
     /**
-     *  Creates the file for the SEND intent.
-     */
-    IntentFile(Context context, Intent intent) {
-        this.context = context;
-        this.intent = intent;
-    }
-    
-    /**
-     *  Creates the concrete instance of the IntentFile.
+     *  Creates the concrete instance of the IntentFile from Intent.
      */
     public static IntentFile getInstance(Context context, Intent intent) {
         if (isText(intent)) {
-            return new TextFile(context, intent);
+            return new TextFile(intent);
         }
         Uri uri = getStreamUri(intent);
         String scheme = uri.getScheme();
@@ -42,6 +29,19 @@ public abstract class IntentFile implements Constants {
             return new ContentFile(context, intent);
         }
         return new StreamFile(context, intent);
+    }
+    
+    /**
+     *  Creates the concrete instance of the IntentFile from Uri.
+     */
+    public static IntentFile getInstance(Context context, Uri uri) {
+        String scheme = uri.getScheme();
+        if ("file".equals(scheme)) {
+            return new FileFile(context, uri);
+        } else if ("content".equals(scheme)) {
+            return new ContentFile(context, uri);
+        }
+        return new StreamFile(context, uri);
     }
     
     /**

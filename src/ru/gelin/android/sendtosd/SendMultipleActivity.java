@@ -23,15 +23,19 @@ public class SendMultipleActivity extends SendToFolderActivity {
             error(R.string.unsupported_files);
             return;
         }
-        SendMultipleIntentInfo intentInfo = new SendMultipleIntentInfo(this, intent);
-        this.intentInfo = intentInfo;
-        intentInfo.log();
-        if (!intentInfo.validate()) {
+        try {
+            SendMultipleIntentInfo intentInfo = new SendMultipleIntentInfo(this, intent);
+            this.intentInfo = intentInfo;
+            intentInfo.log();
+            if (!intentInfo.validate()) {
+                error(R.string.unsupported_files);
+                return;
+            }
+            intentFiles = intentInfo.getFiles();
+        } catch (Throwable e) {
             error(R.string.unsupported_files);
             return;
         }
-        intentFiles = intentInfo.getFiles();
-        
         //setTitle(fileName);   //TODO
     }
 

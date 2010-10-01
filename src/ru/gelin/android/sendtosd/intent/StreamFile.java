@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,11 +20,24 @@ import android.webkit.MimeTypeMap;
  */
 public class StreamFile extends IntentFile {
 
-    Uri uri;
+    /** Content resolver to read Uri */
+    ContentResolver contentResolver;
     
-    public StreamFile(Context context, Intent intent) {
-        super(context, intent);
+    /** Uri of the stream */
+    Uri uri;
+    /** MIME type of the stream */
+    String mimeType;
+    
+    StreamFile(Context context, Intent intent) {
+        contentResolver = context.getContentResolver();
         uri = getStreamUri(intent);
+        mimeType = intent.getType();
+    }
+    
+    StreamFile(Context context, Uri uri) {
+        contentResolver = context.getContentResolver();
+        this.uri = uri;
+        mimeType = contentResolver.getType(uri);
     }
     
     /**
@@ -70,9 +84,11 @@ public class StreamFile extends IntentFile {
         if (fileName.contains(".")) {   //has extension
             return fileName;
         }
-        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(intent.getType());
-        if (extension != null) {
-            return fileName + "." + extension;
+        if (mimeType != null) {
+            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+            if (extension != null) {
+                return fileName + "." + extension;
+            }
         }
         return fileName;
     }
@@ -81,7 +97,7 @@ public class StreamFile extends IntentFile {
      *  Returns the file as stream.
      */
     InputStream getStream() throws FileNotFoundException {
-        return context.getContentResolver().openInputStream(uri);
+        return contentResolver.openInputStream(uri);
     }
 
 }

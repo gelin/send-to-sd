@@ -28,15 +28,7 @@ public class SendIntentInfo extends IntentInfo {
         }
         return super.validate();
     }
-    
-   /**
-    *  Return true if the intent has deletable file which can be moved.
-    *  This implementation returns true if the intent file is deletable.
-    */
-   public boolean hasDeletableFile() {
-       return false;
-   }
-    
+
     /**
      *  Returns the filename provided with the intent as EXTRA_FILE_NAME
      *  or the filename of the sent file.

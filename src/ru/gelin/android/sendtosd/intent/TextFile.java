@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import android.content.Context;
 import android.content.Intent;
 
 /**
@@ -17,8 +16,15 @@ public class TextFile extends IntentFile {
 
     private static final String TEXT_FILE_NAME = "text.txt";
     
-    TextFile(Context context, Intent intent) {
-        super(context, intent);
+    /** The text content of the file */
+    String text = "";
+    
+    TextFile(Intent intent) {
+        text = intent.getStringExtra(Intent.EXTRA_TEXT);
+    }
+    
+    TextFile(String text) {
+        this.text = text;
     }
     
     /**
@@ -40,7 +46,7 @@ public class TextFile extends IntentFile {
      */
     public void saveAs(File file) throws IOException {
         Writer out = new FileWriter(file);
-        out.write(getText());
+        out.write(text);
         out.close();
     }
     
@@ -49,13 +55,6 @@ public class TextFile extends IntentFile {
      */
     public void delete() throws IOException {
         throw new IOException("text file is not deletable");
-    }
-    
-    /**
-     *  Returns the file text.
-     */
-    String getText() {
-        return intent.getStringExtra(Intent.EXTRA_TEXT);
     }
 
 }

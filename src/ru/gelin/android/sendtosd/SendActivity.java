@@ -40,18 +40,17 @@ public class SendActivity extends SendToFolderActivity
             error(R.string.unsupported_file);
             return;
         }
-        SendIntentInfo intentInfo = new SendIntentInfo(this, intent);
-        this.intentInfo = intentInfo;
-        intentInfo.log();
-        if (!intentInfo.validate()) {
-            error(R.string.unsupported_file);
-            return;
-        }
-        intentFile = intentInfo.getFile();
-        
         try {
+            SendIntentInfo intentInfo = new SendIntentInfo(this, intent);
+            this.intentInfo = intentInfo;
+            intentInfo.log();
+            if (!intentInfo.validate()) {
+                error(R.string.unsupported_file);
+                return;
+            }
+            intentFile = intentInfo.getFile();
             fileName = intentInfo.getFileName();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             error(R.string.unsupported_file, e);
             return;
         }

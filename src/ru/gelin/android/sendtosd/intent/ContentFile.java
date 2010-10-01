@@ -6,6 +6,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -32,10 +33,19 @@ public class ContentFile extends StreamFile {
     /** File which contains the content data (if can be selected from the content provider) */
     File data;
     
-    public ContentFile(Context context, Intent intent) {
+    ContentFile(Context context, Intent intent) {
         super(context, intent);
+        queryContent(uri);
+    }
+    
+    ContentFile(Context context, Uri uri) {
+        super(context, uri);
+        queryContent(uri);
+    }
+    
+    void queryContent(Uri uri) {
         try {
-            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            Cursor cursor = contentResolver.query(uri, projection, null, null, null);
             int dataIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
             if (cursor.moveToFirst()) {
                 String data = cursor.getString(dataIndex);
@@ -77,7 +87,7 @@ public class ContentFile extends StreamFile {
      *  @throws IOException if the file was not deleted
      */
     public void delete() throws IOException {
-        int result = context.getContentResolver().delete(uri, null, null);
+        int result = contentResolver.delete(uri, null, null);
         if (result <= 0) {
             throw new IOException(uri + " was not deleted");
         }
