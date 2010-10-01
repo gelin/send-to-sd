@@ -19,6 +19,7 @@
     <string name="file_is_not_moved">Cannot move the file</string>
     <string name="file_is_not_deleted">File is copied. Cannot delete the original file</string>
     <string name="files_are_copied">{0} {0,choice,0#files are|1#file is|1&lt;files are} copied{1,choice,0#|1#. {1} error has appeared.|1&lt;. {1} errors have appeared.}</string>
+    <string name="files_are_moved">{0} {0,choice,0#files are|1#file is|1&lt;files are} moved{1,choice,0#|1#. {1} file is just copied|1&lt;. {1} files are just copied}{2,choice,0#|1#. {2} error has appeared.|1&lt;. {2} errors have appeared.}</string>
     <string name="preferences">Preferences</string>
     <string name="app_preferences">Send to SD card preferences</string>
     <string name="how_to_use">How to use</string>

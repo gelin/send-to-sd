@@ -73,7 +73,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
             try {
                 file.saveAs(new File(path, getUniqueFileName(file.getName())));
             } catch (Exception e) {
-                Log.w(TAG, e);
+                Log.w(TAG, e.toString(), e);
                 errors++;
                 continue;
             }
@@ -88,7 +88,28 @@ public class SendMultipleActivity extends SendToFolderActivity {
      */
     public void moveFile() {
         super.moveFile();
-        //TODO
+        int moved = 0;
+        int copied = 0;
+        int errors = 0;
+        for (IntentFile file : intentFiles) {
+            try {
+                file.saveAs(new File(path, getUniqueFileName(file.getName())));
+            } catch (Exception e) {
+                Log.w(TAG, e.toString(), e);
+                errors++;
+                continue;
+            }
+            try {
+                file.delete();
+            } catch (Exception e) {
+                Log.w(TAG, e.toString(), e);
+                copied++;
+                continue;
+            }
+            moved++;
+        }
+        complete(MessageFormat.format(getString(R.string.files_are_moved), 
+                moved, copied, errors));
     }
 
 }
