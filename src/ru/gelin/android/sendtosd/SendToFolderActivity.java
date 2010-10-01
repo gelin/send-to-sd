@@ -352,6 +352,15 @@ public class SendToFolderActivity extends PreferenceActivity
         setResult(RESULT_OK);
         finish();
     }
+    
+    /**
+     *  Complete the action.
+     */
+    void complete(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        setResult(RESULT_OK);
+        finish();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

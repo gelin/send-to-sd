@@ -1,9 +1,13 @@
 package ru.gelin.android.sendtosd;
 
+import java.io.File;
+import java.text.MessageFormat;
+
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  *  Activity which displays the list of folders
@@ -36,7 +40,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
             error(R.string.unsupported_files);
             return;
         }
-        //setTitle(fileName);   //TODO
+        if (intentFiles == null || intentFiles.length == 0) {
+            error(R.string.no_files);
+            return;
+        }
+        setTitle(MessageFormat.format(getString(R.string.files_title), intentFiles.length));
     }
 
     /**
@@ -45,7 +53,12 @@ public class SendMultipleActivity extends SendToFolderActivity {
      *  deletable.
      */
     public boolean hasDeletableFile() {
-        return false;   //TODO
+        for (IntentFile file : intentFiles) {
+            if (file.isDeletable()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -54,7 +67,20 @@ public class SendMultipleActivity extends SendToFolderActivity {
     @Override
     public void copyFile() {
         super.copyFile();
-        //TODO
+        int copied = 0;
+        int errors = 0;
+        for (IntentFile file : intentFiles) {
+            try {
+                file.saveAs(new File(path, getUniqueFileName(file.getName())));
+            } catch (Exception e) {
+                Log.w(TAG, e);
+                errors++;
+                continue;
+            }
+            copied++;
+        }
+        complete(MessageFormat.format(getString(R.string.files_are_copied), 
+                copied, errors));
     }
     
     /**

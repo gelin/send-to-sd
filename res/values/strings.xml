@@ -2,9 +2,11 @@
 <resources>
     <string name="app_name">Send to SD card</string>
     <string name="sd_card">SD card</string>
+    <string name="files_title">{0} {0,choice,1#file|1&lt;files}</string>
     <string name="unsupported_intent">Cannot send this</string>
     <string name="unsupported_file">Cannot send this file</string>
     <string name="unsupported_files">Cannot send these files</string>
+    <string name="no_files">There are no files to send</string>
     <string name="copy_here">Copy here</string>
     <string name="move_here">Move here</string>
     <string name="folders">Folders</string>
@@ -16,6 +18,7 @@
     <string name="file_is_not_copied">Cannot copy the file</string>
     <string name="file_is_not_moved">Cannot move the file</string>
     <string name="file_is_not_deleted">File is copied. Cannot delete the original file</string>
+    <string name="files_are_copied">{0} {0,choice,0#files are|1#file is|1&lt;files are} copied{1,choice,0#|1#. {1} error has appeared.|1&lt;. {1} errors have appeared.}</string>
     <string name="preferences">Preferences</string>
     <string name="app_preferences">Send to SD card preferences</string>
     <string name="how_to_use">How to use</string>
