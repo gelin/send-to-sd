@@ -32,18 +32,23 @@ public class ContentFile extends StreamFile {
     
     /** File which contains the content data (if can be selected from the content provider) */
     File data;
+    /** Flag indicating that the Uri was queried for some additional information */
+    boolean queried = false;
     
     ContentFile(Context context, Intent intent) {
         super(context, intent);
-        queryContent(uri);
+        queryContent();
     }
     
     ContentFile(Context context, Uri uri) {
         super(context, uri);
-        queryContent(uri);
+        //queryContent();
     }
     
-    void queryContent(Uri uri) {
+    void queryContent() {
+        if (queried) {
+            return;
+        }
         try {
             Cursor cursor = contentResolver.query(uri, projection, null, null, null);
             int dataIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
@@ -56,12 +61,14 @@ public class ContentFile extends StreamFile {
             //nothing to do, we have default behaviour
             Log.w(TAG, "cannot query content", e);
         }
+        queried = true;
     }
     
     /**
      *  Makes the query to the content provider to select the file name.
      */
     public String getName() {
+        queryContent();
         if (data == null) {
             return super.getName();
         }

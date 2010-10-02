@@ -35,7 +35,13 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 error(R.string.unsupported_files);
                 return;
             }
-            intentFiles = intentInfo.getFiles();
+            IntentFiles storage = IntentFiles.getInstance();
+            if (intentInfo.isInitial()) {
+                intentFiles = intentInfo.getFiles();
+                storage.init(intentFiles);
+            } else {
+                intentFiles = storage.getFiles();
+            }
         } catch (Throwable e) {
             error(R.string.unsupported_files);
             return;
