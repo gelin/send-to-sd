@@ -44,4 +44,5 @@
     <string name="folder_not_created">Cannot create the folder</string>
     <string name="choose_file_name_menu">Choose file name</string>
     <string name="choose_file_name">Choose file name</string>
+    <string name="please_wait">Please wait...</string>
 </resources>

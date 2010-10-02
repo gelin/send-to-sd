@@ -44,4 +44,5 @@
     <string name="folder_not_created">Не удалось создать папку</string>
     <string name="choose_file_name_menu">Указать имя файла</string>
     <string name="choose_file_name">Укажите имя файла</string>
+    <string name="please_wait">Подождите, пожалуйста...</string>
 </resources>
