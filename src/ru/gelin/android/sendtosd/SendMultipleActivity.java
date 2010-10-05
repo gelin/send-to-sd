@@ -5,10 +5,7 @@ import java.text.MessageFormat;
 
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -38,6 +35,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 error(R.string.unsupported_files);
                 return;
             }
+            onPostCreateIntentInfo();
             
             final IntentFiles storage = IntentFiles.getInstance();
             if (intentInfo.isInitial()) {
@@ -49,14 +47,10 @@ public class SendMultipleActivity extends SendToFolderActivity {
                         intentFiles = intentInfo.getFiles();
                         storage.init(intentFiles);
                     }
-                }, new OnDismissListener() {
+                }, new Runnable() {
                     @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if (intentFiles == null || intentFiles.length == 0) {
-                            error(R.string.no_files);
-                            return;
-                        }
-                        setTitle(MessageFormat.format(getString(R.string.files_title), intentFiles.length));
+                    public void run() {
+                        onPostLoadFileInfo();
                     }
                 });
                 return;
@@ -68,11 +62,17 @@ public class SendMultipleActivity extends SendToFolderActivity {
             error(R.string.unsupported_files);
             return;
         }
+        onPostLoadFileInfo();
+    }
+    
+    @Override
+    protected void onPostLoadFileInfo() {
         if (intentFiles == null || intentFiles.length == 0) {
             error(R.string.no_files);
             return;
         }
         setTitle(MessageFormat.format(getString(R.string.files_title), intentFiles.length));
+        super.onPostLoadFileInfo();
     }
 
     /**
@@ -138,26 +138,6 @@ public class SendMultipleActivity extends SendToFolderActivity {
         }
         complete(MessageFormat.format(getString(R.string.files_are_moved), 
                 moved, copied, errors));
-    }
-    
-    /**
-     *  Runs the Runnable in the separated thread, closes progress dialog on finish.
-     *  @param  dialogMessageId ID of the message to display on dialog
-     *  @param  runnable    action to run in the thread
-     *  @param  onStop  listener to call on thread stop and dialog close
-     */
-    void runWithProgress(int dialogMessageId, final Runnable runnable,
-            OnDismissListener onStop) {
-        final ProgressDialog progress = ProgressDialog.show(
-                this, "", getString(dialogMessageId), true);
-        progress.setOnDismissListener(onStop);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                runnable.run();
-                progress.dismiss();
-            }
-        }).start();
     }
 
 }

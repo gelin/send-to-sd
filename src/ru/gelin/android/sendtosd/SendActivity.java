@@ -48,15 +48,26 @@ public class SendActivity extends SendToFolderActivity
                 error(R.string.unsupported_file);
                 return;
             }
+            onPostCreateIntentInfo();
             intentFile = intentInfo.getFile();
             fileName = intentInfo.getFileName();
         } catch (Throwable e) {
             error(R.string.unsupported_file, e);
             return;
         }
-        setTitle(fileName);
+        onPostLoadFileInfo();
     }
 
+    @Override
+    protected void onPostLoadFileInfo() {
+        if (intentFile == null) {
+            error(R.string.no_files);
+            return;
+        }
+        setTitle(fileName);
+        super.onPostLoadFileInfo();
+    }
+    
     /**
      *  Return true if the intent has deletable file which can be moved.
      *  This implementation returns true if the sending file is deletable.

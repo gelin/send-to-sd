@@ -10,10 +10,12 @@ import java.util.List;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -61,18 +63,29 @@ public class SendToFolderActivity extends PreferenceActivity
         
         addPreferencesFromResource(R.xml.folder_preferences);
         
+        lastFolders = findPreference(PREF_LAST_FOLDERS);
+        
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             error(R.string.no_sd_card);
         }
     }
     
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        
+    /**
+     *  Called when intent information is created.
+     *  Loads list of folders.
+     */
+    protected void onPostCreateIntentInfo() {
         path = intentInfo.getPath();
-        
+        listFolders();
+    }
+    
+    /**
+     *  Called when all information about files is loaded.
+     *  Disables Copy/Move Here for non-writable folders.
+     *  Hides Move Here for non-deletable files.
+     */
+    protected void onPostLoadFileInfo() {
         CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
         MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
         copyHerePreference.setFileSaver(this);
@@ -84,10 +97,6 @@ public class SendToFolderActivity extends PreferenceActivity
         if (!hasDeletableFile()) {
             getPreferenceScreen().removePreference(moveHerePreference);
         }
-        
-        lastFolders = findPreference(PREF_LAST_FOLDERS);
-        
-        listFolders();
     }
     
     @Override
@@ -369,6 +378,35 @@ public class SendToFolderActivity extends PreferenceActivity
             setResult(RESULT_OK);
             finish();
         }
+    }
+
+    /**
+     *  Runs the first Runnable in the separated thread, 
+     *  runs the second Runnable when the first finishes and the dialog closes.
+     *  @param  dialogMessageId ID of the message to display on dialog
+     *  @param  thread  action to run in the thread
+     *  @param  onStop  action to call on thread stop and dialog close
+     */
+    protected void runWithProgress(int dialogMessageId, final Runnable thread, 
+            final Runnable onStop) {
+        final ProgressDialog progress = ProgressDialog.show(
+                this, "", getString(dialogMessageId), true);
+        if (onStop != null) {
+            progress.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    onStop.run();
+                }
+            });
+        }
+        progress.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                thread.run();
+                progress.dismiss();
+            }
+        }).start();
     }
 
 }
