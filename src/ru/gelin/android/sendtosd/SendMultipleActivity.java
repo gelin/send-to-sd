@@ -40,19 +40,15 @@ public class SendMultipleActivity extends SendToFolderActivity {
             final IntentFiles storage = IntentFiles.getInstance();
             if (intentInfo.isInitial()) {
 
-                runWithProgress(R.string.please_wait, 
-                        new Runnable() {
+                //initializing in thread
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         intentFiles = intentInfo.getFiles();
                         storage.init(intentFiles);
-                    }
-                }, new Runnable() {
-                    @Override
-                    public void run() {
                         onPostLoadFileInfo();
                     }
-                });
+                }).run();
                 return;
                 
             } else {

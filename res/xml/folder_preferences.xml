@@ -4,12 +4,14 @@
     <ru.gelin.android.sendtosd.CopyHerePreference
             android:key="copy_here"
             android:persistent="false"
-            android:title="@string/copy_here"/>
+            android:title="@string/copy_here"
+            android:enabled="false"/>
             
     <ru.gelin.android.sendtosd.MoveHerePreference
             android:key="move_here"
             android:persistent="false"
-            android:title="@string/move_here"/>
+            android:title="@string/move_here"
+            android:enabled="false"/>
     
     <PreferenceCategory android:key="last_folders"
             android:persistent="false"

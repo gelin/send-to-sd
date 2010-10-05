@@ -90,9 +90,9 @@ public class SendToFolderActivity extends PreferenceActivity
         MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
         copyHerePreference.setFileSaver(this);
         moveHerePreference.setFileSaver(this);
-        if (!path.canWrite()) {
-            copyHerePreference.setEnabled(false);
-            moveHerePreference.setEnabled(false);
+        if (path.canWrite()) {
+            copyHerePreference.setEnabled(true);
+            moveHerePreference.setEnabled(true);
         }
         if (!hasDeletableFile()) {
             getPreferenceScreen().removePreference(moveHerePreference);
