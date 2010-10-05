@@ -25,19 +25,15 @@ public class StreamFile extends IntentFile {
     
     /** Uri of the stream */
     Uri uri;
-    /** MIME type of the stream */
-    String mimeType;
     
     StreamFile(Context context, Intent intent) {
         contentResolver = context.getContentResolver();
         uri = getStreamUri(intent);
-        mimeType = intent.getType();
     }
     
     StreamFile(Context context, Uri uri) {
         contentResolver = context.getContentResolver();
         this.uri = uri;
-        mimeType = contentResolver.getType(uri);
     }
     
     /**
@@ -84,6 +80,7 @@ public class StreamFile extends IntentFile {
         if (fileName.contains(".")) {   //has extension
             return fileName;
         }
+        String mimeType = contentResolver.getType(uri);
         if (mimeType != null) {
             String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
             if (extension != null) {
