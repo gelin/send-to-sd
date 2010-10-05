@@ -85,26 +85,43 @@ public class SendMultipleActivity extends SendToFolderActivity {
         return false;
     }
 
+    static class ResultHandler {
+        int moved = 0;
+        int copied = 0;
+        int errors = 0;
+    }
+    
     /**
      *  Copies the files.
      */
     @Override
     public void copyFile() {
         saveLastFolder();
-        int copied = 0;
-        int errors = 0;
-        for (IntentFile file : intentFiles) {
-            try {
-                file.saveAs(new File(path, getUniqueFileName(file.getName())));
-            } catch (Exception e) {
-                Log.w(TAG, e.toString(), e);
-                errors++;
-                continue;
-            }
-            copied++;
-        }
-        complete(MessageFormat.format(getString(R.string.files_are_copied), 
-                copied, errors));
+        final ResultHandler result = new ResultHandler();
+        runWithProgress(R.string.copying,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (IntentFile file : intentFiles) {
+                            try {
+                                file.saveAs(new File(path, getUniqueFileName(file.getName())));
+                            } catch (Exception e) {
+                                Log.w(TAG, e.toString(), e);
+                                result.errors++;
+                                continue;
+                            }
+                            result.copied++;
+                        }
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        complete(MessageFormat.format(
+                                getString(R.string.files_are_copied), 
+                                result.copied, result.errors));
+                    }
+                });
     }
     
     /**
@@ -112,28 +129,38 @@ public class SendMultipleActivity extends SendToFolderActivity {
      */
     public void moveFile() {
         saveLastFolder();
-        int moved = 0;
-        int copied = 0;
-        int errors = 0;
-        for (IntentFile file : intentFiles) {
-            try {
-                file.saveAs(new File(path, getUniqueFileName(file.getName())));
-            } catch (Exception e) {
-                Log.w(TAG, e.toString(), e);
-                errors++;
-                continue;
-            }
-            try {
-                file.delete();
-            } catch (Exception e) {
-                Log.w(TAG, e.toString(), e);
-                copied++;
-                continue;
-            }
-            moved++;
-        }
-        complete(MessageFormat.format(getString(R.string.files_are_moved), 
-                moved, copied, errors));
+        final ResultHandler result = new ResultHandler();
+        runWithProgress(R.string.moving,
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (IntentFile file : intentFiles) {
+                            try {
+                                file.saveAs(new File(path, getUniqueFileName(file.getName())));
+                            } catch (Exception e) {
+                                Log.w(TAG, e.toString(), e);
+                                result.errors++;
+                                continue;
+                            }
+                            try {
+                                file.delete();
+                            } catch (Exception e) {
+                                Log.w(TAG, e.toString(), e);
+                                result.copied++;
+                                continue;
+                            }
+                            result.moved++;
+                        }
+                    }
+                },
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        complete(MessageFormat.format(
+                                getString(R.string.files_are_moved), 
+                                result.moved, result.copied, result.errors));
+                    }
+                });
     }
 
 }
