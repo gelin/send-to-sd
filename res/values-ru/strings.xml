@@ -45,4 +45,6 @@
     <string name="choose_file_name_menu">Указать имя файла</string>
     <string name="choose_file_name">Укажите имя файла</string>
     <string name="please_wait">Подождите, пожалуйста...</string>
+    <string name="copying">Идет копирование...</string>
+    <string name="moving">Идет перемещение...</string>
 </resources>

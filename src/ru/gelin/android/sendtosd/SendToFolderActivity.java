@@ -36,7 +36,7 @@ import android.widget.Toast;
  *  Base class for activities to copy/move file/files to folder.
  *  Responses for the directory listing and traversing.
  */
-public class SendToFolderActivity extends PreferenceActivity 
+public abstract class SendToFolderActivity extends PreferenceActivity 
         implements Constants, FileSaver, FolderChanger {
     
     /** "Copy here" preference key */
@@ -151,18 +151,14 @@ public class SendToFolderActivity extends PreferenceActivity
     /**
      *  Saves the current folder to the list of last folders.
      */
-    public void copyFile() {
+    public void saveLastFolder() {
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(path);
     }
     
-    /**
-     *  Saves the current folder to the list of last folders.
-     */
-    public void moveFile() {
-        LastFolders lastFolders = LastFolders.getInstance(this);
-        lastFolders.put(path);
-    }
+    public abstract void copyFile();
+    
+    public abstract void moveFile();
     
     /**
      *  Fills the list of last folders.

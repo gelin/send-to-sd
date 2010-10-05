@@ -90,7 +90,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
      */
     @Override
     public void copyFile() {
-        super.copyFile();
+        saveLastFolder();
         int copied = 0;
         int errors = 0;
         for (IntentFile file : intentFiles) {
@@ -111,7 +111,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
      *  Moves the files.
      */
     public void moveFile() {
-        super.moveFile();
+        saveLastFolder();
         int moved = 0;
         int copied = 0;
         int errors = 0;

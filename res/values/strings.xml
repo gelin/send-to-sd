@@ -45,4 +45,6 @@
     <string name="choose_file_name_menu">Choose file name</string>
     <string name="choose_file_name">Choose file name</string>
     <string name="please_wait">Please wait...</string>
+    <string name="copying">Copying...</string>
+    <string name="moving">Moving...</string>
 </resources>
