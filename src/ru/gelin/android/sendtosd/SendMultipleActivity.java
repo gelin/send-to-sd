@@ -3,6 +3,7 @@ package ru.gelin.android.sendtosd;
 import java.io.File;
 import java.text.MessageFormat;
 
+import ru.gelin.android.i18n.PluralForms;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
 import android.content.Intent;
@@ -69,7 +70,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
             error(R.string.no_files);
             return;
         }
-        setTitle(MessageFormat.format(getString(R.string.files_title), intentFiles.length));
+        setTitle(MessageFormat.format(getString(R.string.files_title), 
+                intentFiles.length, 
+                PluralForms.getInstance().getForm(intentFiles.length)));
         super.onPostLoadFileInfo();
     }
 
@@ -119,9 +122,13 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 new Runnable() {
                     @Override
                     public void run() {
+                        PluralForms plurals = PluralForms.getInstance();
                         complete(MessageFormat.format(
                                 getString(R.string.files_are_copied), 
-                                result.copied, result.errors));
+                                result.copied, plurals.getForm(result.copied),
+                                result.copied, plurals.getForm(result.copied)
+                                //result.errors, plurals.getForm(result.errors)
+                                ));
                     }
                 });
     }
