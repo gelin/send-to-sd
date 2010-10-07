@@ -39,18 +39,20 @@ public class SendMultipleActivity extends SendToFolderActivity {
             
             final IntentFiles storage = IntentFiles.getInstance();
             if (intentInfo.isInitial()) {
-
-                //initializing in thread
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        intentFiles = intentInfo.getFiles();
-                        storage.init(intentFiles);
-                        onPostLoadFileInfo();
-                    }
-                }).run();
+                runThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            intentFiles = intentInfo.getFiles();
+                            storage.init(intentFiles);
+                        }
+                    },
+                    new Runnable() {
+                        public void run() {
+                            onPostLoadFileInfo();
+                        }
+                    });
                 return;
-                
             } else {
                 intentFiles = storage.getFiles();
             }
@@ -131,36 +133,36 @@ public class SendMultipleActivity extends SendToFolderActivity {
         saveLastFolder();
         final ResultHandler result = new ResultHandler();
         runWithProgress(R.string.moving,
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        for (IntentFile file : intentFiles) {
-                            try {
-                                file.saveAs(new File(path, getUniqueFileName(file.getName())));
-                            } catch (Exception e) {
-                                Log.w(TAG, e.toString(), e);
-                                result.errors++;
-                                continue;
-                            }
-                            try {
-                                file.delete();
-                            } catch (Exception e) {
-                                Log.w(TAG, e.toString(), e);
-                                result.copied++;
-                                continue;
-                            }
-                            result.moved++;
+            new Runnable() {
+                @Override
+                public void run() {
+                    for (IntentFile file : intentFiles) {
+                        try {
+                            file.saveAs(new File(path, getUniqueFileName(file.getName())));
+                        } catch (Exception e) {
+                            Log.w(TAG, e.toString(), e);
+                            result.errors++;
+                            continue;
                         }
+                        try {
+                            file.delete();
+                        } catch (Exception e) {
+                            Log.w(TAG, e.toString(), e);
+                            result.copied++;
+                            continue;
+                        }
+                        result.moved++;
                     }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        complete(MessageFormat.format(
-                                getString(R.string.files_are_moved), 
-                                result.moved, result.copied, result.errors));
-                    }
-                });
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    complete(MessageFormat.format(
+                            getString(R.string.files_are_moved), 
+                            result.moved, result.copied, result.errors));
+                }
+            });
     }
 
 }

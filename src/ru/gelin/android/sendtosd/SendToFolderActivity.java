@@ -15,7 +15,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
-import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -378,6 +377,24 @@ public abstract class SendToFolderActivity extends PreferenceActivity
 
     /**
      *  Runs the first Runnable in the separated thread, 
+     *  runs the second Runnable when the first finished.
+     *  @param  thread  action to run in the thread
+     *  @param  onStop  action to call after the first thread stop in UI thread
+     */
+    protected void runThread(final Runnable thread, final Runnable onStop) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                thread.run();
+                if (onStop != null) {
+                    runOnUiThread(onStop);
+                }
+            }
+        }).start();
+    }
+    
+    /**
+     *  Runs the first Runnable in the separated thread, 
      *  runs the second Runnable when the first finishes and the dialog closes.
      *  @param  dialogMessageId ID of the message to display on dialog
      *  @param  thread  action to run in the thread
@@ -387,22 +404,16 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             final Runnable onStop) {
         final ProgressDialog progress = ProgressDialog.show(
                 this, "", getString(dialogMessageId), true);
-        if (onStop != null) {
-            progress.setOnDismissListener(new OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    onStop.run();
-                }
-            });
-        }
         progress.show();
-        new Thread(new Runnable() {
+        runThread(thread, new Runnable() {
             @Override
             public void run() {
-                thread.run();
                 progress.dismiss();
+                if (onStop != null) {
+                    onStop.run();
+                }
             }
-        }).start();
+        });
     }
 
 }

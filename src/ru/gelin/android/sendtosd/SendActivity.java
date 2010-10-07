@@ -138,42 +138,42 @@ public class SendActivity extends SendToFolderActivity
         saveLastFolder();
         final ResultHandler result = new ResultHandler();
         runWithProgress(R.string.moving, 
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            intentFile.saveAs(new File(path, getUniqueFileName(fileName)));
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.result = Result.ERROR;
-                            return;
-                        }
-                        try {
-                            intentFile.delete();
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.result = Result.COPIED;
-                            return;
-                        }
-                        result.result = Result.MOVED;
+            new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        intentFile.saveAs(new File(path, getUniqueFileName(fileName)));
+                    } catch (Exception e) {
+                        Log.w(TAG, e.toString(), e);
+                        result.result = Result.ERROR;
+                        return;
                     }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (result.result) {
-                        case MOVED:
-                            complete(R.string.file_is_moved);
-                            break;
-                        case COPIED:
-                            complete(R.string.file_is_not_deleted);
-                            break;
-                        case ERROR:
-                            warn(R.string.file_is_not_moved);
-                            break;
-                        }
+                    try {
+                        intentFile.delete();
+                    } catch (Exception e) {
+                        Log.w(TAG, e.toString(), e);
+                        result.result = Result.COPIED;
+                        return;
                     }
-                });
+                    result.result = Result.MOVED;
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    switch (result.result) {
+                    case MOVED:
+                        complete(R.string.file_is_moved);
+                        break;
+                    case COPIED:
+                        complete(R.string.file_is_not_deleted);
+                        break;
+                    case ERROR:
+                        warn(R.string.file_is_not_moved);
+                        break;
+                    }
+                }
+            });
     }
 
     @Override
