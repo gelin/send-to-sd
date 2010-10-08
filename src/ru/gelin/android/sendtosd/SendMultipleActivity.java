@@ -123,12 +123,17 @@ public class SendMultipleActivity extends SendToFolderActivity {
                     @Override
                     public void run() {
                         PluralForms plurals = PluralForms.getInstance();
-                        complete(MessageFormat.format(
-                                getString(R.string.files_are_copied), 
-                                result.copied, plurals.getForm(result.copied),
-                                result.copied, plurals.getForm(result.copied)
-                                //result.errors, plurals.getForm(result.errors)
-                                ));
+                        StringBuilder message = new StringBuilder();
+                        message.append(MessageFormat.format(
+                                getString(R.string.files_are_copied),
+                                result.copied, plurals.getForm(result.copied)));
+                        if (result.errors > 0) {
+                            message.append('\n');
+                            message.append(MessageFormat.format(
+                                    getString(R.string.errors_appeared),
+                                    result.errors, plurals.getForm(result.errors)));
+                        }
+                        complete(message.toString());
                     }
                 });
     }
@@ -165,9 +170,24 @@ public class SendMultipleActivity extends SendToFolderActivity {
             new Runnable() {
                 @Override
                 public void run() {
-                    complete(MessageFormat.format(
-                            getString(R.string.files_are_moved), 
-                            result.moved, result.copied, result.errors));
+                    PluralForms plurals = PluralForms.getInstance();
+                    StringBuilder message = new StringBuilder();
+                    message.append(MessageFormat.format(
+                            getString(R.string.files_are_moved),
+                            result.moved, plurals.getForm(result.moved)));
+                    if (result.copied > 0) {
+                        message.append('\n');
+                        message.append(MessageFormat.format(
+                                getString(R.string.files_are_only_copied),
+                                result.copied, plurals.getForm(result.copied)));
+                    }
+                    if (result.errors > 0) {
+                        message.append('\n');
+                        message.append(MessageFormat.format(
+                                getString(R.string.errors_appeared),
+                                result.errors, plurals.getForm(result.errors)));
+                    }
+                    complete(message.toString());
                 }
             });
     }
