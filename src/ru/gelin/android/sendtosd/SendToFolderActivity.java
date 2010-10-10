@@ -48,13 +48,19 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     public static final String PREF_FOLDERS = "folders";
     /** Request code for directory traversing */
     public static final int REQ_CODE_FOLDER = 0;
-
+    /** New Folder dialog ID */
+    static final int NEW_FOLDER_DIALOG = 0;
+    /** Progress dialog ID */
+    static final int PROGRESS_DIALOG = 1;
+    
     /** Intent information */
     IntentInfo intentInfo;
     /** Current path */
     File path;
     /** Last folders preference. Saved here to remove from or add to hierarchy. */
     Preference lastFolders;
+    /** Message ID for the progress dialog */
+    int progressMessage = 0;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +117,58 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             if (existedLastFolders != null) {
                 getPreferenceScreen().removePreference(lastFolders);
             }
+        }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_new_folder:
+            showDialog(NEW_FOLDER_DIALOG);
+            break;
+        case R.id.menu_preferences:
+            startActivity(new Intent(this, PreferencesActivity.class));
+            break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case NEW_FOLDER_DIALOG: {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.new_folder);
+            View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
+                    (ViewGroup)findViewById(R.id.edit_text_dialog_root));
+            final EditText edit = (EditText)content.findViewById(R.id.edit_text);
+            builder.setView(content);
+            builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    createFolder(edit.getText().toString());
+                }
+            });
+            Dialog dialog = builder.create();
+            //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
+            Window window = dialog.getWindow();
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            return dialog;
+        }
+        case PROGRESS_DIALOG: {
+            ProgressDialog progress = new ProgressDialog(this);
+            progress.setMessage(getString(progressMessage));
+            return progress;
+        }
+        default:
+            return null;
         }
     }
     
@@ -251,47 +309,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         return newName;
     }
     
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menu_new_folder:
-            showNewFolderDialog();
-            break;
-        case R.id.menu_preferences:
-            startActivity(new Intent(this, PreferencesActivity.class));
-            break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
-    /**
-     *  Displays the New Folder dialog.
-     */
-    void showNewFolderDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.new_folder);
-        View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
-                (ViewGroup)findViewById(R.id.edit_text_dialog_root));
-        final EditText edit = (EditText)content.findViewById(R.id.edit_text);
-        builder.setView(content);
-        builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                createFolder(edit.getText().toString());
-            }
-        });
-        Dialog dialog = builder.create();
-        //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
-        Window window = dialog.getWindow();
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.show();
-    }
+
     
     /**
      *  Creates the new folder.
@@ -402,13 +420,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     protected void runWithProgress(int dialogMessageId, final Runnable thread, 
             final Runnable onStop) {
-        final ProgressDialog progress = ProgressDialog.show(
-                this, "", getString(dialogMessageId), true);
-        progress.show();
+        progressMessage = dialogMessageId;
+        showDialog(PROGRESS_DIALOG);
         runThread(thread, new Runnable() {
             @Override
             public void run() {
-                progress.dismiss();
+                removeDialog(PROGRESS_DIALOG);
                 if (onStop != null) {
                     onStop.run();
                 }

@@ -25,6 +25,9 @@ import android.widget.EditText;
  */
 public class SendActivity extends SendToFolderActivity
         implements FileSaver {
+
+    /** Choose File Name dialog ID */
+    static final int FILE_NAME_DIALOG = 2; 
     
     /** File to save from intent */
     IntentFile intentFile;
@@ -67,7 +70,52 @@ public class SendActivity extends SendToFolderActivity
         setTitle(fileName);
         super.onPostLoadFileInfo();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.send_options_menu, menu);
+        return true;
+    }
     
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_choose_file_name:
+            showDialog(FILE_NAME_DIALOG);
+            break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case FILE_NAME_DIALOG:
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.choose_file_name);
+            View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
+                    (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
+            final EditText edit = (EditText)content.findViewById(R.id.edit_text);
+            edit.setText(fileName);
+            builder.setView(content);
+            builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    fileName = edit.getText().toString();
+                    setTitle(fileName);
+                }
+            });
+            Dialog dialog = builder.create();
+            //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
+            Window window = dialog.getWindow();
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            return dialog;
+        default:
+            return super.onCreateDialog(id);
+        }
+    }
+
     /**
      *  Return true if the intent has deletable file which can be moved.
      *  This implementation returns true if the sending file is deletable.
@@ -174,48 +222,6 @@ public class SendActivity extends SendToFolderActivity
                     }
                 }
             });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.send_options_menu, menu);
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.menu_choose_file_name:
-            showChooseFileNameDialog();
-            break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     *  Displays the Choose File Name dialog.
-     */
-    void showChooseFileNameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choose_file_name);
-        View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
-                (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
-        final EditText edit = (EditText)content.findViewById(R.id.edit_text);
-        edit.setText(fileName);
-        builder.setView(content);
-        builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                fileName = edit.getText().toString();
-                setTitle(fileName);
-            }
-        });
-        Dialog dialog = builder.create();
-        //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
-        Window window = dialog.getWindow();
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.show();
     }
 
 }
