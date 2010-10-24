@@ -5,9 +5,8 @@ import java.text.MessageFormat;
 
 import ru.gelin.android.i18n.PluralForms;
 import ru.gelin.android.sendtosd.intent.IntentFile;
+import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -20,52 +19,25 @@ public class SendMultipleActivity extends SendToFolderActivity {
     IntentFile[] intentFiles;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        Intent intent = getIntent();
-        if (intent == null) {
-            error(R.string.unsupported_files);
-            return;
-        }
-        try {
-            final SendMultipleIntentInfo intentInfo = new SendMultipleIntentInfo(this, intent);
-            this.intentInfo = intentInfo;
-            intentInfo.log();
-            if (!intentInfo.validate()) {
-                error(R.string.unsupported_files);
-                return;
-            }
-            onPostCreateIntentInfo();
-            
-            final IntentFiles storage = IntentFiles.getInstance();
-            if (intentInfo.isInitial()) {
-                runThread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            intentFiles = intentInfo.getFiles();
-                            storage.init(intentFiles);
-                        }
-                    },
-                    new Runnable() {
-                        public void run() {
-                            onPostLoadFileInfo();
-                        }
-                    });
-                return;
-            } else {
-                intentFiles = storage.getFiles();
-            }
-        } catch (Throwable e) {
-            error(R.string.unsupported_files);
-            return;
-        }
-        onPostLoadFileInfo();
+    protected IntentInfo getIntentInfo() {
+        return new SendMultipleIntentInfo(this, getIntent());
     }
     
     @Override
-    protected void onPostLoadFileInfo() {
+    protected void onInit() {
+        super.onInit();
+        IntentFiles storage = IntentFiles.getInstance();
+        if (intentInfo.isInitial()) {
+            intentFiles = ((SendMultipleIntentInfo)intentInfo).getFiles();
+            storage.init(intentFiles);
+        } else {
+            intentFiles = storage.getFiles();
+        }
+    }
+    
+    @Override
+    protected void onPostInit() {
+        super.onPostInit();
         if (intentFiles == null || intentFiles.length == 0) {
             error(R.string.no_files);
             return;
@@ -73,7 +45,6 @@ public class SendMultipleActivity extends SendToFolderActivity {
         setTitle(MessageFormat.format(getString(R.string.files_title), 
                 intentFiles.length, 
                 PluralForms.getInstance().getForm(intentFiles.length)));
-        super.onPostLoadFileInfo();
     }
 
     /**

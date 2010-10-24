@@ -3,6 +3,7 @@ package ru.gelin.android.sendtosd;
 import java.io.File;
 
 import ru.gelin.android.sendtosd.intent.IntentFile;
+import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendIntentInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,38 +38,24 @@ public class SendActivity extends SendToFolderActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        Intent intent = getIntent();
-        if (intent == null) {
-            error(R.string.unsupported_file);
-            return;
-        }
         try {
-            SendIntentInfo intentInfo = new SendIntentInfo(this, intent);
-            this.intentInfo = intentInfo;
-            intentInfo.log();
-            if (!intentInfo.validate()) {
-                error(R.string.unsupported_file);
-                return;
-            }
-            onPostCreateIntentInfo();
-            intentFile = intentInfo.getFile();
-            fileName = intentInfo.getFileName();
+            SendIntentInfo sendIntentInfo = (SendIntentInfo)this.intentInfo;
+            intentFile = sendIntentInfo.getFile();
+            fileName = sendIntentInfo.getFileName();
         } catch (Throwable e) {
             error(R.string.unsupported_file, e);
             return;
         }
-        onPostLoadFileInfo();
-    }
-
-    @Override
-    protected void onPostLoadFileInfo() {
         if (intentFile == null) {
             error(R.string.no_files);
             return;
         }
         setTitle(fileName);
-        super.onPostLoadFileInfo();
+    }
+    
+    @Override
+    protected IntentInfo getIntentInfo() {
+        return new SendIntentInfo(this, getIntent());
     }
 
     @Override

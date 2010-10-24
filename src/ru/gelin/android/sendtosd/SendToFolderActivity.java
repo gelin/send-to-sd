@@ -3,6 +3,7 @@ package ru.gelin.android.sendtosd;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -61,36 +62,73 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     Preference lastFolders;
     /** Message ID for the progress dialog */
     int progressMessage = 0;
+    /** List of current subfolders */
+    List<File> folders;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);  //TODO how?
         addPreferencesFromResource(R.xml.folder_preferences);
-        
         lastFolders = findPreference(PREF_LAST_FOLDERS);
-        
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             error(R.string.no_sd_card);
+            return;
+        }
+        if (getIntent() == null) {
+            error(R.string.unsupported_intent);
+            return;
+        }
+        try {
+            this.intentInfo = getIntentInfo();
+            intentInfo.log();
+            if (!intentInfo.validate()) {
+                error(R.string.unsupported_intent);
+                return;
+            }
+            path = intentInfo.getPath();
+            setProgressBarIndeterminateVisibility(true);
+            runThread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        onInit();
+                    }
+                },
+                new Runnable() {
+                    public void run() {
+                        setProgressBarIndeterminateVisibility(false);
+                        onPostInit();
+                    }
+                });
+        } catch (Throwable e) {
+            error(R.string.unsupported_intent, e);
+            return;
         }
     }
     
     /**
-     *  Called when intent information is created.
-     *  Loads list of folders.
+     *  Creates IntentInfo.
      */
-    protected void onPostCreateIntentInfo() {
-        path = intentInfo.getPath();
-        listFolders();
+    abstract protected IntentInfo getIntentInfo();
+    
+    /**
+     *  The method is called in a separate thread during the activity creation.
+     *  Avoid UI changes here!
+     */
+    protected void onInit() {
+        this.folders = getFolders(this.path);
     }
     
     /**
-     *  Called when all information about files is loaded.
-     *  Disables Copy/Move Here for non-writable folders.
+     *  The method is called in the UI thread when {@link #onInit} finishes.
+     *  Fills folders list.
+     *  Enables Copy/Move Here for writable folders.
      *  Hides Move Here for non-deletable files.
      */
-    protected void onPostLoadFileInfo() {
+    protected void onPostInit() {
+        fillFolders();
         CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
         MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
         copyHerePreference.setFileSaver(this);
@@ -103,7 +141,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             getPreferenceScreen().removePreference(moveHerePreference);
         }
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -251,23 +289,17 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     }
     
     /**
-     *  Fills the list of subfolders.
+     *  Makes the sorted list of this folder subfolders.
      */
-    void listFolders() {
-        PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
-        folders.removeAll();
-        if (!"/".equals(path.getAbsolutePath())) {
-            Preference upFolder = new FolderPreference(this, path.getParentFile(), this);
-            upFolder.setTitle("..");
-            folders.addPreference(upFolder);
-        }
+    static List<File> getFolders(File path) {
+        List<File> result = new ArrayList<File>();
         File[] subFolders = path.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
                 return pathname.isDirectory();
             }
         });
         if (subFolders == null) {
-            return;
+            return result;
         }
         List<File> sortedFolders = Arrays.asList(subFolders);
         Collections.sort(sortedFolders);
@@ -278,9 +310,50 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             } catch (IOException e) {
                 folder = subFolder;
             }
-            Preference folderPref = new FolderPreference(this, folder, this);
-            folders.addPreference(folderPref);
+            result.add(folder);
         }
+        return result;
+    }
+    
+    /**
+     *  Fills the list of subfolders.
+     */
+    void fillFolders() {
+        PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
+        folders.removeAll();
+        if (!"/".equals(path.getAbsolutePath())) {
+            Preference upFolder = new FolderPreference(this, path.getParentFile(), this);
+            upFolder.setTitle("..");
+            folders.addPreference(upFolder);
+        }
+        if (this.folders != null) {
+            for (File folder : this.folders) {
+                Preference folderPref = new FolderPreference(this, folder, this);
+                folders.addPreference(folderPref);
+            }
+        }
+    }
+    
+    /**
+     *  Runs getting of the folders list in a separate thread.
+     *  After updates the list of folders.
+     */
+    void listFolders() {
+        setProgressBarIndeterminateVisibility(true);
+        runThread(
+            new Runnable() {
+                @Override
+                public void run() {
+                    folders = getFolders(path);
+                }
+            },
+            new Runnable() {
+                @Override
+                public void run() {
+                    setProgressBarIndeterminateVisibility(false);
+                    fillFolders();
+                }
+            });
     }
     
     /**
