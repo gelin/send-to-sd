@@ -1,9 +1,9 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.io.File;
 import java.io.IOException;
 
 import ru.gelin.android.sendtosd.Constants;
+import ru.gelin.android.sendtosd.File;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.net.Uri;
 /**
  *  A file provided with the intent to be saved on SD card.
  */
-public abstract class IntentFile implements Constants {
+public abstract class IntentFile implements Constants, File {
     
     /**
      *  Creates the concrete instance of the IntentFile from Intent.
@@ -50,6 +50,12 @@ public abstract class IntentFile implements Constants {
     abstract public String getName();
     
     /**
+     *  Returns the file size, in bytes.
+     *  Can return {@link Progress#UNKNOWN_SIZE}.
+     */
+    abstract public long getSize();
+    
+    /**
      *  Returns true if the file is deletable.
      */
     abstract public boolean isDeletable();
@@ -58,7 +64,7 @@ public abstract class IntentFile implements Constants {
      *  Saves the file as the specified location on SD card.
      *  @throws IOException if the file cannot be saved
      */
-    abstract public void saveAs(File file) throws IOException;
+    abstract public void saveAs(java.io.File file) throws IOException;
     
     /**
      *  Deletes the original file.

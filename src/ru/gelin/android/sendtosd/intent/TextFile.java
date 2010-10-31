@@ -33,6 +33,14 @@ public class TextFile extends IntentFile {
     public String getName() {
         return TEXT_FILE_NAME;
     }
+    
+    /**
+     *  Returns the UNKNOWN_SIZE.
+     *  The text file is copied at once, no reason to display the progress.
+     */
+    public long getSize() {
+        return UNKNOWN_SIZE;
+    }
 
     /**
      *  Returns false.

@@ -1,5 +1,6 @@
 package ru.gelin.android.sendtosd;
 
+
 /**
  *  Handles the progress of copying/moving files.
  *  Calls to Progress interface are safe from any thread, they are executed
@@ -9,10 +10,10 @@ public class ProgressManager implements Progress {
 
     /** Number of files */
     int files = 1;
-    /** Current file */
+    /** Current file index */
     int file = -1;
     /** Current file size */
-    long size = UNKNOWN_SIZE;
+    long size = File.UNKNOWN_SIZE;
     /** Current file progress */
     long processed = 0;
     
@@ -29,11 +30,13 @@ public class ProgressManager implements Progress {
     }
     
     @Override
-    public void nextFile(long size) {
-        if (file < files) {
-            file++;
-            this.size = size;
-            this.processed = 0;
+    public void nextFile(File file) {
+        if (this.file < files) {
+            this.file++;
+            if (file != null) {
+                this.size = file.getSize();
+                this.processed = 0;
+            }
         }
     }
 

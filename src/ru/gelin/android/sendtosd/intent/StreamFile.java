@@ -45,6 +45,14 @@ public class StreamFile extends IntentFile {
     }
     
     /**
+     *  Returns the UNKNOWN_SIZE.
+     *  The size of stream is unknown.
+     */
+    public long getSize() {
+        return UNKNOWN_SIZE;
+    }
+
+    /**
      *  Returns false.
      */
     public boolean isDeletable() {
