@@ -67,8 +67,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);  //TODO how?
         addPreferencesFromResource(R.xml.folder_preferences);
         lastFolders = findPreference(PREF_LAST_FOLDERS);
         if (!Environment.getExternalStorageState().equals(
