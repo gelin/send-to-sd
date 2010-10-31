@@ -27,8 +27,17 @@ public class FileFile extends StreamFile {
     }
     
     /**
+     *  Returns the file size.
+     */
+    @Override
+    public long getSize() {
+        return file.length();
+    }
+    
+    /**
      *  Returns true if the original file is writable.
      */
+    @Override
     public boolean isDeletable() {
         try {
             return file.isFile() && file.canWrite();
@@ -40,6 +49,7 @@ public class FileFile extends StreamFile {
     /**
      *  Deletes the original file.
      */
+    @Override
     public void delete() throws IOException {
         boolean result = file.delete();
         if (!result) {

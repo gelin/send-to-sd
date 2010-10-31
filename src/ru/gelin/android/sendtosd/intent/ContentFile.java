@@ -1,7 +1,8 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.io.File;
 import java.io.IOException;
+
+import ru.gelin.android.sendtosd.File;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,12 +27,15 @@ public class ContentFile extends StreamFile {
     /** Projection to select some useful data */
     String[] projection = {
             MediaStore.MediaColumns.DATA,
+            MediaStore.MediaColumns.SIZE,
             //MediaStore.MediaColumns.DISPLAY_NAME,
             //MediaStore.MediaColumns.TITLE,
     };
     
     /** File which contains the content data (if can be selected from the content provider) */
-    File data;
+    java.io.File data;
+    /** Content size, in bytes */
+    long size = File.UNKNOWN_SIZE;
     /** Flag indicating that the Uri was queried for some additional information */
     boolean queried = false;
     
@@ -45,6 +49,10 @@ public class ContentFile extends StreamFile {
         //queryContent();
     }
     
+    /**
+     *  Queries the content for file name and size.
+     *  If the query was done before the new attempt is skipped.
+     */
     void queryContent() {
         if (queried) {
             return;
@@ -52,9 +60,11 @@ public class ContentFile extends StreamFile {
         try {
             Cursor cursor = contentResolver.query(uri, projection, null, null, null);
             int dataIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            int sizeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.SIZE);
             if (cursor.moveToFirst()) {
                 String data = cursor.getString(dataIndex);
-                this.data = new File(data);
+                this.data = new java.io.File(data);
+                this.size = cursor.getLong(sizeIndex);
             }
             cursor.close();
         } catch (Exception e) {
@@ -67,6 +77,7 @@ public class ContentFile extends StreamFile {
     /**
      *  Makes the query to the content provider to select the file name.
      */
+    @Override
     public String getName() {
         queryContent();
         if (data == null) {
@@ -76,9 +87,19 @@ public class ContentFile extends StreamFile {
     }
     
     /**
+     *  Makes the query to the content provider to select the file size.
+     */
+    @Override
+    public long getSize() {
+        queryContent();
+        return this.size;
+    }
+    
+    /**
      *  Returns true if the file can be deleted.
      *  Returns true only for some supported providers.
      */
+    @Override
     public boolean isDeletable() {
         String uri = this.uri.toString();
         for (String contentUri : WRITABLE_URIS) {
@@ -93,6 +114,7 @@ public class ContentFile extends StreamFile {
      *  Deleted the original file via ContentResolver.
      *  @throws IOException if the file was not deleted
      */
+    @Override
     public void delete() throws IOException {
         int result = contentResolver.delete(uri, null, null);
         if (result <= 0) {
