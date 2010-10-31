@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="dummy"></string>
     <string name="app_name">Send to SD card</string>
     <string name="sd_card">SD card</string>
     <string name="files_title">{0} {1,choice,0#file|1#files}</string>
@@ -49,4 +50,7 @@
     <string name="please_wait">Please wait...</string>
     <string name="copying">Copying...</string>
     <string name="moving">Moving...</string>
+    <string name="b_progress">%i/%i b</string>
+    <string name="kb_progress">%1.1f/%1.1f Kb</string>
+    <string name="mb_progress">%1.1f/%1.1f Mb</string>
 </resources>

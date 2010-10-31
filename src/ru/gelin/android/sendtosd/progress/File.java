@@ -1,4 +1,4 @@
-package ru.gelin.android.sendtosd;
+package ru.gelin.android.sendtosd.progress;
 
 /**
  *  A file with name and size.

@@ -2,7 +2,7 @@ package ru.gelin.android.sendtosd.intent;
 
 import java.io.IOException;
 
-import ru.gelin.android.sendtosd.File;
+import ru.gelin.android.sendtosd.progress.File;
 
 import android.content.Context;
 import android.content.Intent;

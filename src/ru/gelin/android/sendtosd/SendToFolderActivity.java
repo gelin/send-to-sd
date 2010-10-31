@@ -61,7 +61,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /** Last folders preference. Saved here to remove from or add to hierarchy. */
     Preference lastFolders;
     /** Message ID for the progress dialog */
-    int progressMessage = 0;
+    int progressMessage = R.string.dummy;
     /** List of current subfolders */
     List<File> folders;
     

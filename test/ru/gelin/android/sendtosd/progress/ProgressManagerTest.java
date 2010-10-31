@@ -1,13 +1,9 @@
-package ru.gelin.android.sendtosd;
+package ru.gelin.android.sendtosd.progress;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import ru.gelin.android.sendtosd.intent.IntentFile;
 
 public class ProgressManagerTest {
 
@@ -89,6 +85,46 @@ public class ProgressManagerTest {
         manager.processBytes(1024);
         assertEquals(0, manager.file);
         assertEquals(2048, manager.processed);
+    }
+    
+    @Test
+    public void testGetSizeUnit() {
+        manager.setFiles(3);
+        manager.nextFile(new TestFile("b", 1023));
+        assertEquals(SizeUnit.BYTE, manager.getSizeUnit());
+        manager.nextFile(new TestFile("Kb", 1023 * 1024));
+        assertEquals(SizeUnit.KILOBYTE, manager.getSizeUnit());
+        manager.nextFile(new TestFile("Mb", 1024 * 1024 + 1));
+        assertEquals(SizeUnit.MEGABYTE, manager.getSizeUnit());
+        manager.nextFile(null);
+        assertEquals(SizeUnit.MEGABYTE, manager.getSizeUnit());
+    }
+    
+    public void testGetSizeInUnits() {
+        manager.setFiles(3);
+        manager.nextFile(new TestFile("b", 1023));
+        assertEquals(1023, manager.getSizeInUnits(), 0.1);
+        manager.nextFile(new TestFile("Kb", 1023 * 1024));
+        assertEquals(1023, manager.getSizeInUnits(), 0.1);
+        manager.nextFile(new TestFile("Mb", 1024 * 1024 + 1));
+        assertEquals(1, manager.getSizeInUnits(), 0.1);
+        manager.nextFile(null);
+        assertEquals(1, manager.getSizeInUnits(), 0.1);
+    }
+    
+    public void testGetProgressInUnits() {
+        manager.setFiles(3);
+        manager.nextFile(new TestFile("b", 1023));
+        manager.processBytes(128);
+        assertEquals(128, manager.getProgressInUnits(), 0.1);
+        manager.nextFile(new TestFile("Kb", 1023 * 1024));
+        manager.processBytes(128 * 1024 + 512);
+        assertEquals(128.5, manager.getProgressInUnits(), 0.1);
+        manager.nextFile(new TestFile("Mb", 1024 * 1024 + 1));
+        manager.processBytes(128 * 1024 * 1024 + 512);
+        assertEquals(128.5, manager.getProgressInUnits(), 0.1);
+        manager.nextFile(null);
+        assertEquals(128.5, manager.getProgressInUnits(), 0.1);
     }
 
 }
