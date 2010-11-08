@@ -53,4 +53,5 @@
     <string name="b_progress">%i/%i b</string>
     <string name="kb_progress">%1.1f/%1.1f Kb</string>
     <string name="mb_progress">%1.1f/%1.1f Mb</string>
+    <string name="files_progress">%i/%i</string>
 </resources>
