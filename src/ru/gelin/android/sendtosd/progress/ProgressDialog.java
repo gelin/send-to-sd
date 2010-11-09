@@ -1,6 +1,6 @@
 package ru.gelin.android.sendtosd.progress;
 
-import android.R;
+import ru.gelin.android.sendtosd.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -71,10 +71,10 @@ public class ProgressDialog extends AlertDialog implements Progress {
     }
 
     void updateTotalProgress() {
-        ProgressBar progress = findViewById(R.id.total_progress);
+        ProgressBar progress = (ProgressBar)findViewById(R.id.total_progress);
         progress.setMax(manager.getFiles());
         progress.setProgress(manager.getFile());
-        TextView text = findViewById(R.id.total_files);
+        TextView text = (TextView)findViewById(R.id.total_files);
         text.setText(getContext().getString(R.string.files_progress,
                 manager.getFile(), manager.getFiles()));
     }
@@ -83,12 +83,12 @@ public class ProgressDialog extends AlertDialog implements Progress {
         if (file == null) {
             return;
         }
-        TextView view = findViewById(R.id.file_name);
+        TextView view = (TextView)findViewById(R.id.file_name);
         view.setText(file.getName());
     }
     
     void updateFileProgress() {
-        ProgressBar progress = findViewById(R.id.file_progress);
+        ProgressBar progress = (ProgressBar)findViewById(R.id.file_progress);
         if (manager.getProgressInUnits() < 0) {
             progress.setIndeterminate(true);
         } else {
@@ -96,7 +96,7 @@ public class ProgressDialog extends AlertDialog implements Progress {
             progress.setMax((int)(manager.getSizeInUnits() * 10));
             progress.setProgress((int)(manager.getProgressInUnits() * 10));
         }
-        TextView text = findViewById(R.id.file_size);
+        TextView text = (TextView)findViewById(R.id.file_size);
         text.setText(getContext().getString(manager.getSizeUnit().progressString,
                 manager.getProgressInUnits(), manager.getSizeInUnits()));
     }
