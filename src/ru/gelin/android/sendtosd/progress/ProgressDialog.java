@@ -2,11 +2,11 @@ package ru.gelin.android.sendtosd.progress;
 
 import ru.gelin.android.sendtosd.R;
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class ProgressDialog extends AlertDialog implements Progress {
+public class ProgressDialog extends Dialog implements Progress {
 
     /** Activity for which the dialog is created */
     Activity activity;
@@ -20,6 +20,7 @@ public class ProgressDialog extends AlertDialog implements Progress {
      */
     protected ProgressDialog(Activity activity) {
         super(activity);
+        this.activity = activity;
     }
 
     @Override

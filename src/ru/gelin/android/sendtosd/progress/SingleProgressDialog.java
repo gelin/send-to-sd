@@ -8,7 +8,7 @@ public class SingleProgressDialog extends ProgressDialog {
 
     protected SingleProgressDialog(Activity activity) {
         super(activity);
-        setView(getLayoutInflater().inflate(R.layout.progress_dialog, 
+        setContentView(getLayoutInflater().inflate(R.layout.progress_dialog, 
                 (ViewGroup)findViewById(R.id.progress_dialog_root)));
     }
 
