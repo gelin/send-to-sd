@@ -9,9 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.gelin.android.sendtosd.intent.IntentInfo;
+import ru.gelin.android.sendtosd.progress.DummyProgress;
+import ru.gelin.android.sendtosd.progress.Progress;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,8 +52,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     public static final int REQ_CODE_FOLDER = 0;
     /** New Folder dialog ID */
     static final int NEW_FOLDER_DIALOG = 0;
-    /** Progress dialog ID */
-    static final int PROGRESS_DIALOG = 1;
+    /** Copy progress dialog ID */
+    static final int COPY_DIALOG = 1;
+    /** Move progress dialog ID */
+    static final int MOVE_DIALOG = 2;
     
     /** Intent information */
     IntentInfo intentInfo;
@@ -60,10 +63,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     File path;
     /** Last folders preference. Saved here to remove from or add to hierarchy. */
     Preference lastFolders;
-    /** Message ID for the progress dialog */
-    int progressMessage = R.string.dummy;
     /** List of current subfolders */
     List<File> folders;
+    
+    /** Dialog to show the progress */
+    volatile Progress progress = new DummyProgress();   //can be used from other threads
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,11 +203,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             return dialog;
-        }
-        case PROGRESS_DIALOG: {
-            ProgressDialog progress = new ProgressDialog(this);
-            progress.setMessage(getString(progressMessage));
-            return progress;
         }
         default:
             return null;
@@ -487,18 +486,17 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      *  Runs the first Runnable in the separated thread, 
      *  runs the second Runnable when the first finishes and the dialog closes.
-     *  @param  dialogMessageId ID of the message to display on dialog
+     *  @param  dialogId ID of the dialog to display
      *  @param  thread  action to run in the thread
      *  @param  onStop  action to call on thread stop and dialog close
      */
-    protected void runWithProgress(int dialogMessageId, final Runnable thread, 
+    protected void runWithProgress(final int dialogId, final Runnable thread, 
             final Runnable onStop) {
-        progressMessage = dialogMessageId;
-        showDialog(PROGRESS_DIALOG);
+        showDialog(dialogId);
         runThread(thread, new Runnable() {
             @Override
             public void run() {
-                removeDialog(PROGRESS_DIALOG);
+                removeDialog(dialogId);
                 if (onStop != null) {
                     onStop.run();
                 }

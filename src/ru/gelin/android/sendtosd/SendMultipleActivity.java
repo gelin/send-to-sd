@@ -74,7 +74,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
     public void copyFile() {
         saveLastFolder();
         final ResultHandler result = new ResultHandler();
-        runWithProgress(R.string.copying,
+        runWithProgress(COPY_DIALOG,
                 new Runnable() {
                     @Override
                     public void run() {
@@ -115,7 +115,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
     public void moveFile() {
         saveLastFolder();
         final ResultHandler result = new ResultHandler();
-        runWithProgress(R.string.moving,
+        runWithProgress(MOVE_DIALOG,
             new Runnable() {
                 @Override
                 public void run() {

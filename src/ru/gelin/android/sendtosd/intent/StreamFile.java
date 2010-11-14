@@ -69,6 +69,7 @@ public class StreamFile extends IntentFile {
         int read;
         while ((read = in.read(buf)) > 0) {
             out.write(buf, 0, read);
+            progress.processBytes(read);
         }
         out.close();
         in.close();

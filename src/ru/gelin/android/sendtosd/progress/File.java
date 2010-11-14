@@ -18,5 +18,10 @@ public interface File {
      *  Can returns {@link #UNKNOWN_SIZE}.
      */
     public long getSize();
+    
+    /**
+     *  Sets the object to handle the progress of processing the file.
+     */
+    public void setProgress(Progress progress);
 
 }

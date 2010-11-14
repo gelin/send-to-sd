@@ -5,6 +5,9 @@ import java.io.File;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendIntentInfo;
+import ru.gelin.android.sendtosd.progress.ProgressDialog;
+import ru.gelin.android.sendtosd.progress.SingleCopyDialog;
+import ru.gelin.android.sendtosd.progress.SingleMoveDialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -28,7 +31,7 @@ public class SendActivity extends SendToFolderActivity
         implements FileSaver {
 
     /** Choose File Name dialog ID */
-    static final int FILE_NAME_DIALOG = 2; 
+    static final int FILE_NAME_DIALOG = 10; 
     
     /** File to save from intent */
     IntentFile intentFile;
@@ -98,6 +101,16 @@ public class SendActivity extends SendToFolderActivity
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             return dialog;
+        case COPY_DIALOG: {
+            ProgressDialog progress = new SingleCopyDialog(this);
+            this.progress = progress;
+            return progress;
+        }
+        case MOVE_DIALOG: {
+            ProgressDialog progress = new SingleMoveDialog(this);
+            this.progress = progress;
+            return progress;
+        }
         default:
             return super.onCreateDialog(id);
         }
@@ -136,11 +149,14 @@ public class SendActivity extends SendToFolderActivity
     public void copyFile() {
         saveLastFolder();
         final ResultHandler result = new ResultHandler();
-        runWithProgress(R.string.copying, 
+        runWithProgress(COPY_DIALOG, 
                 new Runnable() {
                     @Override
                     public void run() {
+                        progress.setFiles(1);   //single file in this activity
+                        progress.nextFile(intentFile);
                         try {
+                            intentFile.setProgress(progress);
                             intentFile.saveAs(new File(path, getUniqueFileName(fileName)));
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
@@ -153,6 +169,7 @@ public class SendActivity extends SendToFolderActivity
                 new Runnable() {
                     @Override
                     public void run() {
+                        progress.nextFile(null);    //mark all files as sent
                         switch (result.result) {
                         case COPIED:
                             complete(R.string.file_is_copied);
@@ -172,11 +189,14 @@ public class SendActivity extends SendToFolderActivity
     public void moveFile() {
         saveLastFolder();
         final ResultHandler result = new ResultHandler();
-        runWithProgress(R.string.moving, 
+        runWithProgress(MOVE_DIALOG, 
             new Runnable() {
                 @Override
                 public void run() {
+                    progress.setFiles(1);   //single file in this activity
+                    progress.nextFile(intentFile);
                     try {
+                        intentFile.setProgress(progress);
                         intentFile.saveAs(new File(path, getUniqueFileName(fileName)));
                     } catch (Exception e) {
                         Log.w(TAG, e.toString(), e);
@@ -196,6 +216,7 @@ public class SendActivity extends SendToFolderActivity
             new Runnable() {
                 @Override
                 public void run() {
+                    progress.nextFile(null);    //mark all files as sent
                     switch (result.result) {
                     case MOVED:
                         complete(R.string.file_is_moved);

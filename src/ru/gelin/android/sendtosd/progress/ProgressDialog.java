@@ -3,7 +3,6 @@ package ru.gelin.android.sendtosd.progress;
 import ru.gelin.android.sendtosd.R;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 

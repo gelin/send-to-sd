@@ -33,7 +33,11 @@ public class ProgressManagerTest {
         public long getSize() {
             return this.size;
         }
-        
+
+        @Override
+        public void setProgress(Progress progress) {
+        }
+
     }
     
     @Test
