@@ -25,6 +25,7 @@ public class ProgressDialog extends Dialog implements Progress {
      */
     protected ProgressDialog(Activity activity) {
         super(activity);
+        setCancelable(false);
         this.activity = activity;
     }
 
@@ -94,15 +95,12 @@ public class ProgressDialog extends Dialog implements Progress {
         });
     }
 
+    /**
+     *  Here does nothing because there is no total progress when sending one file.
+     */
     void updateTotalProgress() {
-        ProgressBar progress = (ProgressBar)findViewById(R.id.total_progress);
-        progress.setMax(manager.getFiles());
-        progress.setProgress(manager.getFile());
-        TextView text = (TextView)findViewById(R.id.total_files);
-        text.setText(getContext().getString(R.string.files_progress,
-                manager.getFile(), manager.getFiles()));
     }
-    
+
     void updateFileName(File file) {
         if (file == null) {
             return;

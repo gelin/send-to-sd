@@ -7,6 +7,10 @@ import ru.gelin.android.i18n.PluralForms;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
+import ru.gelin.android.sendtosd.progress.MultipleCopyDialog;
+import ru.gelin.android.sendtosd.progress.MultipleMoveDialog;
+import ru.gelin.android.sendtosd.progress.ProgressDialog;
+import android.app.Dialog;
 import android.util.Log;
 
 /**
@@ -46,6 +50,24 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 intentFiles.length, 
                 PluralForms.getInstance().getForm(intentFiles.length)));
     }
+    
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case COPY_DIALOG: {
+            ProgressDialog progress = new MultipleCopyDialog(this);
+            this.progress = progress;
+            return progress;
+        }
+        case MOVE_DIALOG: {
+            ProgressDialog progress = new MultipleMoveDialog(this);
+            this.progress = progress;
+            return progress;
+        }
+        default:
+            return super.onCreateDialog(id);
+        }
+    }
 
     /**
      *  Return true if the intent has deletable file which can be moved.
@@ -78,8 +100,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 new Runnable() {
                     @Override
                     public void run() {
+                        progress.setFiles(intentFiles.length);
                         for (IntentFile file : intentFiles) {
+                            progress.nextFile(file);
                             try {
+                                file.setProgress(progress);
                                 file.saveAs(new File(path, getUniqueFileName(file.getName())));
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
@@ -93,6 +118,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 new Runnable() {
                     @Override
                     public void run() {
+                        progress.complete();
                         PluralForms plurals = PluralForms.getInstance();
                         StringBuilder message = new StringBuilder();
                         message.append(MessageFormat.format(
@@ -119,8 +145,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
             new Runnable() {
                 @Override
                 public void run() {
+                    progress.setFiles(intentFiles.length);
                     for (IntentFile file : intentFiles) {
+                        progress.nextFile(file);
                         try {
+                            file.setProgress(progress);
                             file.saveAs(new File(path, getUniqueFileName(file.getName())));
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
@@ -141,6 +170,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
             new Runnable() {
                 @Override
                 public void run() {
+                    progress.complete();
                     PluralForms plurals = PluralForms.getInstance();
                     StringBuilder message = new StringBuilder();
                     message.append(MessageFormat.format(
