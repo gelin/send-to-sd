@@ -17,5 +17,9 @@ public class DummyProgress implements Progress {
     @Override
     public void setFiles(int files) {
     }
+    
+    @Override
+    public void complete() {
+    }
 
 }

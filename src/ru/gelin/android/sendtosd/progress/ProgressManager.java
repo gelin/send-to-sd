@@ -65,6 +65,12 @@ public class ProgressManager implements Progress {
         }
     }
     
+    @Override
+    public void complete() {
+        this.file = this.files;
+        this.processed = this.size;
+    }
+    
     /**
      *  Returns the SizeUnit to display the current file progress.
      */

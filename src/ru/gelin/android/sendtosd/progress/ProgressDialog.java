@@ -14,6 +14,11 @@ public class ProgressDialog extends Dialog implements Progress {
     /** Progress manager for the dialog */
     ProgressManager manager = new ProgressManager();
     
+    /** Last tooOften() check. */
+    long lastTooOftenCheck = 0;
+    /** Interval which is not too often */
+    static long TOO_OFTEN_INTERVAL = 1000;  //1 second
+    
     /**
      *  Creates the customized progress dialog for
      *  activity.
@@ -59,12 +64,31 @@ public class ProgressDialog extends Dialog implements Progress {
     public void processBytes(long bytes) {
         synchronized (manager) {
             manager.processBytes(bytes);
+            if (tooOften()) {
+                return;
+            }
         }
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 synchronized (manager) {
                     updateFileProgress();
+                }
+            }
+        });
+    }
+    
+    @Override
+    public void complete() {
+        synchronized (manager) {
+            manager.complete();
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (manager) {
+                    updateFileProgress();
+                    updateTotalProgress();
                 }
             }
         });
@@ -99,6 +123,20 @@ public class ProgressDialog extends Dialog implements Progress {
         TextView text = (TextView)findViewById(R.id.file_size);
         text.setText(getContext().getString(manager.getSizeUnit().progressString,
                 manager.getProgressInUnits(), manager.getSizeInUnits()));
+    }
+    
+    /**
+     *  Checks the amount of time passed from the last call to this method,
+     *  if the method is called more frequently than once per second, returns
+     *  true.
+     */
+    boolean tooOften() {
+        long now = System.currentTimeMillis();
+        if (now - lastTooOftenCheck < TOO_OFTEN_INTERVAL) {
+            return true;
+        }
+        lastTooOftenCheck = now;
+        return false;
     }
 
 }

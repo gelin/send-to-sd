@@ -22,4 +22,9 @@ public interface Progress {
      */
     public void processBytes(long bytes);
     
+    /**
+     *  Mark all as complete.
+     */
+    public void complete();
+    
 }

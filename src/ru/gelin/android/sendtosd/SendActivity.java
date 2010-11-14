@@ -169,7 +169,7 @@ public class SendActivity extends SendToFolderActivity
                 new Runnable() {
                     @Override
                     public void run() {
-                        progress.nextFile(null);    //mark all files as sent
+                        progress.complete();
                         switch (result.result) {
                         case COPIED:
                             complete(R.string.file_is_copied);
@@ -216,7 +216,7 @@ public class SendActivity extends SendToFolderActivity
             new Runnable() {
                 @Override
                 public void run() {
-                    progress.nextFile(null);    //mark all files as sent
+                    progress.complete();
                     switch (result.result) {
                     case MOVED:
                         complete(R.string.file_is_moved);
