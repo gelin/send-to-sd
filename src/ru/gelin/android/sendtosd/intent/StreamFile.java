@@ -49,7 +49,7 @@ public class StreamFile extends IntentFile {
      *  The size of stream is unknown.
      */
     public long getSize() {
-        return UNKNOWN_SIZE;
+        return ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
     }
 
     /**

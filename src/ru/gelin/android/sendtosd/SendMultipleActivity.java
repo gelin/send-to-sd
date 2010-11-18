@@ -7,6 +7,7 @@ import ru.gelin.android.i18n.PluralForms;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
+import ru.gelin.android.sendtosd.progress.FileInfo;
 import ru.gelin.android.sendtosd.progress.MultipleCopyDialog;
 import ru.gelin.android.sendtosd.progress.MultipleMoveDialog;
 import ru.gelin.android.sendtosd.progress.ProgressDialog;
@@ -102,10 +103,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
                     public void run() {
                         progress.setFiles(intentFiles.length);
                         for (IntentFile file : intentFiles) {
-                            progress.nextFile(file);
+                            String uniqueFileName = getUniqueFileName(file.getName());
+                            progress.nextFile(new FileInfo(uniqueFileName, file.getSize()));
                             try {
                                 file.setProgress(progress);
-                                file.saveAs(new File(path, getUniqueFileName(file.getName())));
+                                file.saveAs(new File(path, uniqueFileName));
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
                                 result.errors++;
@@ -147,10 +149,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 public void run() {
                     progress.setFiles(intentFiles.length);
                     for (IntentFile file : intentFiles) {
-                        progress.nextFile(file);
+                        String uniqueFileName = getUniqueFileName(file.getName());
+                        progress.nextFile(new FileInfo(uniqueFileName, file.getSize()));
                         try {
                             file.setProgress(progress);
-                            file.saveAs(new File(path, getUniqueFileName(file.getName())));
+                            file.saveAs(new File(path, uniqueFileName));
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
                             result.errors++;

@@ -5,6 +5,7 @@ import java.io.File;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendIntentInfo;
+import ru.gelin.android.sendtosd.progress.FileInfo;
 import ru.gelin.android.sendtosd.progress.ProgressDialog;
 import ru.gelin.android.sendtosd.progress.SingleCopyDialog;
 import ru.gelin.android.sendtosd.progress.SingleMoveDialog;
@@ -154,10 +155,11 @@ public class SendActivity extends SendToFolderActivity
                     @Override
                     public void run() {
                         progress.setFiles(1);   //single file in this activity
-                        progress.nextFile(intentFile);
+                        String uniqueFileName = getUniqueFileName(fileName);
+                        progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
                         try {
                             intentFile.setProgress(progress);
-                            intentFile.saveAs(new File(path, getUniqueFileName(fileName)));
+                            intentFile.saveAs(new File(path, uniqueFileName));
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
                             result.result = Result.ERROR;
@@ -194,10 +196,11 @@ public class SendActivity extends SendToFolderActivity
                 @Override
                 public void run() {
                     progress.setFiles(1);   //single file in this activity
-                    progress.nextFile(intentFile);
+                    String uniqueFileName = getUniqueFileName(fileName);
+                    progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
                     try {
                         intentFile.setProgress(progress);
-                        intentFile.saveAs(new File(path, getUniqueFileName(fileName)));
+                        intentFile.saveAs(new File(path, uniqueFileName));
                     } catch (Exception e) {
                         Log.w(TAG, e.toString(), e);
                         result.result = Result.ERROR;

@@ -39,7 +39,7 @@ public class TextFile extends IntentFile {
      *  The text file is copied at once, no reason to display the progress.
      */
     public long getSize() {
-        return UNKNOWN_SIZE;
+        return ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
     }
 
     /**
