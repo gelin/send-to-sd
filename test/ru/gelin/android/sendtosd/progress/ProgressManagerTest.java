@@ -78,6 +78,7 @@ public class ProgressManagerTest {
         assertEquals(SizeUnit.MEGABYTE, manager.getSizeUnit());
     }
     
+    @Test
     public void testGetSizeInUnits() {
         manager.setFiles(3);
         manager.nextFile(new FileInfo("b", 1023));
@@ -90,6 +91,7 @@ public class ProgressManagerTest {
         assertEquals(1, manager.getSizeInUnits(), 0.1);
     }
     
+    @Test
     public void testGetProgressInUnits() {
         manager.setFiles(3);
         manager.nextFile(new FileInfo("b", 1023));
@@ -99,12 +101,13 @@ public class ProgressManagerTest {
         manager.processBytes(128 * 1024 + 512);
         assertEquals(128.5, manager.getProgressInUnits(), 0.1);
         manager.nextFile(new FileInfo("Mb", 1024 * 1024 + 1));
-        manager.processBytes(128 * 1024 * 1024 + 512);
-        assertEquals(128.5, manager.getProgressInUnits(), 0.1);
+        manager.processBytes(1024 * 1024);
+        assertEquals(1.0, manager.getProgressInUnits(), 0.1);
         manager.nextFile(null);
-        assertEquals(128.5, manager.getProgressInUnits(), 0.1);
+        assertEquals(1.0, manager.getProgressInUnits(), 0.1);
     }
     
+    @Test
     public void testProgressDecimals() {
         manager.setFiles(3);
         manager.nextFile(new FileInfo("b", 1023));
@@ -117,12 +120,13 @@ public class ProgressManagerTest {
         assertEquals(128.5, manager.getProgressInUnits(), 0.1);
         manager.nextFile(new FileInfo("Mb", (int)(1023.5 * 1024 * 1024)));
         assertEquals(1023.5, manager.getSizeInUnits(), 0.1);
-        manager.processBytes(128 * 1024 * 1024 + 512);
+        manager.processBytes(128 * 1024 * 1024 + 512 * 1024);
         assertEquals(128.5, manager.getProgressInUnits(), 0.1);
         manager.nextFile(null);
         assertEquals(128.5, manager.getProgressInUnits(), 0.1);
     }
     
+    @Test
     public void testComplete() {
         manager.setFiles(3);
         assertEquals(-1, manager.file);
