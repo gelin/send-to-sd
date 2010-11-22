@@ -1,5 +1,6 @@
 package ru.gelin.android.sendtosd.intent;
 
+import java.io.File;
 import java.io.IOException;
 
 import ru.gelin.android.sendtosd.Constants;
@@ -72,10 +73,23 @@ public abstract class IntentFile implements Constants {
     abstract public boolean isDeletable();
     
     /**
+     *  Returns true if the file can be moved by one moveTo()
+     *  operation instead of saveAs() and delete().
+     */
+    abstract public boolean isMovable();
+    
+    /**
      *  Saves the file as the specified location on SD card.
      *  @throws IOException if the file cannot be saved
      */
-    abstract public void saveAs(java.io.File file) throws IOException;
+    abstract public void saveAs(File file) throws IOException;
+    
+    /**
+     *  Moves the file to the specified location on SD card
+     *  in one operation.
+     *  @throws IOException if the file cannot be moved
+     */
+    abstract public void moveTo(File file) throws IOException;
     
     /**
      *  Deletes the original file.

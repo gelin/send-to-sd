@@ -19,6 +19,15 @@ public class FileInfo implements File {
     }
     
     /**
+     *  Constructs information about file.
+     *  The file size is unknown.
+     */
+    public FileInfo(String name) {
+        this.name = name;
+        this.size = UNKNOWN_SIZE;
+    }
+    
+    /**
      *  Returns the file name (without path).
      */
     public String getName() {

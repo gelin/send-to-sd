@@ -17,6 +17,7 @@ import android.webkit.MimeTypeMap;
  *  Intent file which reads the content of the file from
  *  the stream from the provided content URI.
  *  This file is not deletable.
+ *  This file is not movable.
  */
 public class StreamFile extends IntentFile {
 
@@ -39,6 +40,7 @@ public class StreamFile extends IntentFile {
     /**
      *  Tries to guess the filename from the intent.
      */
+    @Override
     public String getName() {
         String fileName = uri.getLastPathSegment();
         return addExtension(fileName);
@@ -48,6 +50,7 @@ public class StreamFile extends IntentFile {
      *  Returns the UNKNOWN_SIZE.
      *  The size of stream is unknown.
      */
+    @Override
     public long getSize() {
         return ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
     }
@@ -55,13 +58,23 @@ public class StreamFile extends IntentFile {
     /**
      *  Returns false.
      */
+    @Override
     public boolean isDeletable() {
+        return false;
+    }
+    
+    /**
+     *  Returns false.
+     */
+    @Override
+    public boolean isMovable() {
         return false;
     }
     
     /**
      *  Saves the file as the specified file on SD card.
      */
+    @Override
     public void saveAs(File file) throws IOException {
         InputStream in = getStream();
         OutputStream out = new FileOutputStream(file);
@@ -78,6 +91,15 @@ public class StreamFile extends IntentFile {
     /**
      *  Always throws exception.
      */
+    @Override
+    public void moveTo(File file) throws IOException {
+        throw new IOException("stream file is not movable");
+    }
+    
+    /**
+     *  Always throws exception.
+     */
+    @Override
     public void delete() throws IOException {
         throw new IOException("stream file is not deletable");
     }

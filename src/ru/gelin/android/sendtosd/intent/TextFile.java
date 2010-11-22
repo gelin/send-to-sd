@@ -11,6 +11,7 @@ import android.content.Intent;
  *  File with text/plain content.
  *  The file content is selected from the EXTRA_TEXT.
  *  The file is not deletable.
+ *  The file is not movable.
  */
 public class TextFile extends IntentFile {
 
@@ -30,6 +31,7 @@ public class TextFile extends IntentFile {
     /**
      *  Returns "text.txt".
      */
+    @Override
     public String getName() {
         return TEXT_FILE_NAME;
     }
@@ -38,6 +40,7 @@ public class TextFile extends IntentFile {
      *  Returns the UNKNOWN_SIZE.
      *  The text file is copied at once, no reason to display the progress.
      */
+    @Override
     public long getSize() {
         return ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
     }
@@ -45,13 +48,23 @@ public class TextFile extends IntentFile {
     /**
      *  Returns false.
      */
+    @Override
     public boolean isDeletable() {
+        return false;
+    }
+    
+    /**
+     *  Returns false.
+     */
+    @Override
+    public boolean isMovable() {
         return false;
     }
     
     /**
      *  Saves the file as the specified file on SD card.
      */
+    @Override
     public void saveAs(File file) throws IOException {
         Writer out = new FileWriter(file);
         out.write(text);
@@ -61,6 +74,15 @@ public class TextFile extends IntentFile {
     /**
      *  Always throws exception.
      */
+    @Override
+    public void moveTo(File file) throws IOException {
+        throw new IOException("text file is not movable");
+    }
+    
+    /**
+     *  Always throws exception.
+     */
+    @Override
     public void delete() throws IOException {
         throw new IOException("text file is not deletable");
     }

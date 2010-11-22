@@ -197,21 +197,34 @@ public class SendActivity extends SendToFolderActivity
                 public void run() {
                     progress.setFiles(1);   //single file in this activity
                     String uniqueFileName = getUniqueFileName(fileName);
-                    progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
-                    try {
-                        intentFile.setProgress(progress);
-                        intentFile.saveAs(new File(path, uniqueFileName));
-                    } catch (Exception e) {
-                        Log.w(TAG, e.toString(), e);
-                        result.result = Result.ERROR;
-                        return;
-                    }
-                    try {
-                        intentFile.delete();
-                    } catch (Exception e) {
-                        Log.w(TAG, e.toString(), e);
-                        result.result = Result.COPIED;
-                        return;
+                    if (intentFile.isMovable()) {
+                        progress.nextFile(new FileInfo(uniqueFileName));
+                        try {
+                            intentFile.moveTo(new File(path, uniqueFileName));
+                        } catch (Exception e) {
+                            Log.w(TAG, e.toString(), e);
+                            //try {   //TODO: copy on move failed
+                            //}
+                            result.result = Result.ERROR;
+                            return;
+                        }
+                    } else {
+                        progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
+                        try {
+                            intentFile.setProgress(progress);
+                            intentFile.saveAs(new File(path, uniqueFileName));
+                        } catch (Exception e) {
+                            Log.w(TAG, e.toString(), e);
+                            result.result = Result.ERROR;
+                            return;
+                        }
+                        try {
+                            intentFile.delete();
+                        } catch (Exception e) {
+                            Log.w(TAG, e.toString(), e);
+                            result.result = Result.COPIED;
+                            return;
+                        }
                     }
                     result.result = Result.MOVED;
                 }
