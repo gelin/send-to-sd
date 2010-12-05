@@ -150,6 +150,9 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onResume() {
         super.onResume();
         Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
+        if (intentInfo == null) {
+            return; //not initialized, should be finished immediately from onCreate()
+        }
         if (intentInfo.isInitial()) {
             if (existedLastFolders == null) {
                 getPreferenceScreen().addPreference(lastFolders);
@@ -401,41 +404,41 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  Shows the error message.
      */
     void warn(int messageId) {
-        error(messageId, true, null);
+        warn(messageId, null);
     }
     
     /**
-     *  Shows the error message and disables the activity.
+     *  Shows the error message and finishes the activity.
      */
     void error(int messageId) {
-        error(messageId, false, null);
+        error(messageId, null);
     }
     
     /**
      *  Shows and logs the error message.
+     *  @param  messageId   ID of the message to show
+     *  @param  exception   exception to write to logs (can be null)
      */
     void warn(int messageId, Throwable exception) {
-        error(messageId, true, exception);
+        if (exception != null) {
+            Log.w(TAG, exception.toString(), exception);
+        }
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
     }
     
     /**
-     *  Shows and logs the error message and disables the activity.
+     *  Shows and logs the error message and finished the activity
+     *  (with canceled result).
+     *  @param  messageId   ID of the message to show
+     *  @param  exception   exception to write to logs (can be null)
      */
     void error(int messageId, Throwable exception) {
-        error(messageId, false, exception);
-    }
-    
-    /**
-     *  Shows and logs the error message and disables the activity.
-     */
-    void error(int messageId, boolean enabled, Throwable exception) {
         if (exception != null) {
             Log.e(TAG, exception.toString(), exception);
         }
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         setResult(RESULT_CANCELED);
-        getPreferenceScreen().setEnabled(enabled);
-        //finish();
+        finish();
     }
     
     /**
@@ -456,6 +459,9 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         finish();
     }
 
+    /**
+     *  Finishes the whole task of this application on getting OK result.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

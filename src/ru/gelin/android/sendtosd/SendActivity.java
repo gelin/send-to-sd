@@ -42,6 +42,9 @@ public class SendActivity extends SendToFolderActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (intentInfo == null) {
+            return; //not initialized, should be finished immediately from super.onCreate()
+        }
         try {
             SendIntentInfo sendIntentInfo = (SendIntentInfo)this.intentInfo;
             intentFile = sendIntentInfo.getFile();
