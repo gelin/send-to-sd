@@ -12,8 +12,9 @@ public class SendIntentInfo extends IntentInfo {
      *  Creates the intent info.
      *  @param  context current context
      *  @param  intent  intent to process
+     *  @throws IntentException if it's not possible to create the info from the intent
      */
-    public SendIntentInfo(Context context, Intent intent) {
+    public SendIntentInfo(Context context, Intent intent) throws IntentException {
         super(context, intent);
     }
     
@@ -22,7 +23,7 @@ public class SendIntentInfo extends IntentInfo {
      *  doesn't contain STREAM or TEXT extras.
      */
     @Override
-    public boolean validate() {
+    boolean validate() {
         if (!Intent.ACTION_SEND.equals(intent.getAction())) {
             return false;
         }
@@ -33,7 +34,7 @@ public class SendIntentInfo extends IntentInfo {
      *  Returns the filename provided with the intent as EXTRA_FILE_NAME
      *  or the filename of the sent file.
      */
-    public String getFileName() {
+    public String getFileName() throws IntentFileException {
         String fileName = intent.getStringExtra(EXTRA_FILE_NAME);
         if (fileName == null) {
             return getFile().getName();
@@ -45,7 +46,7 @@ public class SendIntentInfo extends IntentInfo {
     /**
      *  Returns the file provided with the SEND intent.
      */
-    public IntentFile getFile() {
+    public IntentFile getFile() throws IntentFileException {
         return IntentFile.getInstance(context, intent);
     }
 

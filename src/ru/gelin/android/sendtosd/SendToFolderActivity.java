@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.progress.DummyProgress;
 import ru.gelin.android.sendtosd.progress.Progress;
@@ -87,10 +88,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         try {
             this.intentInfo = getIntentInfo();
             intentInfo.log();
-            if (!intentInfo.validate()) {
-                error(R.string.unsupported_intent);
-                return;
-            }
             path = intentInfo.getPath();
             setProgressBarIndeterminateVisibility(true);
             runThread(
@@ -114,8 +111,9 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     
     /**
      *  Creates IntentInfo.
+     *  @throws IntentException if it's not possible to create intent info
      */
-    abstract protected IntentInfo getIntentInfo();
+    abstract protected IntentInfo getIntentInfo() throws IntentException;
     
     /**
      *  The method is called in a separate thread during the activity creation.
@@ -366,6 +364,14 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  "-1", "-2" etc...
      */
     String getUniqueFileName(String fileName) {
+        if (fileName == null) {
+            Log.w(TAG, "filename is null");
+            fileName = "";
+        }
+        if (path == null) {
+            Log.w(TAG, "path is null");
+            return fileName;
+        }
         if (!new File(path, fileName).exists()) {
             return fileName;
         }

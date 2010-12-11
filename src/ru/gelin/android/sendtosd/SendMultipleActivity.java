@@ -4,7 +4,9 @@ import java.io.File;
 import java.text.MessageFormat;
 
 import ru.gelin.android.i18n.PluralForms;
+import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentFile;
+import ru.gelin.android.sendtosd.intent.IntentFileException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
 import ru.gelin.android.sendtosd.progress.FileInfo;
@@ -24,7 +26,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
     IntentFile[] intentFiles;
 
     @Override
-    protected IntentInfo getIntentInfo() {
+    protected IntentInfo getIntentInfo() throws IntentException {
         return new SendMultipleIntentInfo(this, getIntent());
     }
     
@@ -33,7 +35,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
         super.onInit();
         IntentFiles storage = IntentFiles.getInstance();
         if (intentInfo.isInitial()) {
-            intentFiles = ((SendMultipleIntentInfo)intentInfo).getFiles();
+            try {
+                intentFiles = ((SendMultipleIntentInfo)intentInfo).getFiles();
+            } catch (IntentFileException e) {
+                Log.e(TAG, "cannot get files list", e);
+            }
             storage.init(intentFiles);
         } else {
             intentFiles = storage.getFiles();
