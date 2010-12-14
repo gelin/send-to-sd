@@ -1,19 +1,20 @@
 package ru.gelin.android.sendtosd.intent;
 
+import java.io.File;
 import java.io.IOException;
-
-import ru.gelin.android.sendtosd.progress.File;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
 /**
  *  File for content:// URI.
  *  Deletable only for some MediaStorage URIs.
+ *  Movable only when the actual file location is known and it's on SD card already.
  */
 public class ContentFile extends StreamFile {
 
@@ -24,6 +25,10 @@ public class ContentFile extends StreamFile {
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
     };
     
+    /** External storage directory, as string */
+    static final String EX_STORAGE = 
+            Environment.getExternalStorageDirectory().getAbsolutePath();
+    
     /** Projection to select some useful data */
     String[] projection = {
             MediaStore.MediaColumns.DATA,
@@ -33,20 +38,20 @@ public class ContentFile extends StreamFile {
     };
     
     /** File which contains the content data (if can be selected from the content provider) */
-    java.io.File data;
+    File data;
     /** Content size, in bytes */
-    long size = File.UNKNOWN_SIZE;
+    long size = ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
     /** Flag indicating that the Uri was queried for some additional information */
     boolean queried = false;
     
     ContentFile(Context context, Intent intent) {
         super(context, intent);
-        queryContent();
+        queryContent();     //called from SEND, can init here
     }
     
     ContentFile(Context context, Uri uri) {
         super(context, uri);
-        //queryContent();
+        //queryContent();   //called from SEND_MULTIPLE, better to init later
     }
     
     /**
@@ -63,7 +68,7 @@ public class ContentFile extends StreamFile {
             int sizeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.SIZE);
             if (cursor.moveToFirst()) {
                 String data = cursor.getString(dataIndex);
-                this.data = new java.io.File(data);
+                this.data = new File(data);
                 this.size = cursor.getLong(sizeIndex);
             }
             cursor.close();
@@ -108,6 +113,38 @@ public class ContentFile extends StreamFile {
             }
         }
         return false;
+    }
+    
+    /**
+     *  Returns true if the original file is writable
+     *  and is already located on SD card.
+     */
+    @Override
+    public boolean isMovable() {
+        queryContent();
+        if (this.data == null) {
+            return false;
+        }
+        if (!isDeletable()) {
+            return false;
+        }
+        if (this.data.getAbsolutePath().startsWith(EX_STORAGE)) {
+            return true;
+        }
+        return false;
+    }    
+    
+    /**
+     *  Moves the file using the filesystem operations.
+     *  Deletes the record in content resolver.
+     */
+    @Override
+    public void moveTo(File dest) throws IOException {
+        boolean result = this.data.renameTo(dest);
+        if (!result) {
+            throw new IOException(this.data + " was not moved");
+        }
+        delete();
     }
     
     /**
