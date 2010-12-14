@@ -60,6 +60,23 @@ public class ProgressDialog extends Dialog implements Progress {
             }
         });
     }
+    
+    @Override
+    public void updateFile(final File file) {
+        synchronized (manager) {
+            manager.updateFile(file);
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (manager) {
+                    updateFileName(file);
+                    updateFileProgress();
+                    //updateTotalProgress();
+                }
+            }
+        });
+    }
 
     @Override
     public void processBytes(long bytes) {

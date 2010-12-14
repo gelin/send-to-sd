@@ -51,6 +51,15 @@ public class ProgressManager implements Progress {
         }
     }
     
+    @Override
+    public void updateFile(File file) {
+        if (file != null) {
+            this.size = file.getSize();
+            this.processed = 0;
+            this.unit = findSizeUnit(this.size);
+        }
+    }
+    
     /**
      *  Returns the current processing file index.
      */

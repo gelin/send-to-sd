@@ -45,6 +45,27 @@ public class ProgressManagerTest {
         manager.nextFile(null);
         assertEquals(2, manager.file);
     }
+    
+    @Test
+    public void testUpdateFile() {
+        manager.setFiles(2);
+        assertEquals(2, manager.files);
+        assertEquals(-1, manager.file);
+        manager.nextFile(new FileInfo("0", 2048));
+        assertEquals(0, manager.file);
+        assertEquals(2048, manager.size);
+        assertEquals(0, manager.processed);
+        manager.processBytes(1024);
+        assertEquals(1024, manager.processed);
+        manager.updateFile(new FileInfo("1", File.UNKNOWN_SIZE));
+        assertEquals(0, manager.file);
+        assertEquals(File.UNKNOWN_SIZE, manager.size);
+        assertEquals(0, manager.processed);
+        manager.nextFile(new FileInfo("2", 859));
+        assertEquals(1, manager.file);
+        assertEquals(859, manager.size);
+        assertEquals(0, manager.processed);
+    }
 
     @Test
     public void testProcessBytes() {

@@ -18,6 +18,11 @@ public interface Progress {
     public void nextFile(File file);
     
     /**
+     *  Updates the data for currently processing file.
+     */
+    public void updateFile(File file);
+    
+    /**
      *  Mark next bytes of the current file as processed.
      */
     public void processBytes(long bytes);

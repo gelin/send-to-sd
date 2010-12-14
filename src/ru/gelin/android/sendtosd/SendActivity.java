@@ -205,32 +205,16 @@ public class SendActivity extends SendToFolderActivity
                         progress.nextFile(new FileInfo(uniqueFileName));
                         try {
                             intentFile.moveTo(new File(path, uniqueFileName));
+                            result.result = Result.MOVED;
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
-                            //try {   //TODO: copy on move failed
-                            //}
-                            result.result = Result.ERROR;
-                            return;
+                            progress.updateFile(new FileInfo(uniqueFileName, intentFile.getSize()));
+                            result.result = saveAndDeleteFile(uniqueFileName);
                         }
                     } else {
                         progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
-                        try {
-                            intentFile.setProgress(progress);
-                            intentFile.saveAs(new File(path, uniqueFileName));
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.result = Result.ERROR;
-                            return;
-                        }
-                        try {
-                            intentFile.delete();
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.result = Result.COPIED;
-                            return;
-                        }
+                        result.result = saveAndDeleteFile(uniqueFileName);
                     }
-                    result.result = Result.MOVED;
                 }
             },
             new Runnable() {
@@ -250,6 +234,23 @@ public class SendActivity extends SendToFolderActivity
                     }
                 }
             });
+    }
+    
+    Result saveAndDeleteFile(String uniqueFileName) {
+        try {
+            intentFile.setProgress(progress);
+            intentFile.saveAs(new File(path, uniqueFileName));
+        } catch (Exception e) {
+            Log.w(TAG, e.toString(), e);
+            return Result.ERROR;
+        }
+        try {
+            intentFile.delete();
+        } catch (Exception e) {
+            Log.w(TAG, e.toString(), e);
+            return Result.COPIED;
+        }
+        return Result.MOVED;
     }
 
 }
