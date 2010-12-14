@@ -22,13 +22,13 @@ public class FileFile extends StreamFile {
             Environment.getExternalStorageDirectory().getAbsolutePath();
 
     File file;
-
-    public FileFile(Context context, Intent intent) {
+    
+    public FileFile(Context context, Intent intent) throws IntentFileException {
         super(context, intent);
         file = getFile();
     }
     
-    public FileFile(Context context, Uri uri) {
+    public FileFile(Context context, Uri uri) throws IntentFileException {
         super(context, uri);
         file = getFile();
     }
@@ -92,13 +92,14 @@ public class FileFile extends StreamFile {
     
     /**
      *  Returns the file as File for file:/// URIs
+     *  @throws IntentFileException if the URI cannot be converted to file 
      */
-    File getFile() {
+    File getFile() throws IntentFileException {
         try {
             URI javaUri = new URI(uri.toString());
             return new File(javaUri);      //why so ugly???
         } catch (Exception e) {
-            return null;
+            throw new IntentFileException("cannot convert URI to file", e);
         }
     }
 

@@ -16,8 +16,9 @@ public class SendMultipleIntentInfo extends IntentInfo {
      *  Creates the intent information.
      *  @param  context current context
      *  @param  intent  intent to process
+     *  @throws IntentException if it's not possible to create the info from the intent
      */
-    public SendMultipleIntentInfo(Context context, Intent intent) {
+    public SendMultipleIntentInfo(Context context, Intent intent) throws IntentException {
         super(context, intent);
     }
     
@@ -25,7 +26,7 @@ public class SendMultipleIntentInfo extends IntentInfo {
      *  Returns false if this intent is not SEND_MULTIPLE or
      *  doesn't contain STREAM or TEXT extras.
      */
-    public boolean validate() {
+    boolean validate() {
         if (!Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
             return false;
         }
@@ -35,7 +36,7 @@ public class SendMultipleIntentInfo extends IntentInfo {
     /**
      *  Returns the files provided with the SEND intent.
      */
-    public IntentFile[] getFiles() {
+    public IntentFile[] getFiles() throws IntentFileException {
         List<IntentFile> result = new ArrayList<IntentFile>();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             List<String> texts = (List<String>)intent.getExtras().get(Intent.EXTRA_STREAM);

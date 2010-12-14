@@ -28,17 +28,21 @@ public class IntentInfo implements Constants {
      *  Creates the intent info.
      *  @param  context current context
      *  @param  intent  intent to process
+     *  @throws IntentException if it's not possible to create the info from the intent
      */
-    public IntentInfo(Context context, Intent intent) {
+    public IntentInfo(Context context, Intent intent) throws IntentException {
         this.context = context;
         this.intent = intent;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!validate()) {
+            throw new IntentException("invalid intent: " + intent);
+        }
     }
     
     /**
      *  Returns false if this intent doesn't contain STREAM or TEXT extras.
      */
-    public boolean validate() {
+    boolean validate() {
         return intent.hasExtra(Intent.EXTRA_STREAM) || 
                 intent.hasExtra(Intent.EXTRA_TEXT);
     }

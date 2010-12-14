@@ -21,8 +21,10 @@ public abstract class IntentFile implements Constants {
     
     /**
      *  Creates the concrete instance of the IntentFile from Intent.
+     *  @throws IntentFileException if it's not possible to create the file from intent
      */
-    public static IntentFile getInstance(Context context, Intent intent) {
+    public static IntentFile getInstance(Context context, Intent intent) 
+            throws IntentFileException {
         if (isText(intent)) {
             return new TextFile(intent);
         }
@@ -38,8 +40,10 @@ public abstract class IntentFile implements Constants {
 
     /**
      *  Creates the concrete instance of the IntentFile from Uri.
+     *  @throws IntentFileException if it's not possible to create the file from Uri
      */
-    public static IntentFile getInstance(Context context, Uri uri) {
+    public static IntentFile getInstance(Context context, Uri uri) 
+            throws IntentFileException {
         String scheme = uri.getScheme();
         if ("file".equals(scheme)) {
             return new FileFile(context, uri);
