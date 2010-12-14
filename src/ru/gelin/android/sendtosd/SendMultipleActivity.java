@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.MessageFormat;
 
 import ru.gelin.android.i18n.PluralForms;
+import ru.gelin.android.sendtosd.SendActivity.Result;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentFileException;
@@ -156,23 +157,20 @@ public class SendMultipleActivity extends SendToFolderActivity {
                     progress.setFiles(intentFiles.length);
                     for (IntentFile file : intentFiles) {
                         String uniqueFileName = getUniqueFileName(file.getName());
-                        progress.nextFile(new FileInfo(uniqueFileName, file.getSize()));
-                        try {
-                            file.setProgress(progress);
-                            file.saveAs(new File(path, uniqueFileName));
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.errors++;
-                            continue;
+                        if (file.isMovable()) {
+                            progress.nextFile(new FileInfo(uniqueFileName));
+                            try {
+                                file.moveTo(new File(path, uniqueFileName));
+                                result.moved++;
+                            } catch (Exception e) {
+                                Log.w(TAG, e.toString(), e);
+                                progress.updateFile(new FileInfo(uniqueFileName, file.getSize()));
+                                saveAndDeleteFile(uniqueFileName, file, result);
+                            }
+                        } else {
+                            progress.nextFile(new FileInfo(uniqueFileName, file.getSize()));
+                            saveAndDeleteFile(uniqueFileName, file, result);
                         }
-                        try {
-                            file.delete();
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.copied++;
-                            continue;
-                        }
-                        result.moved++;
                     }
                 }
             },
@@ -202,4 +200,23 @@ public class SendMultipleActivity extends SendToFolderActivity {
             });
     }
 
+    void saveAndDeleteFile(String uniqueFileName, IntentFile file, ResultHandler result) {
+        try {
+            file.setProgress(progress);
+            file.saveAs(new File(path, uniqueFileName));
+        } catch (Exception e) {
+            Log.w(TAG, e.toString(), e);
+            result.errors++;
+            return;
+        }
+        try {
+            file.delete();
+        } catch (Exception e) {
+            Log.w(TAG, e.toString(), e);
+            result.copied++;
+            return;
+        }
+        result.moved++;
+    }
+    
 }
