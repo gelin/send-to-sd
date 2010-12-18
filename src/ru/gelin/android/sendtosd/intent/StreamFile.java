@@ -10,7 +10,10 @@ import java.io.OutputStream;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 /**
@@ -26,15 +29,34 @@ public class StreamFile extends IntentFile {
     
     /** Uri of the stream */
     Uri uri;
+    /** Mime type of the stream */
+    String type;
+    /** Flag indicating that the Uri was queried for some additional information */
+    protected boolean queried = false;
     
     StreamFile(Context context, Intent intent) {
         contentResolver = context.getContentResolver();
         uri = getStreamUri(intent);
+        type = intent.getType();
     }
     
     StreamFile(Context context, Uri uri) {
         contentResolver = context.getContentResolver();
         this.uri = uri;
+    }
+    
+    /**
+     *  Queries the content for mime type.
+     *  If the query was done before the new attempt is skipped.
+     */
+    void queryContent() {
+        if (queried) {
+            return;
+        }
+        if (type == null) {
+            type = contentResolver.getType(uri);
+        }
+        queried = true;
     }
     
     /**
@@ -44,6 +66,15 @@ public class StreamFile extends IntentFile {
     public String getName() {
         String fileName = uri.getLastPathSegment();
         return addExtension(fileName);
+    }
+    
+    /**
+     *  When was created from intent, returns the intent type.
+     *  When was created from URI, returns the type requested from content provider.
+     */
+    public String getType() {
+        queryContent();
+        return type;
     }
     
     /**
@@ -111,9 +142,8 @@ public class StreamFile extends IntentFile {
         if (fileName.contains(".")) {   //has extension
             return fileName;
         }
-        String mimeType = contentResolver.getType(uri);
-        if (mimeType != null) {
-            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+        if (getType() != null) {
+            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(type);
             if (extension != null) {
                 return fileName + "." + extension;
             }

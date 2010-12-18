@@ -8,6 +8,7 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  *  Wrapper for {@link MediaScannerConnection}.
@@ -15,7 +16,7 @@ import android.net.Uri;
  *  Calls to {@link #scanFile} are asynchronous, no need to wait for
  *  connect.
  */
-public class MediaScanner {
+public class MediaScanner implements Constants {
 
     /** Context */
     Context context;
@@ -38,6 +39,7 @@ public class MediaScanner {
      *  @param  type    file mime type, can be null
      */
     public void scanFile(File file, String type) {
+        Log.d(TAG, "scanning " + file + " [" + type + "]");
         if (mediaScanner == null) {
             createMediaScanner();
         }

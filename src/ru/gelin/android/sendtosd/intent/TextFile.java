@@ -16,6 +16,7 @@ import android.content.Intent;
 public class TextFile extends IntentFile {
 
     private static final String TEXT_FILE_NAME = "text.txt";
+    private static final String TEXT_MIME_TYPE = "text/plain";
     
     /** The text content of the file */
     String text = "";
@@ -34,6 +35,13 @@ public class TextFile extends IntentFile {
     @Override
     public String getName() {
         return TEXT_FILE_NAME;
+    }
+    
+    /**
+     *  Returns "text/plain".
+     */
+    public String getType() {
+        return TEXT_MIME_TYPE;
     }
     
     /**

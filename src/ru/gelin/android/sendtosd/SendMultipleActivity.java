@@ -115,7 +115,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                                 file.setProgress(progress);
                                 File newFile = new File(path, uniqueFileName);
                                 file.saveAs(newFile);
-                                mediaScanner.scanFile(newFile, null);   //TODO add mime type
+                                mediaScanner.scanFile(newFile, file.getType());
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
                                 result.errors++;
@@ -163,7 +163,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                             try {
                                 File newFile = new File(path, uniqueFileName);
                                 file.moveTo(newFile);
-                                mediaScanner.scanFile(newFile, null);   //TODO add mime type
+                                mediaScanner.scanFile(newFile, file.getType());
                                 result.moved++;
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
@@ -208,7 +208,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
             file.setProgress(progress);
             File newFile = new File(path, uniqueFileName);
             file.saveAs(newFile);
-            mediaScanner.scanFile(newFile, null);   //TODO add mime type
+            mediaScanner.scanFile(newFile, file.getType());
         } catch (Exception e) {
             Log.w(TAG, e.toString(), e);
             result.errors++;

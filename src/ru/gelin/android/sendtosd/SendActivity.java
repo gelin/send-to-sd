@@ -165,7 +165,7 @@ public class SendActivity extends SendToFolderActivity
                             intentFile.setProgress(progress);
                             File file = new File(path, uniqueFileName);
                             intentFile.saveAs(file);
-                            mediaScanner.scanFile(file, null);   //TODO add mime type
+                            mediaScanner.scanFile(file, intentFile.getType());
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
                             result.result = Result.ERROR;
@@ -208,7 +208,7 @@ public class SendActivity extends SendToFolderActivity
                         try {
                             File file = new File(path, uniqueFileName);
                             intentFile.moveTo(file);
-                            mediaScanner.scanFile(file, null);   //TODO add mime type
+                            mediaScanner.scanFile(file, intentFile.getType());
                             result.result = Result.MOVED;
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
@@ -245,7 +245,7 @@ public class SendActivity extends SendToFolderActivity
             intentFile.setProgress(progress);
             File file = new File(path, uniqueFileName);
             intentFile.saveAs(file);
-            mediaScanner.scanFile(file, null);   //TODO add mime type
+            mediaScanner.scanFile(file, intentFile.getType());
         } catch (Exception e) {
             Log.w(TAG, e.toString(), e);
             return Result.ERROR;

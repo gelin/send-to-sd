@@ -66,6 +66,11 @@ public abstract class IntentFile implements Constants {
     abstract public String getName();
     
     /**
+     *  Returns the file mime type or null if the type is unknown.
+     */
+    abstract public String getType();
+    
+    /**
      *  Returns the file size, in bytes.
      *  Can return {@link Progress#UNKNOWN_SIZE}.
      */

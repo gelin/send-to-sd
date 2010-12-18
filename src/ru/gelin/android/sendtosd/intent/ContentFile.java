@@ -32,6 +32,7 @@ public class ContentFile extends StreamFile {
     /** Projection to select some useful data */
     String[] projection = {
             MediaStore.MediaColumns.DATA,
+            MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
             //MediaStore.MediaColumns.DISPLAY_NAME,
             //MediaStore.MediaColumns.TITLE,
@@ -41,9 +42,7 @@ public class ContentFile extends StreamFile {
     File data;
     /** Content size, in bytes */
     long size = ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
-    /** Flag indicating that the Uri was queried for some additional information */
-    boolean queried = false;
-    
+
     ContentFile(Context context, Intent intent) {
         super(context, intent);
         queryContent();     //called from SEND, can init here
@@ -55,9 +54,10 @@ public class ContentFile extends StreamFile {
     }
     
     /**
-     *  Queries the content for file name and size.
+     *  Queries the content for file name, mime type and size.
      *  If the query was done before the new attempt is skipped.
      */
+    @Override
     void queryContent() {
         if (queried) {
             return;
@@ -65,10 +65,12 @@ public class ContentFile extends StreamFile {
         try {
             Cursor cursor = contentResolver.query(uri, projection, null, null, null);
             int dataIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            int typeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE);
             int sizeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.SIZE);
             if (cursor.moveToFirst()) {
                 String data = cursor.getString(dataIndex);
                 this.data = new File(data);
+                this.type = cursor.getString(typeIndex);
                 this.size = cursor.getLong(sizeIndex);
             }
             cursor.close();
