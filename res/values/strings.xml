@@ -50,7 +50,7 @@
     <string name="please_wait">Please wait...</string>
     <string name="copying">Copying...</string>
     <string name="moving">Moving...</string>
-    <string name="b_progress">%d/%d b</string>
+    <string name="b_progress">%1.0f/%1.0f b</string>
     <string name="kb_progress">%1.1f/%1.1f Kb</string>
     <string name="mb_progress">%1.1f/%1.1f Mb</string>
     <string name="files_progress">%d/%d</string>
