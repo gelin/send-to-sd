@@ -49,7 +49,7 @@
     <string name="please_wait">Подождите, пожалуйста...</string>
     <string name="copying">Идет копирование...</string>
     <string name="moving">Идет перемещение...</string>
-    <string name="b_progress">%d/d б</string>
+    <string name="b_progress">%1.0f/%1.0f б</string>
     <string name="kb_progress">%1.1f/%1.1f Кб</string>
     <string name="mb_progress">%1.1f/%1.1f Мб</string>
 </resources>
