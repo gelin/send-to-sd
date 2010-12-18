@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -66,6 +67,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     Preference lastFolders;
     /** List of current subfolders */
     List<File> folders;
+    /** Wrapper for MediaScanner */
+    MediaScanner mediaScanner;
     
     /** Dialog to show the progress */
     volatile Progress progress = new DummyProgress();   //can be used from other threads
@@ -74,6 +77,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+        mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
         lastFolders = findPreference(PREF_LAST_FOLDERS);
         if (!Environment.getExternalStorageState().equals(
@@ -107,6 +111,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             error(R.string.unsupported_intent, e);
             return;
         }
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaScanner.disconnect();
     }
     
     /**

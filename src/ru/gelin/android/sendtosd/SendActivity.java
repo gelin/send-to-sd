@@ -163,7 +163,9 @@ public class SendActivity extends SendToFolderActivity
                         progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
                         try {
                             intentFile.setProgress(progress);
-                            intentFile.saveAs(new File(path, uniqueFileName));
+                            File file = new File(path, uniqueFileName);
+                            intentFile.saveAs(file);
+                            mediaScanner.scanFile(file, null);   //TODO add mime type
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
                             result.result = Result.ERROR;
@@ -204,7 +206,9 @@ public class SendActivity extends SendToFolderActivity
                     if (intentFile.isMovable()) {
                         progress.nextFile(new FileInfo(uniqueFileName));
                         try {
-                            intentFile.moveTo(new File(path, uniqueFileName));
+                            File file = new File(path, uniqueFileName);
+                            intentFile.moveTo(file);
+                            mediaScanner.scanFile(file, null);   //TODO add mime type
                             result.result = Result.MOVED;
                         } catch (Exception e) {
                             Log.w(TAG, e.toString(), e);
@@ -239,7 +243,9 @@ public class SendActivity extends SendToFolderActivity
     Result saveAndDeleteFile(String uniqueFileName) {
         try {
             intentFile.setProgress(progress);
-            intentFile.saveAs(new File(path, uniqueFileName));
+            File file = new File(path, uniqueFileName);
+            intentFile.saveAs(file);
+            mediaScanner.scanFile(file, null);   //TODO add mime type
         } catch (Exception e) {
             Log.w(TAG, e.toString(), e);
             return Result.ERROR;

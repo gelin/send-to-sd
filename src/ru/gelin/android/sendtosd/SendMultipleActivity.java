@@ -4,7 +4,6 @@ import java.io.File;
 import java.text.MessageFormat;
 
 import ru.gelin.android.i18n.PluralForms;
-import ru.gelin.android.sendtosd.SendActivity.Result;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentFileException;
@@ -114,7 +113,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
                             progress.nextFile(new FileInfo(uniqueFileName, file.getSize()));
                             try {
                                 file.setProgress(progress);
-                                file.saveAs(new File(path, uniqueFileName));
+                                File newFile = new File(path, uniqueFileName);
+                                file.saveAs(newFile);
+                                mediaScanner.scanFile(newFile, null);   //TODO add mime type
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
                                 result.errors++;
@@ -160,7 +161,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
                         if (file.isMovable()) {
                             progress.nextFile(new FileInfo(uniqueFileName));
                             try {
-                                file.moveTo(new File(path, uniqueFileName));
+                                File newFile = new File(path, uniqueFileName);
+                                file.moveTo(newFile);
+                                mediaScanner.scanFile(newFile, null);   //TODO add mime type
                                 result.moved++;
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
@@ -203,7 +206,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
     void saveAndDeleteFile(String uniqueFileName, IntentFile file, ResultHandler result) {
         try {
             file.setProgress(progress);
-            file.saveAs(new File(path, uniqueFileName));
+            File newFile = new File(path, uniqueFileName);
+            file.saveAs(newFile);
+            mediaScanner.scanFile(newFile, null);   //TODO add mime type
         } catch (Exception e) {
             Log.w(TAG, e.toString(), e);
             result.errors++;
