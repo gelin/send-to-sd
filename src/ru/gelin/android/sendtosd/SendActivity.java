@@ -126,6 +126,9 @@ public class SendActivity extends SendToFolderActivity
      *  This implementation returns true if the sending file is deletable.
      */
     public boolean hasDeletableFile() {
+        if (intentFile == null) {
+            return false;
+        }
         return intentFile.isDeletable();
     }
 

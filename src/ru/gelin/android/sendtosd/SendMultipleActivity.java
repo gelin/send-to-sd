@@ -48,7 +48,6 @@ public class SendMultipleActivity extends SendToFolderActivity {
     
     @Override
     protected void onPostInit() {
-        super.onPostInit();
         if (intentFiles == null || intentFiles.length == 0) {
             error(R.string.no_files);
             return;
@@ -56,6 +55,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
         setTitle(MessageFormat.format(getString(R.string.files_title), 
                 intentFiles.length, 
                 PluralForms.getInstance().getForm(intentFiles.length)));
+        super.onPostInit();
     }
     
     @Override
@@ -82,6 +82,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
      *  deletable.
      */
     public boolean hasDeletableFile() {
+        if (intentFiles == null) {
+            return false;
+        }
         for (IntentFile file : intentFiles) {
             if (file.isDeletable()) {
                 return true;

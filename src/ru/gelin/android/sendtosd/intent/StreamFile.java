@@ -10,10 +10,7 @@ import java.io.OutputStream;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 /**
