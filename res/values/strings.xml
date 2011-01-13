@@ -54,4 +54,6 @@
     <string name="kb_progress">%1.1f/%1.1f Kb</string>
     <string name="mb_progress">%1.1f/%1.1f Mb</string>
     <string name="files_progress">%d/%d</string>
+    <string name="donate">Donate</string>
+    <string name="donate_with_moneybookers">Donate $1 with moneybookers</string>
 </resources>
