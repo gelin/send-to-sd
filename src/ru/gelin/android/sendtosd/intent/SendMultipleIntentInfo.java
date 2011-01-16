@@ -39,13 +39,13 @@ public class SendMultipleIntentInfo extends IntentInfo {
     public IntentFile[] getFiles() throws IntentFileException {
         List<IntentFile> result = new ArrayList<IntentFile>();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-            List<String> texts = (List<String>)intent.getExtras().get(Intent.EXTRA_STREAM);
+            List<String> texts = (List<String>)intent.getStringArrayListExtra(Intent.EXTRA_TEXT);
             for (String text : texts) {
                 result.add(new TextFile(text));
             }
         }
         if (intent.hasExtra(Intent.EXTRA_STREAM)) {
-            List<Uri> uris = (List<Uri>)intent.getExtras().get(Intent.EXTRA_STREAM);
+            List<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
             for (Uri uri : uris) {
                 result.add(IntentFile.getInstance(context, uri));
             }
