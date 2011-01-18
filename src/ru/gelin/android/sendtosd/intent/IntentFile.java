@@ -29,6 +29,9 @@ public abstract class IntentFile implements Constants {
             return new TextFile(intent);
         }
         Uri uri = getStreamUri(intent);
+        if (uri == null) {
+            throw new IntentFileException("null file uri");
+        }
         String scheme = uri.getScheme();
         if ("file".equals(scheme)) {
             return new FileFile(context, intent);
@@ -44,6 +47,9 @@ public abstract class IntentFile implements Constants {
      */
     public static IntentFile getInstance(Context context, Uri uri) 
             throws IntentFileException {
+        if (uri == null) {
+            throw new IntentFileException("null file uri");
+        }
         String scheme = uri.getScheme();
         if ("file".equals(scheme)) {
             return new FileFile(context, uri);
@@ -119,7 +125,7 @@ public abstract class IntentFile implements Constants {
      *  Returns the Uri of the stream of the intent.
      */
     static Uri getStreamUri(Intent intent) {
-        return (Uri)intent.getExtras().get(Intent.EXTRA_STREAM);
+        return (Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM);
     }
 
 }

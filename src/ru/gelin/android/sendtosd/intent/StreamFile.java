@@ -29,7 +29,7 @@ public class StreamFile extends IntentFile {
     /** Mime type of the stream */
     String type;
     /** Flag indicating that the Uri was queried for some additional information */
-    protected boolean queried = false;
+    protected volatile boolean queried = false;
     
     StreamFile(Context context, Intent intent) {
         contentResolver = context.getContentResolver();

@@ -21,11 +21,17 @@ public class TextFile extends IntentFile {
     /** The text content of the file */
     String text = "";
     
-    TextFile(Intent intent) {
+    TextFile(Intent intent) throws IntentFileException {
         text = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (text == null) {
+            throw new IntentFileException("null text");
+        }
     }
     
-    TextFile(String text) {
+    TextFile(String text) throws IntentFileException {
+        if (text == null) {
+            throw new IntentFileException("null text");
+        }
         this.text = text;
     }
     

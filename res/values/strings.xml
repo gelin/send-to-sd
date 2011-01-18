@@ -50,10 +50,10 @@
     <string name="please_wait">Please wait...</string>
     <string name="copying">Copying...</string>
     <string name="moving">Moving...</string>
-    <string name="b_progress">%1.0f/%1.0f b</string>
-    <string name="kb_progress">%1.1f/%1.1f Kb</string>
-    <string name="mb_progress">%1.1f/%1.1f Mb</string>
-    <string name="files_progress">%d/%d</string>
+    <string name="b_progress" formatted="false">%1.0f/%1.0f b</string>
+    <string name="kb_progress" formatted="false">%1.1f/%1.1f Kb</string>
+    <string name="mb_progress" formatted="false">%1.1f/%1.1f Mb</string>
+    <string name="files_progress" formatted="false">%d/%d</string>
     <string name="donate">Donate</string>
     <string name="donate_with_moneybookers">Donate $1 with moneybookers</string>
 </resources>
