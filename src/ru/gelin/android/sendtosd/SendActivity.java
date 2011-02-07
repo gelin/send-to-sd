@@ -69,6 +69,10 @@ public class SendActivity extends SendToFolderActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.send_options_menu, menu);
+        MenuItem newFolderMenu = menu.findItem(R.id.menu_new_folder);
+        if (newFolderMenu != null && path != null) {
+            newFolderMenu.setEnabled(path.canWrite());
+        }
         return true;
     }
     
