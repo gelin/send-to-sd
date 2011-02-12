@@ -95,7 +95,7 @@ public class StreamFile extends IntentFile {
      *  Returns false.
      */
     @Override
-    public boolean isMovable() {
+    public boolean isMovable(File dest) {
         return false;
     }
     

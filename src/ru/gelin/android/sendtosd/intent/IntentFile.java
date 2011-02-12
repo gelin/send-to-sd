@@ -90,8 +90,9 @@ public abstract class IntentFile implements Constants {
     /**
      *  Returns true if the file can be moved by one moveTo()
      *  operation instead of saveAs() and delete().
+     *  @param  dest    file moving destination
      */
-    abstract public boolean isMovable();
+    abstract public boolean isMovable(File dest);
     
     /**
      *  Saves the file as the specified location on SD card.

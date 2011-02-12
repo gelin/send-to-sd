@@ -161,12 +161,12 @@ public class SendMultipleActivity extends SendToFolderActivity {
                     progress.setFiles(intentFiles.length);
                     for (IntentFile file : intentFiles) {
                         String uniqueFileName = getUniqueFileName(file.getName());
-                        if (file.isMovable()) {
+                        File dest = new File(path, uniqueFileName);
+                        if (file.isMovable(dest)) {
                             progress.nextFile(new FileInfo(uniqueFileName));
                             try {
-                                File newFile = new File(path, uniqueFileName);
-                                file.moveTo(newFile);
-                                mediaScanner.scanFile(newFile, file.getType());
+                                file.moveTo(dest);
+                                mediaScanner.scanFile(dest, file.getType());
                                 result.moved++;
                             } catch (Exception e) {
                                 Log.w(TAG, e.toString(), e);
@@ -209,9 +209,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
     void saveAndDeleteFile(String uniqueFileName, IntentFile file, ResultHandler result) {
         try {
             file.setProgress(progress);
-            File newFile = new File(path, uniqueFileName);
-            file.saveAs(newFile);
-            mediaScanner.scanFile(newFile, file.getType());
+            File dest = new File(path, uniqueFileName);
+            file.saveAs(dest);
+            mediaScanner.scanFile(dest, file.getType());
         } catch (Exception e) {
             Log.w(TAG, e.toString(), e);
             result.errors++;
