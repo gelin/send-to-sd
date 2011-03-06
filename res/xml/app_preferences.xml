@@ -43,7 +43,7 @@
         <ru.gelin.android.sendtosd.DonatePreference
                 android:key="donate"
                 android:title="@string/donate"
-                android:summary="@string/donate_with_moneybookers"/>
+                android:summary="@string/buy_donate_version"/>
         
     </PreferenceCategory>
 

@@ -53,5 +53,6 @@
     <string name="kb_progress" formatted="false">%1.1f/%1.1f Кб</string>
     <string name="mb_progress" formatted="false">%1.1f/%1.1f Мб</string>
     <string name="donate">Поддержать разработчика</string>
+    <string name="buy_donate_version">Купить платную версию приложения</string>
     <string name="donate_with_moneybookers">Подарите $1 через moneybookers</string>
 </resources>

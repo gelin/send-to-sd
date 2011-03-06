@@ -12,11 +12,14 @@ import android.util.AttributeSet;
 public class DonatePreference extends Preference {
 
     /** Donate page URL */
+    /*
     static final String URL = "https://www.moneybookers.com/app/payment.pl?" +
             "pay_to_email=dnelubin%40gmail.com&language=EN&" +
             "amount=1&currency=USD&" +
             "detail1_description=Send+to+SD+card&" +
             "detail1_text=Donate+your+favorite+Android+application";
+    */
+    static final String URL = "https://market.android.com/details?id=ru.gelin.android.sendtosd.donate";
     /** Donate page URI */
     static final Uri URI = Uri.parse(URL);
     
