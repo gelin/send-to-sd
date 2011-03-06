@@ -1,6 +1,6 @@
 package ru.gelin.android.sendtosd.progress;
 
-import ru.gelin.android.sendtosd.R;
+import ru.gelin.android.sendtosd.donate.R;
 import android.app.Activity;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;

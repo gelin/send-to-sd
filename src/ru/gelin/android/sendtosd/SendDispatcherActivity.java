@@ -1,5 +1,6 @@
 package ru.gelin.android.sendtosd;
 
+import ru.gelin.android.sendtosd.donate.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

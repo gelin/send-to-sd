@@ -36,15 +36,5 @@
                 android:defaultValue="5"/>
     
     </PreferenceCategory>
-    
-    <PreferenceCategory
-            android:title="@string/donate">
-        
-        <ru.gelin.android.sendtosd.DonatePreference
-                android:key="donate"
-                android:title="@string/donate"
-                android:summary="@string/buy_donate_version"/>
-        
-    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -2,6 +2,7 @@ package ru.gelin.android.sendtosd;
 
 import java.io.File;
 
+import ru.gelin.android.sendtosd.donate.R;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
