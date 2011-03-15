@@ -2,7 +2,6 @@ package ru.gelin.android.sendtosd;
 
 import java.text.MessageFormat;
 
-import ru.gelin.android.sendtosd.donate.R;
 import android.content.Context;
 import android.preference.ListPreference;
 import android.util.AttributeSet;

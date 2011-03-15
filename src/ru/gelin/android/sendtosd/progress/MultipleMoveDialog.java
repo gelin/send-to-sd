@@ -1,6 +1,6 @@
 package ru.gelin.android.sendtosd.progress;
 
-import ru.gelin.android.sendtosd.donate.R;
+import ru.gelin.android.sendtosd.R;
 import android.app.Activity;
 
 public class MultipleMoveDialog extends MultipleProgressDialog {
