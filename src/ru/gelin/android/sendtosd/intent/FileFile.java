@@ -3,6 +3,7 @@ package ru.gelin.android.sendtosd.intent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -63,8 +64,12 @@ public class FileFile extends AbstractFileFile {
      */
     File getFile() throws IntentFileException {
         try {
-            URI javaUri = new URI(uri.toString());
-            return new File(javaUri);      //why so ugly???
+            List<String> pathSegments = uri.getPathSegments();
+            File result = new File("/");
+            for (String segment : pathSegments) {
+                result = new File(result, segment);
+            }
+            return result;
         } catch (Exception e) {
             throw new IntentFileException("cannot convert URI to file", e);
         }

@@ -10,6 +10,7 @@ import ru.gelin.android.sendtosd.progress.Progress;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  *  A file provided with the intent to be saved on SD card.
@@ -29,6 +30,7 @@ public abstract class IntentFile implements Constants {
             return new TextFile(intent);
         }
         Uri uri = getStreamUri(intent);
+        //Log.i(TAG, "file uri: " + uri);
         if (uri == null) {
             throw new IntentFileException("null file uri");
         }
