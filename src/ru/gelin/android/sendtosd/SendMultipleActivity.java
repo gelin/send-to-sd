@@ -4,7 +4,6 @@ import java.io.File;
 import java.text.MessageFormat;
 
 import ru.gelin.android.i18n.PluralForms;
-import ru.gelin.android.sendtosd.donate.R;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentFileException;

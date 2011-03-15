@@ -1,6 +1,5 @@
 package ru.gelin.android.sendtosd;
 
-import ru.gelin.android.sendtosd.donate.R;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 

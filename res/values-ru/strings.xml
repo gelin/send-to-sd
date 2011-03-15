@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Отправка на SD карту (платная версия)</string>
+    <string name="app_name">Отправка на SD карту</string>
     <string name="sd_card">SD карта</string>
     <string name="files_title">{0} {1,choice,0#файл|1#файла|2#файлов}</string>
     <string name="unsupported_intent">Невозможно произвести отправку</string>
