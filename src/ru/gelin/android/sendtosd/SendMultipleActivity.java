@@ -6,7 +6,6 @@ import java.io.File;
 import java.text.MessageFormat;
 
 import ru.gelin.android.i18n.PluralForms;
-import ru.gelin.android.sendtosd.SendActivity.Result;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentFileException;
@@ -185,79 +184,91 @@ public class SendMultipleActivity extends SendToFolderActivity {
      *  Moves the files.
      */
     public void moveFile() {
-        saveLastFolder();
-        final ResultHandler result = new ResultHandler();
-        runWithProgress(MOVE_DIALOG,
-            new Runnable() {
-                //@Override
-                public void run() {
-                    progress.setFiles(intentFiles.length);
-                    for (IntentFile file : intentFiles) {
-                        String uniqueFileName = getUniqueFileName(file.getName());
-                        File dest = new File(path, uniqueFileName);
-                        if (file.isMovable(dest)) {
-                            progress.nextFile(new FileInfo(uniqueFileName));
-                            try {
-                                file.moveTo(dest);
-                                mediaScanner.scanFile(dest, file.getType());
-                                result.moved++;
-                            } catch (Exception e) {
-                                Log.w(TAG, e.toString(), e);
-                                progress.updateFile(new FileInfo(uniqueFileName, file.getSize()));
-                                saveAndDeleteFile(uniqueFileName, file, result);
-                            }
-                        } else {
-                            progress.nextFile(new FileInfo(uniqueFileName, file.getSize()));
-                            saveAndDeleteFile(uniqueFileName, file, result);
-                        }
-                    }
-                }
-            },
-            new Runnable() {
-                //@Override
-                public void run() {
-                    progress.complete();
-                    PluralForms plurals = PluralForms.getInstance();
-                    StringBuilder message = new StringBuilder();
-                    message.append(MessageFormat.format(
-                            getString(R.string.files_are_moved),
-                            result.moved, plurals.getForm(result.moved)));
-                    if (result.copied > 0) {
-                        message.append('\n');
-                        message.append(MessageFormat.format(
-                                getString(R.string.files_are_only_copied),
-                                result.copied, plurals.getForm(result.copied)));
-                    }
-                    if (result.errors > 0) {
-                        message.append('\n');
-                        message.append(MessageFormat.format(
-                                getString(R.string.errors_appeared),
-                                result.errors, plurals.getForm(result.errors)));
-                    }
-                    complete(message.toString());
-                }
-            });
+    	new MoveFileTask().execute(this.intentFiles);
     }
 
-    void saveAndDeleteFile(String uniqueFileName, IntentFile file, ResultHandler result) {
-        try {
-            file.setProgress(progress);
-            File dest = new File(path, uniqueFileName);
-            file.saveAs(dest);
-            mediaScanner.scanFile(dest, file.getType());
-        } catch (Exception e) {
-            Log.w(TAG, e.toString(), e);
-            result.errors++;
-            return;
+    class MoveFileTask extends ProgressTask {
+    	
+    	@Override
+    	protected void onPreExecute() {
+            saveLastFolder();
+            showDialog(MOVE_DIALOG);
+            this.progress = SendMultipleActivity.this.progress;
+    	}
+    	
+    	@Override
+    	protected Result doInBackground(IntentFile[]... params) {
+    		Result result = new Result();
+    		IntentFile[] intentFiles = params[0];
+            publishProgress(ProgressEvent.newSetFilesEvent(intentFiles.length));
+            for (IntentFile file : intentFiles) {
+                String uniqueFileName = getUniqueFileName(file.getName());
+                File dest = new File(SendMultipleActivity.this.path, uniqueFileName);
+                if (file.isMovable(dest)) {
+                    publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName)));
+                    try {
+                        file.moveTo(dest);
+                        SendMultipleActivity.this.mediaScanner.scanFile(dest, file.getType());
+                        result.moved++;
+                    } catch (Exception e) {
+                        Log.w(TAG, e.toString(), e);
+                        publishProgress(ProgressEvent.newUpdateFileEvent(
+                        		new FileInfo(uniqueFileName, file.getSize())));
+                        saveAndDeleteFile(file, uniqueFileName, result);
+                    }
+                } else {
+                    publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName, file.getSize())));
+                    saveAndDeleteFile(file, uniqueFileName, result);
+                }
+            }
+            return result;
+    	}
+    	
+    	void saveAndDeleteFile(IntentFile file, String uniqueFileName, Result result) {
+            try {
+                file.setProgress(this);
+                File dest = new File(SendMultipleActivity.this.path, uniqueFileName);
+                file.saveAs(dest);
+                SendMultipleActivity.this.mediaScanner.scanFile(dest, file.getType());
+            } catch (Exception e) {
+                Log.w(TAG, e.toString(), e);
+                result.errors++;
+                return;
+            }
+            try {
+                file.delete();
+            } catch (Exception e) {
+                Log.w(TAG, e.toString(), e);
+                result.copied++;
+                return;
+            }
+            result.moved++;
         }
-        try {
-            file.delete();
-        } catch (Exception e) {
-            Log.w(TAG, e.toString(), e);
-            result.copied++;
-            return;
-        }
-        result.moved++;
+    	
+    	@Override
+    	protected void onPostExecute(Result result) {
+            this.progress.progress(ProgressEvent.newCompleteEvent());
+            removeDialog(MOVE_DIALOG);
+            PluralForms plurals = PluralForms.getInstance();
+            StringBuilder message = new StringBuilder();
+            message.append(MessageFormat.format(
+                    getString(R.string.files_are_moved),
+                    result.moved, plurals.getForm(result.moved)));
+            if (result.copied > 0) {
+                message.append('\n');
+                message.append(MessageFormat.format(
+                        getString(R.string.files_are_only_copied),
+                        result.copied, plurals.getForm(result.copied)));
+            }
+            if (result.errors > 0) {
+                message.append('\n');
+                message.append(MessageFormat.format(
+                        getString(R.string.errors_appeared),
+                        result.errors, plurals.getForm(result.errors)));
+            }
+            complete(message.toString());
+    	}
+    	
     }
     
 }
