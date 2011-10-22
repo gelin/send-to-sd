@@ -6,24 +6,7 @@ package ru.gelin.android.sendtosd.progress;
  */
 public class DummyProgress implements Progress {
 
-    //@Override
-    public void setFiles(int files) {
-    }
-
-    //@Override
-    public void nextFile(File file) {
-    }
-    
-    //@Override
-    public void updateFile(File file) {
-    }
-
-    //@Override
-    public void processBytes(long bytes) {
-    }
-
-    //@Override
-    public void complete() {
-    }
+	public void progress(ProgressEvent event) {
+	}
 
 }

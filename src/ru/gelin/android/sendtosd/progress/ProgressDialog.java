@@ -28,89 +28,35 @@ public class ProgressDialog extends Dialog implements Progress {
         setCancelable(false);
         this.activity = activity;
     }
-
-    //@Override
-    public void setFiles(int files) {
-        synchronized (manager) {
-            manager.setFiles(files);
-        }
-        activity.runOnUiThread(new Runnable() {
-            //@Override
-            public void run() {
-                synchronized (manager) {
-                    updateTotalProgress();
-                }
-            }
-        });
-    }
     
-    //@Override
-    public void nextFile(final File file) {
-        synchronized (manager) {
-            manager.nextFile(file);
-        }
-        activity.runOnUiThread(new Runnable() {
-            //@Override
-            public void run() {
-                synchronized (manager) {
-                    updateFileName(file);
-                    updateFileProgress();
-                    updateTotalProgress();
-                }
+	public void progress(ProgressEvent event) {
+		manager.progress(event);
+		switch (event.type) {
+		case SET_FILES:
+			updateTotalProgress();
+			break;
+		case NEXT_FILE:
+			updateFileName(event.file);
+            updateFileProgress();
+            updateTotalProgress();
+			break;
+		case UPDATE_FILE:
+            updateFileName(event.file);
+            updateFileProgress();
+            //updateTotalProgress();
+			break;
+		case PROCESS_BYTES:
+			if (tooOften()) {
+                break;
             }
-        });
-    }
-    
-    //@Override
-    public void updateFile(final File file) {
-        synchronized (manager) {
-            manager.updateFile(file);
-        }
-        activity.runOnUiThread(new Runnable() {
-            //@Override
-            public void run() {
-                synchronized (manager) {
-                    updateFileName(file);
-                    updateFileProgress();
-                    //updateTotalProgress();
-                }
-            }
-        });
-    }
-
-    //@Override
-    public void processBytes(long bytes) {
-        synchronized (manager) {
-            manager.processBytes(bytes);
-            if (tooOften()) {
-                return;
-            }
-        }
-        activity.runOnUiThread(new Runnable() {
-            //@Override
-            public void run() {
-                synchronized (manager) {
-                    updateFileProgress();
-                }
-            }
-        });
-    }
-    
-    //@Override
-    public void complete() {
-        synchronized (manager) {
-            manager.complete();
-        }
-        activity.runOnUiThread(new Runnable() {
-            //@Override
-            public void run() {
-                synchronized (manager) {
-                    updateFileProgress();
-                    updateTotalProgress();
-                }
-            }
-        });
-    }
+			updateFileProgress();
+			break;
+		case COMPLETE:
+			updateFileProgress();
+            updateTotalProgress();
+            break;
+		}
+	}
 
     /**
      *  Here does nothing because there is no total progress when sending one file.

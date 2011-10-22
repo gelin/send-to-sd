@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -110,7 +112,7 @@ public class StreamFile extends IntentFile {
         int read;
         while ((read = in.read(buf)) > 0) {
             out.write(buf, 0, read);
-            this.progress.processBytes(read);
+            this.progress.progress(ProgressEvent.newProcessBytesEvent(read));
         }
         out.close();
         in.close();

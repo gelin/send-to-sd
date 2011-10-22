@@ -14,6 +14,7 @@ import ru.gelin.android.sendtosd.progress.Progress;
 import ru.gelin.android.sendtosd.progress.ProgressDialog;
 import ru.gelin.android.sendtosd.progress.SingleCopyDialog;
 import ru.gelin.android.sendtosd.progress.SingleMoveDialog;
+import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -154,95 +155,65 @@ public class SendActivity extends SendToFolderActivity
      */
     @Override
     public void copyFile() {
-        saveLastFolder();
-        final ResultHandler result = new ResultHandler();
-        runWithProgress(COPY_DIALOG, 
-                new Runnable() {
-                    //@Override
-                    public void run() {
-                        
-                    }
-                },
-                new Runnable() {
-                    //@Override
-                    public void run() {
-                        progress.complete();
-                        switch (result.result) {
-                        case COPIED:
-                            complete(R.string.file_is_copied);
-                            break;
-                        case ERROR:
-                            warn(R.string.file_is_not_copied);
-                            break;
-                        }
-                    }
-                });
+    	new CopyFileTask().execute(this.intentFile);
     }
     
     static enum Result {
         MOVED, COPIED, ERROR;
     }
     
-    class CopyFileTask extends AsyncTask<IntentFile, Integer, Result> implements Progress {
+    class CopyFileTask extends AsyncTask<IntentFile, ProgressEvent, Result> implements Progress {
     	
     	Progress progress;
-    	
-    	public CopyFileTask(Progress progress) {
-    		this.progress = progress;
-		}
     	
     	@Override
     	protected void onPreExecute() {
     		saveLastFolder();
     		showDialog(COPY_DIALOG);
+    		this.progress = SendActivity.this.progress;
     	}
     	
 		@Override
 		protected Result doInBackground(IntentFile... params) {
-			this.progress.setFiles(1);   //single file in this activity
+			publishProgress(ProgressEvent.newSetFilesEvent(1));   //single file in this activity
             String uniqueFileName = getUniqueFileName(fileName);
-            this.progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
+            publishProgress(ProgressEvent.newNextFileEvent(
+            		new FileInfo(uniqueFileName, intentFile.getSize())));
+			IntentFile intentFile = params[0];
             try {
                 intentFile.setProgress(this);
-                File file = new File(path, uniqueFileName);
+                File file = new File(SendActivity.this.path, uniqueFileName);
                 intentFile.saveAs(file);
-                mediaScanner.scanFile(file, intentFile.getType());
+                SendActivity.this.mediaScanner.scanFile(file, intentFile.getType());
             } catch (Exception e) {
                 Log.w(TAG, e.toString(), e);
-                result.result = Result.ERROR;
-                return;
+                return Result.ERROR;
             }
-            result.result = Result.COPIED;
+            return Result.COPIED;
 		}
 		
 		@Override
 		protected void onPostExecute(Result result) {
-			removeDialog(COPY_DIALOG);
+            this.progress.progress(ProgressEvent.newCompleteEvent());
+            removeDialog(COPY_DIALOG);
+            switch (result) {
+            case COPIED:
+                complete(R.string.file_is_copied);
+                break;
+            case ERROR:
+                warn(R.string.file_is_not_copied);
+                break;
+            }
 		}
 
-		public void complete() {
-			// TODO Auto-generated method stub
-			
+		//from Progress interface
+		public void progress(ProgressEvent event) {
+			publishProgress(event);
 		}
-
-		public void nextFile(ru.gelin.android.sendtosd.progress.File file) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void processBytes(long bytes) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void setFiles(int files) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void updateFile(ru.gelin.android.sendtosd.progress.File file) {
-			// TODO Auto-generated method stub
-			
+		
+		@Override
+		protected void onProgressUpdate(ProgressEvent... events) {
+			this.progress.equals(events[0]);
 		}
     	
     }
