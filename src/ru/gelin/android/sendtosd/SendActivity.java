@@ -165,7 +165,8 @@ public class SendActivity extends SendToFolderActivity
 		
 		@Override
 		protected void onProgressUpdate(ProgressEvent... events) {
-			this.progress.equals(events[0]);
+			//Log.d(TAG, events[0].type.toString());
+			this.progress.progress(events[0]);
 		}    	
     	
     }

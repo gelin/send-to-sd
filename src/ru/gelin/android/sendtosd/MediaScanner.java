@@ -1,7 +1,5 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -10,7 +8,6 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  *  Wrapper for {@link MediaScannerConnection}.
@@ -41,7 +38,7 @@ public class MediaScanner {
      *  @param  type    file mime type, can be null
      */
     public void scanFile(File file, String type) {
-        Log.d(TAG, "scanning " + file + " [" + type + "]");
+        //Log.d(TAG, "scanning " + file + " [" + type + "]");
         if (mediaScanner == null) {
             createMediaScanner();
         }
