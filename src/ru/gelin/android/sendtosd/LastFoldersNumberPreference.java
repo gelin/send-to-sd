@@ -1,5 +1,6 @@
 package ru.gelin.android.sendtosd;
 
+import static ru.gelin.android.sendtosd.Tag.TAG;
 import java.text.MessageFormat;
 
 import android.content.Context;
@@ -10,7 +11,7 @@ import android.util.Log;
 /**
  *  List preference which displays the selected value as Summary.
  */
-public class LastFoldersNumberPreference extends ListPreference implements Constants {
+public class LastFoldersNumberPreference extends ListPreference {
 
     public LastFoldersNumberPreference(Context context) {
         super(context);

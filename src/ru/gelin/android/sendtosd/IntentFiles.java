@@ -5,7 +5,7 @@ import ru.gelin.android.sendtosd.intent.IntentFile;
 /**
  *  Singleton storage for intent files.
  */
-public class IntentFiles implements Constants {
+public class IntentFiles {
     
     /** Instance */
     static IntentFiles instance;

@@ -1,5 +1,7 @@
 package ru.gelin.android.sendtosd;
 
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,7 +18,7 @@ import android.util.Log;
  *  Calls to {@link #scanFile} are asynchronous, no need to wait for
  *  connect.
  */
-public class MediaScanner implements Constants {
+public class MediaScanner {
 
     /** Context */
     Context context;

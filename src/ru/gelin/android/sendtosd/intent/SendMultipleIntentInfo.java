@@ -1,5 +1,7 @@
 package ru.gelin.android.sendtosd.intent;
 
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.util.ArrayList;
 import java.util.List;
 

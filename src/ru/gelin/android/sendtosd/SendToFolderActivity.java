@@ -1,5 +1,12 @@
 package ru.gelin.android.sendtosd;
 
+import static ru.gelin.android.sendtosd.IntentParams.EXTRA_PATH;
+import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_LAST_FOLDERS_NUMBER;
+import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_LAST_FOLDERS_NUMBER_INT;
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDERS_NUMBER;
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_SHOW_LAST_FOLDERS;
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -39,7 +46,7 @@ import android.widget.Toast;
  *  Responses for the directory listing and traversing.
  */
 public abstract class SendToFolderActivity extends PreferenceActivity 
-        implements Constants, FileSaver, FolderChanger {
+        implements FileSaver, FolderChanger {
     
     /** "Copy here" preference key */
     public static final String PREF_COPY_HERE = "copy_here";

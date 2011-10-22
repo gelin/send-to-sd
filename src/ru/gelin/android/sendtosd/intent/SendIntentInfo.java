@@ -1,5 +1,6 @@
 package ru.gelin.android.sendtosd.intent;
 
+import static ru.gelin.android.sendtosd.IntentParams.EXTRA_FILE_NAME;
 import android.content.Context;
 import android.content.Intent;
 

@@ -1,5 +1,8 @@
 package ru.gelin.android.sendtosd;
 
+import static ru.gelin.android.sendtosd.IntentParams.EXTRA_FILE_NAME;
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.io.File;
 
 import ru.gelin.android.sendtosd.intent.IntentException;

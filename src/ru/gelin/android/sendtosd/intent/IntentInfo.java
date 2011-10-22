@@ -1,9 +1,13 @@
 package ru.gelin.android.sendtosd.intent;
 
+import static ru.gelin.android.sendtosd.IntentParams.EXTRA_PATH;
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_INITIAL_FOLDER;
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDER;
+import static ru.gelin.android.sendtosd.PreferenceParams.VAL_LAST_FOLDER;
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.io.File;
 import java.io.IOException;
-
-import ru.gelin.android.sendtosd.Constants;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +19,7 @@ import android.util.Log;
 /**
  *  Extracts some necessary information from the intent.
  */
-public class IntentInfo implements Constants {
+public class IntentInfo {
     
     /** Current context */
     Context context;

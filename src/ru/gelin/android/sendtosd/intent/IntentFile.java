@@ -3,7 +3,6 @@ package ru.gelin.android.sendtosd.intent;
 import java.io.File;
 import java.io.IOException;
 
-import ru.gelin.android.sendtosd.Constants;
 import ru.gelin.android.sendtosd.progress.DummyProgress;
 import ru.gelin.android.sendtosd.progress.Progress;
 import android.content.Context;
@@ -13,7 +12,7 @@ import android.net.Uri;
 /**
  *  A file provided with the intent to be saved on SD card.
  */
-public abstract class IntentFile implements Constants {
+public abstract class IntentFile {
     
     /** Object to display file operation progress. */
     volatile Progress progress = new DummyProgress();   //can be used from other threads

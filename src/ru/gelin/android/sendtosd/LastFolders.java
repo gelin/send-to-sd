@@ -1,5 +1,7 @@
 package ru.gelin.android.sendtosd;
 
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDER;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import android.preference.PreferenceManager;
 /**
  *  Singleton storage for last folders.
  */
-public class LastFolders implements Constants {
+public class LastFolders {
     
     /** Last folders preferences prefix */
     public static final String PREF_LAST_FOLDERS_PREFIX = "last_folder_";

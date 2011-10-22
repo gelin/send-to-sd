@@ -1,14 +1,9 @@
 package ru.gelin.android.sendtosd;
 
-public interface Constants {
-    
-    /** Tag for logs */
-    public static final String TAG = "ru.gelin.android.sendtosd";
-    
-    /** Extra name for current path */
-    public static final String EXTRA_PATH = "path";
-    /** Extra name for the file name */
-    public static final String EXTRA_FILE_NAME = "file_name";
+/**
+ * 	Some constants for preferences
+ */
+public class PreferenceParams {
     
     /** "How to use" preference key */
     public static final String PREF_HOW_TO_USE = "how_to_use";

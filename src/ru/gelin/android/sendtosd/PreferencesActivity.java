@@ -6,7 +6,7 @@ import android.preference.PreferenceActivity;
 /**
  *  Application preferences.
  */
-public class PreferencesActivity extends PreferenceActivity implements Constants {
+public class PreferencesActivity extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
