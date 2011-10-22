@@ -266,7 +266,7 @@ public class SendActivity extends SendToFolderActivity
 		
 		Result saveAndDeleteFile(IntentFile intentFile, String uniqueFileName) {
 	        try {
-	            intentFile.setProgress(progress);
+	            intentFile.setProgress(this);
 	            File dest = new File(SendActivity.this.path, uniqueFileName);
 	            intentFile.saveAs(dest);
 	            SendActivity.this.mediaScanner.scanFile(dest, intentFile.getType());
