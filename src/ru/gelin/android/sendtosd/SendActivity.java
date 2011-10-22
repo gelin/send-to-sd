@@ -150,6 +150,26 @@ public class SendActivity extends SendToFolderActivity
         return intent;
     }
     
+    static enum Result {
+        MOVED, COPIED, ERROR;
+    }
+    
+    abstract class ProgressTask extends AsyncTask<IntentFile, ProgressEvent, Result> implements Progress {
+
+    	protected Progress progress;
+    	
+		//from Progress interface
+		public void progress(ProgressEvent event) {
+			publishProgress(event);
+		}
+		
+		@Override
+		protected void onProgressUpdate(ProgressEvent... events) {
+			this.progress.equals(events[0]);
+		}    	
+    	
+    }
+    
     /**
      *  Copies the file.
      */
@@ -158,13 +178,7 @@ public class SendActivity extends SendToFolderActivity
     	new CopyFileTask().execute(this.intentFile);
     }
     
-    static enum Result {
-        MOVED, COPIED, ERROR;
-    }
-    
-    class CopyFileTask extends AsyncTask<IntentFile, ProgressEvent, Result> implements Progress {
-    	
-    	Progress progress;
+    class CopyFileTask extends ProgressTask {
     	
     	@Override
     	protected void onPreExecute() {
@@ -175,11 +189,11 @@ public class SendActivity extends SendToFolderActivity
     	
 		@Override
 		protected Result doInBackground(IntentFile... params) {
+			IntentFile intentFile = params[0];
 			publishProgress(ProgressEvent.newSetFilesEvent(1));   //single file in this activity
-            String uniqueFileName = getUniqueFileName(fileName);
+            String uniqueFileName = getUniqueFileName(SendActivity.this.fileName);
             publishProgress(ProgressEvent.newNextFileEvent(
             		new FileInfo(uniqueFileName, intentFile.getSize())));
-			IntentFile intentFile = params[0];
             try {
                 intentFile.setProgress(this);
                 File file = new File(SendActivity.this.path, uniqueFileName);
@@ -206,16 +220,6 @@ public class SendActivity extends SendToFolderActivity
             }
 		}
 
-		//from Progress interface
-		public void progress(ProgressEvent event) {
-			publishProgress(event);
-		}
-		
-		@Override
-		protected void onProgressUpdate(ProgressEvent... events) {
-			this.progress.equals(events[0]);
-		}
-    	
     }
     
     /**
@@ -223,68 +227,79 @@ public class SendActivity extends SendToFolderActivity
      */
     @Override
     public void moveFile() {
-        saveLastFolder();
-        final ResultHandler result = new ResultHandler();
-        runWithProgress(MOVE_DIALOG, 
-            new Runnable() {
-                //@Override
-                public void run() {
-                    progress.setFiles(1);   //single file in this activity
-                    String uniqueFileName = getUniqueFileName(fileName);
-                    File dest = new File(path, uniqueFileName);
-                    if (intentFile.isMovable(dest)) {
-                        progress.nextFile(new FileInfo(uniqueFileName));
-                        try {
-                            intentFile.moveTo(dest);
-                            mediaScanner.scanFile(dest, intentFile.getType());
-                            result.result = Result.MOVED;
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            progress.updateFile(new FileInfo(uniqueFileName, intentFile.getSize()));
-                            result.result = saveAndDeleteFile(uniqueFileName);
-                        }
-                    } else {
-                        progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
-                        result.result = saveAndDeleteFile(uniqueFileName);
-                    }
-                }
-            },
-            new Runnable() {
-                //@Override
-                public void run() {
-                    progress.complete();
-                    switch (result.result) {
-                    case MOVED:
-                        complete(R.string.file_is_moved);
-                        break;
-                    case COPIED:
-                        complete(R.string.file_is_not_deleted);
-                        break;
-                    case ERROR:
-                        warn(R.string.file_is_not_moved);
-                        break;
-                    }
-                }
-            });
+    	new MoveFileTask().execute(this.intentFile);
     }
     
-    Result saveAndDeleteFile(String uniqueFileName) {
-        try {
-            intentFile.setProgress(progress);
-            File dest = new File(path, uniqueFileName);
-            intentFile.saveAs(dest);
-            mediaScanner.scanFile(dest, intentFile.getType());
-        } catch (Exception e) {
-            Log.w(TAG, e.toString(), e);
-            return Result.ERROR;
-        }
-        try {
-            intentFile.delete();
-        } catch (Exception e) {
-            Log.w(TAG, e.toString(), e);
-            return Result.COPIED;
-        }
-        return Result.MOVED;
-    }
+    class MoveFileTask extends ProgressTask {
 
+    	@Override
+    	protected void onPreExecute() {
+    		saveLastFolder();
+    		showDialog(MOVE_DIALOG);
+    		this.progress = SendActivity.this.progress;
+    	}
+    	
+		@Override
+		protected Result doInBackground(IntentFile... params) {
+			IntentFile intentFile = params[0];
+            publishProgress(ProgressEvent.newSetFilesEvent(1));   //single file in this activity
+            String uniqueFileName = getUniqueFileName(SendActivity.this.fileName);
+            File dest = new File(SendActivity.this.path, uniqueFileName);
+            if (intentFile.isMovable(dest)) {
+                publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName)));
+                try {
+                    intentFile.moveTo(dest);
+                    SendActivity.this.mediaScanner.scanFile(dest, intentFile.getType());
+                    return Result.MOVED;
+                } catch (Exception e) {
+                    Log.w(TAG, e.toString(), e);
+                    publishProgress(ProgressEvent.newUpdateFileEvent(
+                    		new FileInfo(uniqueFileName, intentFile.getSize())));
+                    return saveAndDeleteFile(intentFile, uniqueFileName);
+                }
+            } else {
+                publishProgress(ProgressEvent.newNextFileEvent(
+                		new FileInfo(uniqueFileName, intentFile.getSize())));
+                return saveAndDeleteFile(intentFile, uniqueFileName);
+            }
+		}
+		
+		Result saveAndDeleteFile(IntentFile intentFile, String uniqueFileName) {
+	        try {
+	            intentFile.setProgress(progress);
+	            File dest = new File(SendActivity.this.path, uniqueFileName);
+	            intentFile.saveAs(dest);
+	            SendActivity.this.mediaScanner.scanFile(dest, intentFile.getType());
+	        } catch (Exception e) {
+	            Log.w(TAG, e.toString(), e);
+	            return Result.ERROR;
+	        }
+	        try {
+	            intentFile.delete();
+	        } catch (Exception e) {
+	            Log.w(TAG, e.toString(), e);
+	            return Result.COPIED;
+	        }
+	        return Result.MOVED;
+	    }
+		
+		@Override
+		protected void onPostExecute(Result result) {
+            this.progress.progress(ProgressEvent.newCompleteEvent());
+            removeDialog(MOVE_DIALOG);
+            switch (result) {
+            case MOVED:
+                complete(R.string.file_is_moved);
+                break;
+            case COPIED:
+                complete(R.string.file_is_not_deleted);
+                break;
+            case ERROR:
+                warn(R.string.file_is_not_moved);
+                break;
+            }
+		}
+		
+    }
+    
 }
