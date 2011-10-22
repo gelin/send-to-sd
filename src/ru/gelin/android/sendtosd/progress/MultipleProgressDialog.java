@@ -2,7 +2,6 @@ package ru.gelin.android.sendtosd.progress;
 
 import ru.gelin.android.sendtosd.R;
 import android.app.Activity;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -10,8 +9,7 @@ public class MultipleProgressDialog extends ProgressDialog {
 
     protected MultipleProgressDialog(Activity activity) {
         super(activity);
-        setContentView(getLayoutInflater().inflate(R.layout.progress_dialog, 
-                (ViewGroup)findViewById(R.id.progress_dialog_root)));
+        setContentView(getLayoutInflater().inflate(R.layout.progress_dialog, null));
     }
     
     @Override

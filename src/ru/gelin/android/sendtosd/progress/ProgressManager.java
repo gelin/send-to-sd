@@ -1,7 +1,5 @@
 package ru.gelin.android.sendtosd.progress;
 
-
-
 /**
  *  Handles the progress of copying/moving files.
  *  Calls to Progress interface are safe from any thread, they are executed

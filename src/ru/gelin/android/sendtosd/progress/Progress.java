@@ -1,7 +1,5 @@
 package ru.gelin.android.sendtosd.progress;
 
-
-
 /**
  *  Interface to handle file copying/moving progress.
  */
