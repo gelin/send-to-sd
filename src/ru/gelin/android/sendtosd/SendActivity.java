@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -95,8 +94,7 @@ public class SendActivity extends SendToFolderActivity
         case FILE_NAME_DIALOG:
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.choose_file_name);
-            View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, 
-                    (ViewGroup)findViewById(R.id.how_to_use_dialog_root));
+            View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, null);
             final EditText edit = (EditText)content.findViewById(R.id.edit_text);
             edit.setText(fileName);
             builder.setView(content);
@@ -110,7 +108,7 @@ public class SendActivity extends SendToFolderActivity
             Dialog dialog = builder.create();
             //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
             Window window = dialog.getWindow();
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE |
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE |
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             return dialog;
         case COPY_DIALOG: {
