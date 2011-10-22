@@ -27,7 +27,7 @@ public class ContentFile extends AbstractFileFile {
     };
     
     /** Projection to select some useful data */
-    String[] projection = {
+    static final String[] PROJECTION = {
             MediaStore.MediaColumns.DATA,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
@@ -54,11 +54,11 @@ public class ContentFile extends AbstractFileFile {
      */
     @Override
     void queryContent() {
-        if (queried) {
+        if (this.queried) {
             return;
         }
         try {
-            Cursor cursor = contentResolver.query(uri, projection, null, null, null);
+            Cursor cursor = contentResolver.query(this.uri, PROJECTION, null, null, null);
             int dataIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
             int typeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE);
             int sizeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.SIZE);
@@ -73,7 +73,7 @@ public class ContentFile extends AbstractFileFile {
             //nothing to do, we have default behaviour
             Log.w(TAG, "cannot query content", e);
         }
-        queried = true;
+        this.queried = true;
     }
     
     /**
@@ -82,10 +82,10 @@ public class ContentFile extends AbstractFileFile {
     @Override
     public String getName() {
         queryContent();
-        if (file == null) {
+        if (this.file == null) {
             return super.getName();
         }
-        return addExtension(file.getName());
+        return addExtension(this.file.getName());
     }
     
     /**
@@ -139,9 +139,9 @@ public class ContentFile extends AbstractFileFile {
      */
     @Override
     public void delete() throws IOException {
-        int result = contentResolver.delete(uri, null, null);
+        int result = contentResolver.delete(this.uri, null, null);
         if (result <= 0) {
-            throw new IOException(uri + " was not deleted");
+            throw new IOException(this.uri + " was not deleted");
         }
     }
 

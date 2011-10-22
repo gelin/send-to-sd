@@ -37,7 +37,7 @@ public class IntentInfo {
     public IntentInfo(Context context, Intent intent) throws IntentException {
         this.context = context;
         this.intent = intent;
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!validate()) {
             throw new IntentException("invalid intent: " + intent);
         }
@@ -55,7 +55,7 @@ public class IntentInfo {
      *  Returns path on the external storage provided with the intent.
      */
     public File getPath() {
-        String path = intent.getStringExtra(EXTRA_PATH);
+        String path = this.intent.getStringExtra(EXTRA_PATH);
         if (path == null) {
             return getDefaultPath();
         }
@@ -71,18 +71,18 @@ public class IntentInfo {
      *  I.e. not modified intent for sub-activities.
      */
     public boolean isInitial() {
-        return !intent.hasExtra(EXTRA_PATH);
+        return !this.intent.hasExtra(EXTRA_PATH);
     }
 
     /**
      *  Returns default path. The return value can differs for different preferences. 
      */
     File getDefaultPath() {
-        String initialFolder = preferences.getString(PREF_INITIAL_FOLDER, 
+        String initialFolder = this.preferences.getString(PREF_INITIAL_FOLDER, 
                 VAL_LAST_FOLDER);
         File root = Environment.getExternalStorageDirectory();
         if (VAL_LAST_FOLDER.equals(initialFolder)) {
-            String lastFolder = preferences.getString(PREF_LAST_FOLDER, null);
+            String lastFolder = this.preferences.getString(PREF_LAST_FOLDER, null);
             if (lastFolder == null) {
                 return root;
             }

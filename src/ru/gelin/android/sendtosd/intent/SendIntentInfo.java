@@ -25,7 +25,7 @@ public class SendIntentInfo extends IntentInfo {
      */
     @Override
     boolean validate() {
-        if (!Intent.ACTION_SEND.equals(intent.getAction())) {
+        if (!Intent.ACTION_SEND.equals(this.intent.getAction())) {
             return false;
         }
         return super.validate();
@@ -36,7 +36,7 @@ public class SendIntentInfo extends IntentInfo {
      *  or the filename of the sent file.
      */
     public String getFileName() throws IntentFileException {
-        String fileName = intent.getStringExtra(EXTRA_FILE_NAME);
+        String fileName = this.intent.getStringExtra(EXTRA_FILE_NAME);
         if (fileName == null) {
             return getFile().getName();
         } else {
@@ -48,7 +48,7 @@ public class SendIntentInfo extends IntentInfo {
      *  Returns the file provided with the SEND intent.
      */
     public IntentFile getFile() throws IntentFileException {
-        return IntentFile.getInstance(context, intent);
+        return IntentFile.getInstance(this.context, this.intent);
     }
 
 }

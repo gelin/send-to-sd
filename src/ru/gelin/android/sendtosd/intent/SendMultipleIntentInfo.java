@@ -30,7 +30,7 @@ public class SendMultipleIntentInfo extends IntentInfo {
      *  doesn't contain STREAM or TEXT extras.
      */
     boolean validate() {
-        if (!Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
+        if (!Intent.ACTION_SEND_MULTIPLE.equals(this.intent.getAction())) {
             return false;
         }
         return super.validate();
@@ -42,8 +42,8 @@ public class SendMultipleIntentInfo extends IntentInfo {
     public IntentFile[] getFiles() throws IntentFileException {
         List<IntentFile> result = new ArrayList<IntentFile>();
         try {
-            if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-                List<String> texts = intent.getStringArrayListExtra(Intent.EXTRA_TEXT);
+            if (this.intent.hasExtra(Intent.EXTRA_TEXT)) {
+                List<String> texts = this.intent.getStringArrayListExtra(Intent.EXTRA_TEXT);
                 if (texts != null) {
                     for (String text : texts) {
                         try {
@@ -54,8 +54,8 @@ public class SendMultipleIntentInfo extends IntentInfo {
                     }
                 }
             }
-            if (intent.hasExtra(Intent.EXTRA_STREAM)) {
-                List<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if (this.intent.hasExtra(Intent.EXTRA_STREAM)) {
+                List<Uri> uris = this.intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
                 if (uris != null) {
                     for (Uri uri : uris) {
                         try {

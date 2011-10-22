@@ -18,12 +18,12 @@ public class FileFile extends AbstractFileFile {
 
     public FileFile(Context context, Intent intent) throws IntentFileException {
         super(context, intent);
-        file = getFile();
+        this.file = getFile();
     }
     
     public FileFile(Context context, Uri uri) throws IntentFileException {
         super(context, uri);
-        file = getFile();
+        this.file = getFile();
     }
     
     /**
@@ -31,7 +31,7 @@ public class FileFile extends AbstractFileFile {
      */
     @Override
     public long getSize() {
-        return file.length();
+        return this.file.length();
     }
     
     /**
@@ -40,7 +40,7 @@ public class FileFile extends AbstractFileFile {
     @Override
     public boolean isDeletable() {
         try {
-            return file.isFile() && file.canWrite();
+            return this.file.isFile() && this.file.canWrite();
         } catch (Exception e) {
             return false;
         }
@@ -51,7 +51,7 @@ public class FileFile extends AbstractFileFile {
      */
     @Override
     public void delete() throws IOException {
-        boolean result = file.delete();
+        boolean result = this.file.delete();
         if (!result) {
             throw new IOException(file + " was not deleted");
         }
@@ -63,7 +63,7 @@ public class FileFile extends AbstractFileFile {
      */
     File getFile() throws IntentFileException {
         try {
-            List<String> pathSegments = uri.getPathSegments();
+            List<String> pathSegments = this.uri.getPathSegments();
             File result = new File("/");
             for (String segment : pathSegments) {
                 result = new File(result, segment);

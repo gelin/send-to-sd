@@ -32,13 +32,13 @@ public class StreamFile extends IntentFile {
     protected volatile boolean queried = false;
     
     StreamFile(Context context, Intent intent) {
-        contentResolver = context.getContentResolver();
-        uri = getStreamUri(intent);
-        type = intent.getType();
+        this.contentResolver = context.getContentResolver();
+        this.uri = getStreamUri(intent);
+        this.type = intent.getType();
     }
     
     StreamFile(Context context, Uri uri) {
-        contentResolver = context.getContentResolver();
+        this.contentResolver = context.getContentResolver();
         this.uri = uri;
     }
     
@@ -47,13 +47,13 @@ public class StreamFile extends IntentFile {
      *  If the query was done before the new attempt is skipped.
      */
     void queryContent() {
-        if (queried) {
+        if (this.queried) {
             return;
         }
-        if (type == null) {
-            type = contentResolver.getType(uri);
+        if (this.type == null) {
+            this.type = contentResolver.getType(uri);
         }
-        queried = true;
+        this.queried = true;
     }
     
     /**
@@ -61,7 +61,7 @@ public class StreamFile extends IntentFile {
      */
     @Override
     public String getName() {
-        String fileName = uri.getLastPathSegment();
+        String fileName = this.uri.getLastPathSegment();
         return addExtension(fileName);
     }
     
@@ -71,7 +71,7 @@ public class StreamFile extends IntentFile {
      */
     public String getType() {
         queryContent();
-        return type;
+        return this.type;
     }
     
     /**
@@ -110,7 +110,7 @@ public class StreamFile extends IntentFile {
         int read;
         while ((read = in.read(buf)) > 0) {
             out.write(buf, 0, read);
-            progress.processBytes(read);
+            this.progress.processBytes(read);
         }
         out.close();
         in.close();
@@ -140,7 +140,7 @@ public class StreamFile extends IntentFile {
             return fileName;
         }
         if (getType() != null) {
-            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(type);
+            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(this.type);
             if (extension != null) {
                 return fileName + "." + extension;
             }
@@ -152,7 +152,7 @@ public class StreamFile extends IntentFile {
      *  Returns the file as stream.
      */
     InputStream getStream() throws FileNotFoundException {
-        return contentResolver.openInputStream(uri);
+        return this.contentResolver.openInputStream(this.uri);
     }
 
 }

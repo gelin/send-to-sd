@@ -22,8 +22,8 @@ public class TextFile extends IntentFile {
     String text = "";
     
     TextFile(Intent intent) throws IntentFileException {
-        text = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (text == null) {
+        this.text = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (this.text == null) {
             throw new IntentFileException("null text");
         }
     }
@@ -81,7 +81,7 @@ public class TextFile extends IntentFile {
     @Override
     public void saveAs(File file) throws IOException {
         Writer out = new FileWriter(file);
-        out.write(text);
+        out.write(this.text);
         out.close();
     }
     
