@@ -29,13 +29,13 @@ public class ProgressDialog extends Dialog implements Progress {
         this.activity = activity;
     }
 
-    @Override
+    //@Override
     public void setFiles(int files) {
         synchronized (manager) {
             manager.setFiles(files);
         }
         activity.runOnUiThread(new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 synchronized (manager) {
                     updateTotalProgress();
@@ -44,13 +44,13 @@ public class ProgressDialog extends Dialog implements Progress {
         });
     }
     
-    @Override
+    //@Override
     public void nextFile(final File file) {
         synchronized (manager) {
             manager.nextFile(file);
         }
         activity.runOnUiThread(new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 synchronized (manager) {
                     updateFileName(file);
@@ -61,13 +61,13 @@ public class ProgressDialog extends Dialog implements Progress {
         });
     }
     
-    @Override
+    //@Override
     public void updateFile(final File file) {
         synchronized (manager) {
             manager.updateFile(file);
         }
         activity.runOnUiThread(new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 synchronized (manager) {
                     updateFileName(file);
@@ -78,7 +78,7 @@ public class ProgressDialog extends Dialog implements Progress {
         });
     }
 
-    @Override
+    //@Override
     public void processBytes(long bytes) {
         synchronized (manager) {
             manager.processBytes(bytes);
@@ -87,7 +87,7 @@ public class ProgressDialog extends Dialog implements Progress {
             }
         }
         activity.runOnUiThread(new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 synchronized (manager) {
                     updateFileProgress();
@@ -96,13 +96,13 @@ public class ProgressDialog extends Dialog implements Progress {
         });
     }
     
-    @Override
+    //@Override
     public void complete() {
         synchronized (manager) {
             manager.complete();
         }
         activity.runOnUiThread(new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 synchronized (manager) {
                     updateFileProgress();

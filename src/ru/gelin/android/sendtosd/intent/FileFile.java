@@ -2,7 +2,6 @@ package ru.gelin.android.sendtosd.intent;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 import android.content.Context;

@@ -98,7 +98,7 @@ public class SendActivity extends SendToFolderActivity
             edit.setText(fileName);
             builder.setView(content);
             builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
-                @Override
+                //@Override
                 public void onClick(DialogInterface dialog, int which) {
                     fileName = edit.getText().toString();
                     setTitle(fileName);
@@ -163,7 +163,7 @@ public class SendActivity extends SendToFolderActivity
         final ResultHandler result = new ResultHandler();
         runWithProgress(COPY_DIALOG, 
                 new Runnable() {
-                    @Override
+                    //@Override
                     public void run() {
                         progress.setFiles(1);   //single file in this activity
                         String uniqueFileName = getUniqueFileName(fileName);
@@ -182,7 +182,7 @@ public class SendActivity extends SendToFolderActivity
                     }
                 },
                 new Runnable() {
-                    @Override
+                    //@Override
                     public void run() {
                         progress.complete();
                         switch (result.result) {
@@ -206,7 +206,7 @@ public class SendActivity extends SendToFolderActivity
         final ResultHandler result = new ResultHandler();
         runWithProgress(MOVE_DIALOG, 
             new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     progress.setFiles(1);   //single file in this activity
                     String uniqueFileName = getUniqueFileName(fileName);
@@ -230,7 +230,7 @@ public class SendActivity extends SendToFolderActivity
                 }
             },
             new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     progress.complete();
                     switch (result.result) {

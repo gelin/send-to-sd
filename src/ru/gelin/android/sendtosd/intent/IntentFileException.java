@@ -2,7 +2,9 @@ package ru.gelin.android.sendtosd.intent;
 
 public class IntentFileException extends IntentException {
 
-    public IntentFileException() {
+	private static final long serialVersionUID = -6679210790925502257L;
+
+	public IntentFileException() {
         super();
     }
 

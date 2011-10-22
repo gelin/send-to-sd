@@ -108,7 +108,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
         final ResultHandler result = new ResultHandler();
         runWithProgress(COPY_DIALOG,
                 new Runnable() {
-                    @Override
+                    //@Override
                     public void run() {
                         progress.setFiles(intentFiles.length);
                         for (IntentFile file : intentFiles) {
@@ -129,7 +129,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                     }
                 },
                 new Runnable() {
-                    @Override
+                    //@Override
                     public void run() {
                         progress.complete();
                         PluralForms plurals = PluralForms.getInstance();
@@ -156,7 +156,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
         final ResultHandler result = new ResultHandler();
         runWithProgress(MOVE_DIALOG,
             new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     progress.setFiles(intentFiles.length);
                     for (IntentFile file : intentFiles) {
@@ -181,7 +181,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 }
             },
             new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     progress.complete();
                     PluralForms plurals = PluralForms.getInstance();

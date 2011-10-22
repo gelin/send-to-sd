@@ -6,11 +6,9 @@ import java.io.IOException;
 import ru.gelin.android.sendtosd.Constants;
 import ru.gelin.android.sendtosd.progress.DummyProgress;
 import ru.gelin.android.sendtosd.progress.Progress;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  *  A file provided with the intent to be saved on SD card.

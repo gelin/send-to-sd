@@ -93,7 +93,7 @@ public class MediaScanner implements Constants {
     }
     
     private class MediaScannerClient implements MediaScannerConnectionClient {
-        @Override
+        //@Override
         public void onMediaScannerConnected() {
             FileInfo file = waitScans.poll();
             while (file != null) {
@@ -101,7 +101,7 @@ public class MediaScanner implements Constants {
                 file = waitScans.poll();
             }
         }
-        @Override
+        //@Override
         public void onScanCompleted(String path, Uri uri) {
             //we're not interesting in this
         }

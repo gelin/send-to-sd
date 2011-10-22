@@ -95,7 +95,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             setProgressBarIndeterminateVisibility(true);
             runThread(
                 new Runnable() {
-                    @Override
+                    //@Override
                     public void run() {
                         onInit();
                     }
@@ -206,7 +206,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             final EditText edit = (EditText)content.findViewById(R.id.edit_text);
             builder.setView(content);
             builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
-                @Override
+                //@Override
                 public void onClick(DialogInterface dialog, int which) {
                     createFolder(edit.getText().toString());
                 }
@@ -355,13 +355,13 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         setProgressBarIndeterminateVisibility(true);
         runThread(
             new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     folders = getFolders(path);
                 }
             },
             new Runnable() {
-                @Override
+                //@Override
                 public void run() {
                     setProgressBarIndeterminateVisibility(false);
                     fillFolders();
@@ -498,7 +498,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     protected void runThread(final Runnable thread, final Runnable onStop) {
         new Thread(new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 thread.run();
                 if (onStop != null) {
@@ -519,7 +519,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             final Runnable onStop) {
         showDialog(dialogId);
         runThread(thread, new Runnable() {
-            @Override
+            //@Override
             public void run() {
                 removeDialog(dialogId);
                 if (onStop != null) {

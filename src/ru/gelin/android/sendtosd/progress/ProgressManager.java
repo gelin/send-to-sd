@@ -26,7 +26,7 @@ public class ProgressManager implements Progress {
     ProgressManager() {
     }
     
-    @Override
+    //@Override
     public void setFiles(int files) {
         this.files = files;
         this.file = -1;
@@ -39,7 +39,7 @@ public class ProgressManager implements Progress {
         return this.files;
     }
     
-    @Override
+    //@Override
     public void nextFile(File file) {
         if (this.file < files) {
             this.file++;
@@ -51,7 +51,7 @@ public class ProgressManager implements Progress {
         }
     }
     
-    @Override
+    //@Override
     public void updateFile(File file) {
         if (file != null) {
             this.size = file.getSize();
@@ -67,14 +67,14 @@ public class ProgressManager implements Progress {
         return this.file;
     }
 
-    @Override
+    //@Override
     public void processBytes(long bytes) {
         if (this.processed + bytes <= size) {
             this.processed += bytes;
         }
     }
     
-    @Override
+    //@Override
     public void complete() {
         this.file = this.files;
         this.processed = this.size;
