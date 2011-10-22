@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
@@ -86,11 +85,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
         lastFolders = findPreference(PREF_LAST_FOLDERS);
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            error(R.string.no_sd_card);
-            return;
-        }
         if (getIntent() == null) {
             error(R.string.unsupported_intent);
             return;
