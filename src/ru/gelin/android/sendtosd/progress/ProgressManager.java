@@ -24,8 +24,27 @@ public class ProgressManager implements Progress {
     ProgressManager() {
     }
     
-    //@Override
-    public void setFiles(int files) {
+	public void progress(ProgressEvent event) {
+		switch (event.type) {
+		case SET_FILES:
+			setFiles(event.files);
+			break;
+		case NEXT_FILE:
+			nextFile(event.file);
+			break;
+		case UPDATE_FILE:
+			updateFile(event.file);
+			break;
+		case PROCESS_BYTES:
+			processBytes(event.bytes);
+			break;
+		case COMPLETE:
+			complete();
+			break;
+		}
+	}
+    
+    void setFiles(int files) {
         this.files = files;
         this.file = -1;
     }
@@ -37,8 +56,7 @@ public class ProgressManager implements Progress {
         return this.files;
     }
     
-    //@Override
-    public void nextFile(File file) {
+    void nextFile(File file) {
         if (this.file < files) {
             this.file++;
             if (file != null) {
@@ -49,8 +67,7 @@ public class ProgressManager implements Progress {
         }
     }
     
-    //@Override
-    public void updateFile(File file) {
+    void updateFile(File file) {
         if (file != null) {
             this.size = file.getSize();
             this.processed = 0;
@@ -65,15 +82,13 @@ public class ProgressManager implements Progress {
         return this.file;
     }
 
-    //@Override
-    public void processBytes(long bytes) {
+    void processBytes(long bytes) {
         if (this.processed + bytes <= size) {
             this.processed += bytes;
         }
     }
     
-    //@Override
-    public void complete() {
+    void complete() {
         this.file = this.files;
         this.processed = this.size;
     }

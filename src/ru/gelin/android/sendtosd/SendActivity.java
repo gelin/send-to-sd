@@ -10,6 +10,7 @@ import ru.gelin.android.sendtosd.intent.IntentFile;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.intent.SendIntentInfo;
 import ru.gelin.android.sendtosd.progress.FileInfo;
+import ru.gelin.android.sendtosd.progress.Progress;
 import ru.gelin.android.sendtosd.progress.ProgressDialog;
 import ru.gelin.android.sendtosd.progress.SingleCopyDialog;
 import ru.gelin.android.sendtosd.progress.SingleMoveDialog;
@@ -18,6 +19,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -147,14 +149,6 @@ public class SendActivity extends SendToFolderActivity
         return intent;
     }
     
-    static enum Result {
-        MOVED, COPIED, ERROR;
-    }
-    
-    static class ResultHandler {
-        Result result;
-    }
-    
     /**
      *  Copies the file.
      */
@@ -166,20 +160,7 @@ public class SendActivity extends SendToFolderActivity
                 new Runnable() {
                     //@Override
                     public void run() {
-                        progress.setFiles(1);   //single file in this activity
-                        String uniqueFileName = getUniqueFileName(fileName);
-                        progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
-                        try {
-                            intentFile.setProgress(progress);
-                            File file = new File(path, uniqueFileName);
-                            intentFile.saveAs(file);
-                            mediaScanner.scanFile(file, intentFile.getType());
-                        } catch (Exception e) {
-                            Log.w(TAG, e.toString(), e);
-                            result.result = Result.ERROR;
-                            return;
-                        }
-                        result.result = Result.COPIED;
+                        
                     }
                 },
                 new Runnable() {
@@ -196,6 +177,74 @@ public class SendActivity extends SendToFolderActivity
                         }
                     }
                 });
+    }
+    
+    static enum Result {
+        MOVED, COPIED, ERROR;
+    }
+    
+    class CopyFileTask extends AsyncTask<IntentFile, Integer, Result> implements Progress {
+    	
+    	Progress progress;
+    	
+    	public CopyFileTask(Progress progress) {
+    		this.progress = progress;
+		}
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		saveLastFolder();
+    		showDialog(COPY_DIALOG);
+    	}
+    	
+		@Override
+		protected Result doInBackground(IntentFile... params) {
+			this.progress.setFiles(1);   //single file in this activity
+            String uniqueFileName = getUniqueFileName(fileName);
+            this.progress.nextFile(new FileInfo(uniqueFileName, intentFile.getSize()));
+            try {
+                intentFile.setProgress(this);
+                File file = new File(path, uniqueFileName);
+                intentFile.saveAs(file);
+                mediaScanner.scanFile(file, intentFile.getType());
+            } catch (Exception e) {
+                Log.w(TAG, e.toString(), e);
+                result.result = Result.ERROR;
+                return;
+            }
+            result.result = Result.COPIED;
+		}
+		
+		@Override
+		protected void onPostExecute(Result result) {
+			removeDialog(COPY_DIALOG);
+		}
+
+		public void complete() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void nextFile(ru.gelin.android.sendtosd.progress.File file) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void processBytes(long bytes) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void setFiles(int files) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void updateFile(ru.gelin.android.sendtosd.progress.File file) {
+			// TODO Auto-generated method stub
+			
+		}
+    	
     }
     
     /**
@@ -215,7 +264,6 @@ public class SendActivity extends SendToFolderActivity
                     if (intentFile.isMovable(dest)) {
                         progress.nextFile(new FileInfo(uniqueFileName));
                         try {
-                            
                             intentFile.moveTo(dest);
                             mediaScanner.scanFile(dest, intentFile.getType());
                             result.result = Result.MOVED;

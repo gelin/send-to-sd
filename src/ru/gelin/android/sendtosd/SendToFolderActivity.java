@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -93,24 +94,28 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             this.intentInfo = getIntentInfo();
             intentInfo.log();
             path = intentInfo.getPath();
-            setProgressBarIndeterminateVisibility(true);
-            runThread(
-                new Runnable() {
-                    //@Override
-                    public void run() {
-                        onInit();
-                    }
-                },
-                new Runnable() {
-                    public void run() {
-                        setProgressBarIndeterminateVisibility(false);
-                        onPostInit();
-                    }
-                });
+            new InitTask().execute();
         } catch (Throwable e) {
             error(R.string.unsupported_intent, e);
             return;
         }
+    }
+    
+    class InitTask extends AsyncTask<Void, Void, Void> {
+    	@Override
+    	protected void onPreExecute() {
+    		setProgressBarIndeterminateVisibility(true);
+    	}
+		@Override
+		protected Void doInBackground(Void... params) {
+			onInit();
+			return null;
+		}
+    	@Override
+    	protected void onPostExecute(Void result) {
+    		onPostInit();
+    		setProgressBarIndeterminateVisibility(false);
+    	}
     }
     
     @Override
@@ -301,7 +306,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             lastFoldersCategory.addPreference(folderPref);
         }
     }
-    
+
     /**
      *  Makes the sorted list of this folder subfolders.
      */
@@ -357,21 +362,24 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  After updates the list of folders.
      */
     void listFolders() {
-        setProgressBarIndeterminateVisibility(true);
-        runThread(
-            new Runnable() {
-                //@Override
-                public void run() {
-                    folders = getFolders(path);
-                }
-            },
-            new Runnable() {
-                //@Override
-                public void run() {
-                    setProgressBarIndeterminateVisibility(false);
-                    fillFolders();
-                }
-            });
+    	new ListFoldersTask().execute(this.path);
+    }
+    
+    class ListFoldersTask extends AsyncTask<File, Void, List<File>> {
+    	@Override
+    	protected void onPreExecute() {
+    		setProgressBarIndeterminateVisibility(true);
+    	}
+		@Override
+		protected List<File> doInBackground(File... params) {
+	        return getFolders(params[0]);
+		}
+    	@Override
+    	protected void onPostExecute(List<File> result) {
+    		SendToFolderActivity.this.folders = result;
+    		fillFolders();
+            setProgressBarIndeterminateVisibility(false);
+    	}
     }
     
     /**
@@ -493,45 +501,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             setResult(RESULT_OK);
             finish();
         }
-    }
-
-    /**
-     *  Runs the first Runnable in the separated thread, 
-     *  runs the second Runnable when the first finished.
-     *  @param  thread  action to run in the thread
-     *  @param  onStop  action to call after the first thread stop in UI thread
-     */
-    protected void runThread(final Runnable thread, final Runnable onStop) {
-        new Thread(new Runnable() {
-            //@Override
-            public void run() {
-                thread.run();
-                if (onStop != null) {
-                    runOnUiThread(onStop);
-                }
-            }
-        }).start();
-    }
-    
-    /**
-     *  Runs the first Runnable in the separated thread, 
-     *  runs the second Runnable when the first finishes and the dialog closes.
-     *  @param  dialogId ID of the dialog to display
-     *  @param  thread  action to run in the thread
-     *  @param  onStop  action to call on thread stop and dialog close
-     */
-    protected void runWithProgress(final int dialogId, final Runnable thread, 
-            final Runnable onStop) {
-        showDialog(dialogId);
-        runThread(thread, new Runnable() {
-            //@Override
-            public void run() {
-                removeDialog(dialogId);
-                if (onStop != null) {
-                    onStop.run();
-                }
-            }
-        });
     }
 
 }
