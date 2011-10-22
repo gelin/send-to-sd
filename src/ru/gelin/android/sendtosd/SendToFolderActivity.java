@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ru.gelin.android.sendtosd.intent.IntentException;
@@ -315,7 +316,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             return result;
         }
         List<File> sortedFolders = Arrays.asList(subFolders);
-        Collections.sort(sortedFolders);
+        Collections.sort(sortedFolders, new Comparator<File>() {
+			public int compare(File file1, File file2) {
+				return String.CASE_INSENSITIVE_ORDER.compare(file1.getName(), file2.getName());
+			}
+		});
         for (File subFolder : sortedFolders) {
             File folder;
             try {
