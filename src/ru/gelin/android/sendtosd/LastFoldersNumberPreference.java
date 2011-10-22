@@ -1,6 +1,7 @@
 package ru.gelin.android.sendtosd;
 
 import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.text.MessageFormat;
 
 import android.content.Context;

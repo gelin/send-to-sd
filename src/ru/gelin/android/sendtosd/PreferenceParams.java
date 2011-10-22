@@ -1,7 +1,7 @@
 package ru.gelin.android.sendtosd;
 
 /**
- * 	Some constants for preferences
+ * 	Some constants for preferences.
  */
 public class PreferenceParams {
     
@@ -25,5 +25,9 @@ public class PreferenceParams {
     public static final String DEFAULT_LAST_FOLDERS_NUMBER = "5";
     /** Default value for last folders number */
     public static final int DEFAULT_LAST_FOLDERS_NUMBER_INT = 5;
+    
+    private PreferenceParams() {
+    	//avoid instantiation
+    }
 
 }
