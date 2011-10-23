@@ -16,6 +16,7 @@
 
 package ru.gelin.android.sendtosd.donate;
 
+import static ru.gelin.android.sendtosd.Tag.TAG;
 import ru.gelin.android.sendtosd.donate.Consts.ResponseCode;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -34,9 +35,8 @@ import android.util.Log;
  * You should modify and obfuscate this code before using it.
  */
 public class BillingReceiver extends BroadcastReceiver {
-    private static final String TAG = "BillingReceiver";
 
-    /**
+	/**
      * This is the entry point for all asynchronous messages sent from Android Market to
      * the application. This method forwards the messages on to the
      * {@link BillingService}, which handles the communication back to Android Market.
@@ -53,7 +53,7 @@ public class BillingReceiver extends BroadcastReceiver {
         } else if (Consts.ACTION_NOTIFY.equals(action)) {
             String notifyId = intent.getStringExtra(Consts.NOTIFICATION_ID);
             if (Consts.DEBUG) {
-                Log.i(TAG, "notifyId: " + notifyId);
+                Log.i(TAG, "BillingReceiver: notifyId: " + notifyId);
             }
             notify(context, notifyId);
         } else if (Consts.ACTION_RESPONSE_CODE.equals(action)) {
@@ -62,7 +62,7 @@ public class BillingReceiver extends BroadcastReceiver {
                     ResponseCode.RESULT_ERROR.ordinal());
             checkResponseCode(context, requestId, responseCodeIndex);
         } else {
-            Log.w(TAG, "unexpected action: " + action);
+            Log.w(TAG, "BillingReceiver: unexpected action: " + action);
         }
     }
 

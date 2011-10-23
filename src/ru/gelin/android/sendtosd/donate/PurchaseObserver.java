@@ -2,6 +2,8 @@
 
 package ru.gelin.android.sendtosd.donate;
 
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.lang.reflect.Method;
 
 import ru.gelin.android.sendtosd.donate.BillingService.RequestPurchase;
@@ -26,8 +28,8 @@ import android.util.Log;
  * are used to update the UI.
  */
 public abstract class PurchaseObserver {
-    private static final String TAG = "PurchaseObserver";
-    private final Activity mActivity;
+
+	private final Activity mActivity;
     private final Handler mHandler;
     private Method mStartIntentSender;
     private Object[] mStartIntentSenderArgs = new Object[5];
@@ -125,7 +127,7 @@ public abstract class PurchaseObserver {
                 mStartIntentSenderArgs[4] = Integer.valueOf(0);
                 mStartIntentSender.invoke(mActivity, mStartIntentSenderArgs);
             } catch (Exception e) {
-                Log.e(TAG, "error starting activity", e);
+                Log.e(TAG, "PurchaseObserver: error starting activity", e);
             }
         } else {
             // This is on Android version 1.6. The in-app buy page activity must be on its
@@ -134,7 +136,7 @@ public abstract class PurchaseObserver {
             try {
                 pendingIntent.send(mActivity, 0 /* code */, intent);
             } catch (CanceledException e) {
-                Log.e(TAG, "error starting activity", e);
+                Log.e(TAG, "PurchaseObserver: error starting activity", e);
             }
         }
     }

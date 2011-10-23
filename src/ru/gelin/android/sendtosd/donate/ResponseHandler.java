@@ -2,6 +2,8 @@
 
 package ru.gelin.android.sendtosd.donate;
 
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 import java.security.Security;
 
 import ru.gelin.android.sendtosd.donate.BillingService.RequestPurchase;
@@ -25,7 +27,6 @@ import android.util.Log;
  * You should modify and obfuscate this code before using it.
  */
 public class ResponseHandler {
-    private static final String TAG = "ResponseHandler";
 
     /**
      * This is a static instance of {@link PurchaseObserver} that the
@@ -75,7 +76,7 @@ public class ResponseHandler {
     public static void buyPageIntentResponse(PendingIntent pendingIntent, Intent intent) {
         if (sPurchaseObserver == null) {
             if (Consts.DEBUG) {
-                Log.d(TAG, "UI is not running");
+                Log.d(TAG, "ResponseHandler: UI is not running");
             }
             return;
         }
@@ -112,11 +113,8 @@ public class ResponseHandler {
         // first.
         new Thread(new Runnable() {
             public void run() {
-            	//TODO: store purchase state
-                //PurchaseDatabase db = new PurchaseDatabase(context);
-                //int quantity = db.updatePurchase(
-                //        orderId, productId, purchaseState, purchaseTime, developerPayload);
-                //db.close();
+                PurchaseDatabase db = new PurchaseDatabase(context);
+                db.setStatus(purchaseState);
 
                 // This needs to be synchronized because the UI thread can change the
                 // value of sPurchaseObserver.
