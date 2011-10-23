@@ -73,5 +73,10 @@ public class FileFile extends AbstractFileFile {
             throw new IntentFileException("cannot convert URI to file", e);
         }
     }
+    
+    @Override
+    public String toString() {
+    	return "file: [" + this.type + "] " + this.uri + " -> " + this.file;
+    }
 
 }

@@ -83,17 +83,17 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
-        mediaScanner = new MediaScanner(this);
+        this.mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
-        lastFolders = findPreference(PREF_LAST_FOLDERS);
+        this.lastFolders = findPreference(PREF_LAST_FOLDERS);
         if (getIntent() == null) {
             error(R.string.unsupported_intent);
             return;
         }
         try {
             this.intentInfo = getIntentInfo();
-            intentInfo.log();
-            path = intentInfo.getPath();
+            this.intentInfo.log();
+            this.path = this.intentInfo.getPath();
             new InitTask().execute();
         } catch (Throwable e) {
             error(R.string.unsupported_intent, e);
@@ -121,7 +121,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaScanner.disconnect();
+        this.mediaScanner.disconnect();
     }
     
     /**
@@ -150,7 +150,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
         copyHerePreference.setFileSaver(this);
         moveHerePreference.setFileSaver(this);
-        if (path.canWrite()) {
+        if (this.path.canWrite()) {
             copyHerePreference.setEnabled(true);
             moveHerePreference.setEnabled(true);
         }
@@ -163,10 +163,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onResume() {
         super.onResume();
         Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
-        if (intentInfo == null) {
+        if (this.intentInfo == null) {
             return; //not initialized, should be finished immediately from onCreate()
         }
-        if (intentInfo.isInitial()) {
+        if (this.intentInfo.isInitial()) {
             if (existedLastFolders == null) {
                 getPreferenceScreen().addPreference(lastFolders);
             }
@@ -182,8 +182,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         MenuItem newFolderMenu = menu.findItem(R.id.menu_new_folder);
-        if (newFolderMenu != null && path != null) {
-            newFolderMenu.setEnabled(path.canWrite());
+        if (newFolderMenu != null && this.path != null) {
+            newFolderMenu.setEnabled(this.path.canWrite());
         }
         return true;
     }
@@ -233,7 +233,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  Returns the current folder.
      */
     public File getPath() {
-        return path;
+        return this.path;
     }
 
     /**
@@ -267,7 +267,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     public void saveLastFolder() {
         LastFolders lastFolders = LastFolders.getInstance(this);
-        lastFolders.put(path);
+        lastFolders.put(this.path);
     }
     
     public abstract void copyFile();
@@ -344,8 +344,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     void fillFolders() {
         PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
         folders.removeAll();
-        if (!"/".equals(path.getAbsolutePath())) {
-            Preference upFolder = new FolderPreference(this, path.getParentFile(), this);
+        if (!"/".equals(this.path.getAbsolutePath())) {
+            Preference upFolder = new FolderPreference(this, this.path.getParentFile(), this);
             upFolder.setTitle("..");
             folders.addPreference(upFolder);
         }
@@ -394,11 +394,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             Log.w(TAG, "filename is null");
             fileName = "";
         }
-        if (path == null) {
+        if (this.path == null) {
             Log.w(TAG, "path is null");
             return fileName;
         }
-        if (!new File(path, fileName).exists()) {
+        if (!new File(this.path, fileName).exists()) {
             return fileName;
         }
         int index = 1;
@@ -412,7 +412,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
                     fileName.substring(dotIndex);
             }
             index++;
-        } while (new File(path, newName).exists());
+        } while (new File(this.path, newName).exists());
         return newName;
     }
     
@@ -422,7 +422,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  Creates the new folder.
      */
     void createFolder(String folderName) {
-        File newFolder = new File(path, folderName);
+        File newFolder = new File(this.path, folderName);
         boolean result = newFolder.mkdirs();
         if (result) {
             Toast.makeText(this, R.string.folder_created, Toast.LENGTH_LONG).show();

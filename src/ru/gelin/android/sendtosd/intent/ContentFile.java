@@ -144,5 +144,10 @@ public class ContentFile extends AbstractFileFile {
             throw new IOException(this.uri + " was not deleted");
         }
     }
+    
+    @Override
+    public String toString() {
+    	return "content: [" + this.type + "] " + this.uri + " -> " + this.file;
+    }
 
 }

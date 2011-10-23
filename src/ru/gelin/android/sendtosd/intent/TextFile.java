@@ -100,5 +100,10 @@ public class TextFile extends IntentFile {
     public void delete() throws IOException {
         throw new IOException("text file is not deletable");
     }
+    
+    @Override
+    public String toString() {
+    	return "text: " + this.text;
+    }
 
 }

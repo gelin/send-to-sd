@@ -39,27 +39,30 @@ public class SendMultipleActivity extends SendToFolderActivity {
     protected void onInit() {
         super.onInit();
         IntentFiles storage = IntentFiles.getInstance();
-        if (intentInfo.isInitial()) {
+        if (this.intentInfo.isInitial()) {
             try {
-                intentFiles = ((SendMultipleIntentInfo)intentInfo).getFiles();
+                this.intentFiles = ((SendMultipleIntentInfo)this.intentInfo).getFiles();
             } catch (IntentFileException e) {
                 Log.e(TAG, "cannot get files list", e);
             }
-            storage.init(intentFiles);
+            storage.init(this.intentFiles);
+            for (IntentFile file : this.intentFiles) {
+            	Log.d(TAG, String.valueOf(file));
+            }
         } else {
-            intentFiles = storage.getFiles();
+            this.intentFiles = storage.getFiles();
         }
     }
     
     @Override
     protected void onPostInit() {
-        if (intentFiles == null || intentFiles.length == 0) {
+        if (this.intentFiles == null || this.intentFiles.length == 0) {
             error(R.string.no_files);
             return;
         }
         setTitle(MessageFormat.format(getString(R.string.files_title), 
-                intentFiles.length, 
-                PluralForms.getInstance().getForm(intentFiles.length)));
+                this.intentFiles.length, 
+                PluralForms.getInstance().getForm(this.intentFiles.length)));
         super.onPostInit();
     }
     
@@ -87,10 +90,10 @@ public class SendMultipleActivity extends SendToFolderActivity {
      *  deletable.
      */
     public boolean hasDeletableFile() {
-        if (intentFiles == null) {
+        if (this.intentFiles == null) {
             return false;
         }
-        for (IntentFile file : intentFiles) {
+        for (IntentFile file : this.intentFiles) {
             if (file.isDeletable()) {
                 return true;
             }

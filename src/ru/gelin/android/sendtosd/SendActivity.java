@@ -48,22 +48,23 @@ public class SendActivity extends SendToFolderActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (intentInfo == null) {
+        if (this.intentInfo == null) {
             return; //not initialized, should be finished immediately from super.onCreate()
         }
         try {
             SendIntentInfo sendIntentInfo = (SendIntentInfo)this.intentInfo;
-            intentFile = sendIntentInfo.getFile();
-            fileName = sendIntentInfo.getFileName();
+            this.intentFile = sendIntentInfo.getFile();
+            Log.d(TAG, String.valueOf(intentFile));
+            this.fileName = sendIntentInfo.getFileName();
         } catch (Throwable e) {
             error(R.string.unsupported_file, e);
             return;
         }
-        if (intentFile == null) {
+        if (this.intentFile == null) {
             error(R.string.no_files);
             return;
         }
-        setTitle(fileName);
+        setTitle(this.fileName);
     }
     
     @Override
@@ -75,8 +76,8 @@ public class SendActivity extends SendToFolderActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.send_options_menu, menu);
         MenuItem newFolderMenu = menu.findItem(R.id.menu_new_folder);
-        if (newFolderMenu != null && path != null) {
-            newFolderMenu.setEnabled(path.canWrite());
+        if (newFolderMenu != null && this.path != null) {
+            newFolderMenu.setEnabled(this.path.canWrite());
         }
         return true;
     }
@@ -99,13 +100,13 @@ public class SendActivity extends SendToFolderActivity
             builder.setTitle(R.string.choose_file_name);
             View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, null);
             final EditText edit = (EditText)content.findViewById(R.id.edit_text);
-            edit.setText(fileName);
+            edit.setText(this.fileName);
             builder.setView(content);
             builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
                 //@Override
                 public void onClick(DialogInterface dialog, int which) {
-                    fileName = edit.getText().toString();
-                    setTitle(fileName);
+                    SendActivity.this.fileName = edit.getText().toString();
+                    setTitle(SendActivity.this.fileName);
                 }
             });
             Dialog dialog = builder.create();
@@ -134,10 +135,10 @@ public class SendActivity extends SendToFolderActivity
      *  This implementation returns true if the sending file is deletable.
      */
     public boolean hasDeletableFile() {
-        if (intentFile == null) {
+        if (this.intentFile == null) {
             return false;
         }
-        return intentFile.isDeletable();
+        return this.intentFile.isDeletable();
     }
 
     /**
@@ -146,7 +147,7 @@ public class SendActivity extends SendToFolderActivity
     @Override
     Intent getChangeFolderIntent(File folder) {
         Intent intent = super.getChangeFolderIntent(folder);
-        intent.putExtra(EXTRA_FILE_NAME, fileName);
+        intent.putExtra(EXTRA_FILE_NAME, this.fileName);
         return intent;
     }
     

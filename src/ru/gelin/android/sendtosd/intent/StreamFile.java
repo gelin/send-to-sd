@@ -156,5 +156,10 @@ public class StreamFile extends IntentFile {
     InputStream getStream() throws FileNotFoundException {
         return this.contentResolver.openInputStream(this.uri);
     }
+    
+    @Override
+    public String toString() {
+    	return "stream: [" + this.type + "] " + this.uri;
+    }
 
 }
