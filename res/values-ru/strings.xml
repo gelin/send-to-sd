@@ -55,4 +55,6 @@
     <string name="donate">Поддержать разработчика</string>
     <string name="buy_donate_version">Купить платную версию приложения</string>
     <string name="donate_with_moneybookers">Подарите $1 через moneybookers</string>
+    <string name="donate_summary">Подарите $1 через Google Checkout</string>
+    <string name="donate_thanks">Спасибо!</string>
 </resources>

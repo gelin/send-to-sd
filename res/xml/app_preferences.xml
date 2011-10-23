@@ -38,13 +38,15 @@
     </PreferenceCategory>
     
     <PreferenceCategory
+            android:key="donate_category"
             android:title="@string/donate">
         
         <ru.gelin.android.sendtosd.DonatePreference
                 android:key="donate"
+                android:persistent="false"
                 android:title="@string/donate"
-                android:summary="@string/buy_donate_version"/>
+                android:summary="@string/donate_summary"/>
         
     </PreferenceCategory>
-
+    
 </PreferenceScreen>

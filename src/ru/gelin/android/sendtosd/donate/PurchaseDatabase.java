@@ -10,6 +10,7 @@ public class PurchaseDatabase {
 	
 	public static enum DonateStatus {
 		NONE,
+		EXPECTING,
 		PENDING,
 		PURCHASED;
 		
@@ -18,7 +19,7 @@ public class PurchaseDatabase {
 			case PURCHASED:
 				return PURCHASED;
 			default:
-				return NONE;
+				return EXPECTING;
 			}
 		}
 		
@@ -46,7 +47,7 @@ public class PurchaseDatabase {
 	}
 	
 	public DonateStatus getStatus() {
-		return DonateStatus.valueOf(this.preferences.getString(PREF_DONATE, String.valueOf(DonateStatus.NONE)));
+		return DonateStatus.valueOf(this.preferences.getString(PREF_DONATE, String.valueOf(DonateStatus.EXPECTING)));
 	}
 
 }
