@@ -8,7 +8,7 @@
     <application android:icon="@drawable/icon" android:label="@string/app_name"
             android:debuggable="true">
 
-        <activity android:name=".SendDispatcherActivity"
+        <activity android:name="ru.gelin.android.sendtosd.SendDispatcherActivity"
                 android:label="@string/sd_card">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
@@ -22,27 +22,38 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SendActivity"
+        <activity android:name="ru.gelin.android.sendtosd.SendActivity"
                 android:label="@string/sd_card">
         </activity>
         
-        <activity android:name=".SendMultipleActivity"
+        <activity android:name="ru.gelin.android.sendtosd.SendMultipleActivity"
                 android:label="@string/sd_card">
         </activity>
         
-        <activity android:name=".PreferencesActivity"
+        <activity android:name="ru.gelin.android.sendtosd.PreferencesActivity"
                   android:label="@string/app_preferences">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <service android:name="ru.gelin.android.sendtosd.donate.BillingService" />
+
+        <receiver android:name="ru.gelin.android.sendtosd.donate.BillingReceiver">
+            <intent-filter>
+                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
     </application>
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
     
-    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8"/>
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="8"/>
     <supports-screens/>
 
 </manifest> 
