@@ -41,7 +41,7 @@
             android:key="donate_category"
             android:title="@string/donate">
         
-        <ru.gelin.android.sendtosd.DonatePreference
+        <Preference
                 android:key="donate"
                 android:persistent="false"
                 android:title="@string/donate"

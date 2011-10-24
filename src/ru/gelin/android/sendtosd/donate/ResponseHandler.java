@@ -113,7 +113,7 @@ public class ResponseHandler {
         // first.
         new Thread(new Runnable() {
             public void run() {
-                PurchaseDatabase db = new PurchaseDatabase(context);
+                DonateDatabase db = new DonateDatabase(context);
                 db.setStatus(purchaseState);
 
                 // This needs to be synchronized because the UI thread can change the
