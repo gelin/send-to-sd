@@ -57,6 +57,6 @@
     <string name="donate">Donate</string>
     <string name="buy_donate_version">Buy donate version of the app</string>
     <string name="donate_with_moneybookers">Donate $1 with moneybookers</string>
-    <string name="donate_summary">Donate $1 with Google Checkout</string>
+    <string name="donate_summary">Donate $1 with Android Market</string>
     <string name="donate_thanks">Thank you!</string>
 </resources>

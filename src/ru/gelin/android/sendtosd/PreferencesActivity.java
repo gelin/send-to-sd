@@ -130,6 +130,7 @@ public class PreferencesActivity extends PreferenceActivity {
         this.donate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference preference) {
 				PreferencesActivity.this.billingService.requestPurchase(DONATE_ITEM_ID, null);
+				preference.setEnabled(false);
 				return true;
 			}
 		});
