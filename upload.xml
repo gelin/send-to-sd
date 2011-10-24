@@ -19,7 +19,7 @@
     	    filename="bin/sendtosd-android-debug.apk" 
     	    targetfilename="sendtosd-android-debug.apk"
     	    summary="Latest build (${manifest(android:versionName)}, signed by debug key)"
-    	    labels="Type-Package, OpSys-Android_1.5" />
+    	    labels="Type-Package, OpSys-Android_1.6" />
 
 	<copy file="bin/sendtosd-android-debug.apk"
 	    todir="/home/gelin/Dropbox/android@gelin"/>
@@ -38,7 +38,7 @@
     	    filename="bin/sendtosd-android.apk" 
     	    targetfilename="sendtosd-android-${manifest(android:versionName)}.apk"
     	    summary="Latest build (${manifest(android:versionName)})"
-    	    labels="Featured, Type-Package, OpSys-Android_1.5" />
+    	    labels="Featured, Type-Package, OpSys-Android_1.6" />
 
 	<copy file="bin/sendtosd-android.apk"
 	    todir="/home/gelin/Dropbox/android@gelin"/>
