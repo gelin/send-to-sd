@@ -6,3 +6,4 @@ tmp/*
 local.properties
 build.properties
 upload.credentials.properties
+glob:ant.properties
