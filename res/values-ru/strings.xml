@@ -57,4 +57,7 @@
     <string name="donate_with_moneybookers">Подарите $1 через moneybookers</string>
     <string name="donate_summary">Подарите $1 через Android Market</string>
     <string name="donate_thanks">Спасибо!</string>
+    <string name="view_type">Внешний вид</string>
+    <string name="full_screen_view">На весь экран</string>
+    <string name="dialog_view">В диалоговом окне</string>
 </resources>

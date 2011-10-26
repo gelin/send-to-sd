@@ -20,5 +20,14 @@
         <item>15</item>
         <item>20</item>
     </string-array>
+    
+    <string-array name="view_type_entries">
+        <item>@string/full_screen_view</item>
+        <item>@string/dialog_view</item>
+    </string-array>
+    <string-array name="view_type_values">
+        <item>FULL_SCREEN</item>
+        <item>DIALOG</item>
+    </string-array>
 
 </resources>

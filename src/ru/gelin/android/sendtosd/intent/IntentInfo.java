@@ -2,12 +2,14 @@ package ru.gelin.android.sendtosd.intent;
 
 import static ru.gelin.android.sendtosd.IntentParams.EXTRA_PATH;
 import static ru.gelin.android.sendtosd.PreferenceParams.PREF_INITIAL_FOLDER;
+import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_INITIAL_FOLDER;
 import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDER;
-import static ru.gelin.android.sendtosd.PreferenceParams.VAL_LAST_FOLDER;
 import static ru.gelin.android.sendtosd.Tag.TAG;
 
 import java.io.File;
 import java.io.IOException;
+
+import ru.gelin.android.sendtosd.PreferenceParams.InitialFolder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -78,10 +80,10 @@ public class IntentInfo {
      *  Returns default path. The return value can differs for different preferences. 
      */
     File getDefaultPath() {
-        String initialFolder = this.preferences.getString(PREF_INITIAL_FOLDER, 
-                VAL_LAST_FOLDER);
+        InitialFolder initialFolder = InitialFolder.legacyValueOf(
+        		this.preferences.getString(PREF_INITIAL_FOLDER, DEFAULT_INITIAL_FOLDER));
         File root = Environment.getExternalStorageDirectory();
-        if (VAL_LAST_FOLDER.equals(initialFolder)) {
+        if (InitialFolder.LAST_FOLDER.equals(initialFolder)) {
             String lastFolder = this.preferences.getString(PREF_LAST_FOLDER, null);
             if (lastFolder == null) {
                 return root;

@@ -59,4 +59,7 @@
     <string name="donate_with_moneybookers">Donate $1 with moneybookers</string>
     <string name="donate_summary">Donate $1 with Android Market</string>
     <string name="donate_thanks">Thank you!</string>
+    <string name="view_type">View</string>
+    <string name="full_screen_view">Full screen</string>
+    <string name="dialog_view">Dialog window</string>
 </resources>

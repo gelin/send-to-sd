@@ -9,7 +9,8 @@
             android:debuggable="true">
 
         <activity android:name="ru.gelin.android.sendtosd.SendDispatcherActivity"
-                android:label="@string/sd_card">
+                android:label="@string/sd_card"
+                android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -26,8 +27,18 @@
                 android:label="@string/sd_card">
         </activity>
         
+        <activity android:name=".SendDialogActivity"
+                android:label="@string/sd_card"
+                android:theme="@android:style/Theme.Dialog">
+        </activity>
+        
         <activity android:name="ru.gelin.android.sendtosd.SendMultipleActivity"
                 android:label="@string/sd_card">
+        </activity>
+        
+        <activity android:name=".SendMultipleDialogActivity"
+                android:label="@string/sd_card"
+                android:theme="@android:style/Theme.Dialog">
         </activity>
         
         <activity android:name="ru.gelin.android.sendtosd.PreferencesActivity"
