@@ -17,7 +17,7 @@
 	    password="${gc.password}"
     	    projectname="sendtosd-android" 
     	    filename="bin/sendtosd-android-debug.apk" 
-    	    targetfilename="sendtosd-android-debug.apk"
+    	    targetfilename="sendtosd-android-${manifest(android:versionName)}-debug.apk"
     	    summary="Latest build (${manifest(android:versionName)}, signed by debug key)"
     	    labels="Type-Package, OpSys-Android_1.6" />
 
