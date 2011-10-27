@@ -13,7 +13,6 @@ import android.preference.PreferenceManager;
  * 	<li>NONE - default status, means that no information about donation was saved, 
  * 	the purchase history should be restored</li>
  *  <li>EXPECTING - we already checked that there was no donates, should allow the user to make the donation</li>
- *  <li>PENDING - the purchase was started, should wait for the status and don't allow to purchase again</li>
  *  <li>PURCHASED - the donation is done and completed, no need to start billing service, thanks the user</li>
  * 	</ul>
  */
@@ -22,7 +21,6 @@ public class DonateStorage {
 	public static enum DonateStatus {
 		NONE,
 		EXPECTING,
-		PENDING,
 		PURCHASED;
 		
 		public static DonateStatus valueOf(PurchaseState state) {
@@ -52,9 +50,8 @@ public class DonateStorage {
 	/**
 	 * 	Sets the new status.
 	 * 	Validates the state, only the following transitions are allowed:<br>
-	 *	NONE -> EXPECTING, PENDING, PURCHASED<br>
-	 *  EXPECTING -> PENDING, PURCHASED<br>
-	 *  PENDING -> EXPECTING, PURCHASED<br> 
+	 *	NONE -> EXPECTING, PURCHASED<br>
+	 *  EXPECTING -> PURCHASED<br>
 	 */
 	public void setStatus(DonateStatus status) {
 		DonateStatus oldStatus = getStatus();
@@ -65,11 +62,6 @@ public class DonateStorage {
 		case EXPECTING:
 			if (!DonateStatus.NONE.equals(status)) {	//disallow back to NONE
 				updateStatus(status);
-			}
-			break;
-		case PENDING:
-			if (DonateStatus.EXPECTING.equals(status) || DonateStatus.PURCHASED.equals(status)) {
-				updateStatus(status);	//allow only back to EXPECTING or forward to PURCHASED
 			}
 			break;
 		}

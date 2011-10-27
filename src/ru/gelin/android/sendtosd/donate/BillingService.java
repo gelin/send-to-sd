@@ -367,6 +367,10 @@ public class BillingService extends Service implements ServiceConnection {
      * @param startId an identifier for the invocation instance of this service
      */
     public void handleCommand(Intent intent, int startId) {
+    	if (intent == null) {
+    		Log.w(TAG, "BillingService: handleCommand() without intent");
+    		return;
+    	}
         String action = intent.getAction();
         if (Consts.DEBUG) {
             Log.i(TAG, "BillingService: handleCommand() action: " + action);

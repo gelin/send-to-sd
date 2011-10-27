@@ -26,8 +26,9 @@ public class PreferencesActivity extends PreferenceActivity {
 	/** Special package name for donate version of the app */
 	static final String DONATE_PACKAGE_NAME = "ru.gelin.android.sendtosd.donate";
 	
-	//static final String DONATE_PRODUCT_ID = "donate";
-	static final String DONATE_PRODUCT_ID = "android.test.purchased";	//for tests	
+	//static final String DONATE_PRODUCT_ID = "android.test.purchased";	//for tests
+	static final String DONATE_PRODUCT_ID = "donate";
+		
 	
 	Preference donateCategory;
 	Preference donate;
@@ -89,14 +90,6 @@ public class PreferencesActivity extends PreferenceActivity {
     		this.donate.setTitle(R.string.donate);
 			this.donate.setSummary(R.string.donate_summary);
 			this.donate.setEnabled(true);
-			break;
-    	case PENDING:
-    		if (category == null) {
-    			getPreferenceScreen().addPreference(this.donateCategory);
-    		}
-    		this.donate.setTitle(R.string.donate);
-			this.donate.setSummary(R.string.donate_summary);
-			this.donate.setEnabled(false);
 			break;
     	case PURCHASED:
     		if (category == null) {
@@ -165,10 +158,7 @@ public class PreferencesActivity extends PreferenceActivity {
 		@Override
 		public void onRequestPurchaseResponse(RequestPurchase request,
 				ResponseCode responseCode) {
-			if (responseCode == ResponseCode.RESULT_OK) {
-				this.storage.setStatus(DonateStatus.PENDING);
-				updateDonateView(DonateStatus.PENDING);
-            } else {
+			if (!ResponseCode.RESULT_OK.equals(responseCode)) {
 				this.storage.setStatus(DonateStatus.EXPECTING);
 				updateDonateView(DonateStatus.EXPECTING);
             }
