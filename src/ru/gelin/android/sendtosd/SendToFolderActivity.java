@@ -59,6 +59,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /** "Folders" preference key */
     public static final String PREF_FOLDERS = "folders";
     
+    /** Key to store the current path */
+    static final String KEY_PATH = "path";
     /** Key to store the path history */
     static final String KEY_PATH_HISTORY = "path_history";
     
@@ -76,15 +78,14 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     IntentInfo intentInfo;
     /** Current path */
     File path;
+    /** History of paths */
+    List<File> pathHistory = new LinkedList<File>();
     /** Last folders preference. Saved here to remove from or add to hierarchy. */
     Preference lastFolders;
     /** List of current subfolders */
     List<File> folders;
     /** Wrapper for MediaScanner */
     MediaScanner mediaScanner;
-    
-    /** History of paths */
-    List<File> pathHistory = new LinkedList<File>();
     
     /** Dialog to show the progress */
     volatile Progress progress = new DummyProgress();   //can be used from other threads
@@ -109,17 +110,23 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             error(R.string.unsupported_intent, e);
             return;
         }
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_PATH_HISTORY)) {
-        	this.pathHistory.clear();
-        	@SuppressWarnings("unchecked")
-        	Collection<File> restoredHistory = (Collection<File>)savedInstanceState.getSerializable(KEY_PATH_HISTORY);
-        	this.pathHistory.addAll(restoredHistory);
+        if (savedInstanceState != null) {
+        	if (savedInstanceState.containsKey(KEY_PATH)) {
+        		this.path = new File(savedInstanceState.getString(KEY_PATH));
+        	}
+        	if (savedInstanceState.containsKey(KEY_PATH_HISTORY)) {
+        		this.pathHistory.clear();
+        		@SuppressWarnings("unchecked")
+        		Collection<File> restoredHistory = (Collection<File>)savedInstanceState.getSerializable(KEY_PATH_HISTORY);
+        		this.pathHistory.addAll(restoredHistory);
+        	}
         }
     }
     
     @Override
     protected void onSaveInstanceState(Bundle outState) {
     	super.onSaveInstanceState(outState);
+    	outState.putString(KEY_PATH, this.path.toString());
     	outState.putSerializable(KEY_PATH_HISTORY, (Serializable)this.pathHistory);
     }
     
