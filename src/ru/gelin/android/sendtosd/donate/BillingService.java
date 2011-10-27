@@ -231,7 +231,7 @@ public class BillingService extends Service implements ServiceConnection {
             Bundle response = mService.sendBillingRequest(request);
             PendingIntent pendingIntent
                     = response.getParcelable(Consts.BILLING_RESPONSE_PURCHASE_INTENT);
-            if (pendingIntent == null) {
+            if (pendingIntent == null) {	//TODO: Does this happen when the user don't have the Google Checkout account?	
                 Log.e(TAG, "BillingService: error with requestPurchase");
                 return Consts.BILLING_RESPONSE_INVALID_REQUEST_ID;
             }
