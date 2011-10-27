@@ -6,7 +6,18 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
-public class DonateDatabase {
+/**
+ * 	Stores the donate status.
+ * 	There are the following statuses:
+ * 	<ul>
+ * 	<li>NONE - default status, means that no information about donation was saved, 
+ * 	the purchase history should be restored</li>
+ *  <li>EXPECTING - we already checked that there was no donates, should allow the user to make the donation</li>
+ *  <li>PENDING - the purchase was started, should wait for the status and don't allow to purchase again</li>
+ *  <li>PURCHASED - the donation is done and completed, no need to start billing service, thanks the user</li>
+ * 	</ul>
+ */
+public class DonateStorage {
 	
 	public static enum DonateStatus {
 		NONE,
@@ -30,7 +41,7 @@ public class DonateDatabase {
 	
 	SharedPreferences preferences;
 	
-	public DonateDatabase(Context context) {
+	public DonateStorage(Context context) {
 		this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 	
@@ -38,6 +49,13 @@ public class DonateDatabase {
 		setStatus(DonateStatus.valueOf(state));
 	}
 	
+	/**
+	 * 	Sets the new status.
+	 * 	Validates the state, only the following transitions are allowed:<br>
+	 *	NONE -> EXPECTING, PENDING, PURCHASED<br>
+	 *  EXPECTING -> PENDING, PURCHASED<br>
+	 *  PENDING -> EXPECTING, PURCHASED<br> 
+	 */
 	public void setStatus(DonateStatus status) {
 		DonateStatus oldStatus = getStatus();
 		switch (oldStatus) {

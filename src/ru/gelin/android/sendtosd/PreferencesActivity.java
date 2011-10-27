@@ -1,14 +1,14 @@
 package ru.gelin.android.sendtosd;
 
 import ru.gelin.android.sendtosd.donate.BillingService;
-import ru.gelin.android.sendtosd.donate.DonateDatabase;
+import ru.gelin.android.sendtosd.donate.DonateStorage;
 import ru.gelin.android.sendtosd.donate.PurchaseObserver;
 import ru.gelin.android.sendtosd.donate.ResponseHandler;
 import ru.gelin.android.sendtosd.donate.BillingService.RequestPurchase;
 import ru.gelin.android.sendtosd.donate.BillingService.RestoreTransactions;
 import ru.gelin.android.sendtosd.donate.Consts.PurchaseState;
 import ru.gelin.android.sendtosd.donate.Consts.ResponseCode;
-import ru.gelin.android.sendtosd.donate.DonateDatabase.DonateStatus;
+import ru.gelin.android.sendtosd.donate.DonateStorage.DonateStatus;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
@@ -26,13 +26,13 @@ public class PreferencesActivity extends PreferenceActivity {
 	/** Special package name for donate version of the app */
 	static final String DONATE_PACKAGE_NAME = "ru.gelin.android.sendtosd.donate";
 	
-	//static final String DONATE_ITEM_ID = "donate";
-	static final String DONATE_ITEM_ID = "android.test.purchased";	//for tests	
+	//static final String DONATE_PRODUCT_ID = "donate";
+	static final String DONATE_PRODUCT_ID = "android.test.purchased";	//for tests	
 	
 	Preference donateCategory;
 	Preference donate;
 	
-	DonateDatabase donateDb;
+	DonateStorage donateStorage;
 	DonatePurchaseObserver purchaseObserver;
 	BillingService billingService;
 	Handler handler = new Handler();
@@ -47,8 +47,8 @@ public class PreferencesActivity extends PreferenceActivity {
     	if (DONATE_PACKAGE_NAME.equals(getPackageName())) {
     		updateDonateView(DonateStatus.PURCHASED);
     	} else {
-    		this.donateDb = new DonateDatabase(this);
-    		DonateStatus status = this.donateDb.getStatus();
+    		this.donateStorage = new DonateStorage(this);
+    		DonateStatus status = this.donateStorage.getStatus();
     		updateDonateView(status);
     		if (!DonateStatus.PURCHASED.equals(status)) {
     			initBilling(status);
@@ -80,31 +80,31 @@ public class PreferencesActivity extends PreferenceActivity {
     	Preference category = findPreference(PREF_DONATE_CATEGORY);
     	switch (status) {
     	case NONE:
-    		getPreferenceScreen().removePreference(donateCategory);
+    		getPreferenceScreen().removePreference(this.donateCategory);
     		break;
     	case EXPECTING:
     		if (category == null) {
-    			getPreferenceScreen().addPreference(donateCategory);
+    			getPreferenceScreen().addPreference(this.donateCategory);
     		}
-    		donate.setTitle(R.string.donate);
-			donate.setSummary(R.string.donate_summary);
-			donate.setEnabled(true);
+    		this.donate.setTitle(R.string.donate);
+			this.donate.setSummary(R.string.donate_summary);
+			this.donate.setEnabled(true);
 			break;
     	case PENDING:
     		if (category == null) {
-    			getPreferenceScreen().addPreference(donateCategory);
+    			getPreferenceScreen().addPreference(this.donateCategory);
     		}
-    		donate.setTitle(R.string.donate);
-			donate.setSummary(R.string.donate_summary);
-			donate.setEnabled(false);
+    		this.donate.setTitle(R.string.donate);
+			this.donate.setSummary(R.string.donate_summary);
+			this.donate.setEnabled(false);
 			break;
     	case PURCHASED:
     		if (category == null) {
-    			getPreferenceScreen().addPreference(donateCategory);
+    			getPreferenceScreen().addPreference(this.donateCategory);
     		}
-    		donate.setTitle(R.string.donate_thanks);
-			donate.setSummary("");
-			donate.setEnabled(false);
+    		this.donate.setTitle(R.string.donate_thanks);
+			this.donate.setSummary("");
+			this.donate.setEnabled(false);
 			break;
     	}
     }
@@ -114,12 +114,7 @@ public class PreferencesActivity extends PreferenceActivity {
         this.billingService = new BillingService();
         this.billingService.setContext(this);
         ResponseHandler.register(this.purchaseObserver);
-        if (this.billingService.checkBillingSupported()) {
-        	if (DonateStatus.NONE.equals(status)) {
-        		this.donateDb.setStatus(DonateStatus.EXPECTING);
-        		updateDonateView(DonateStatus.EXPECTING);
-        	}
-        } else {
+        if (!this.billingService.checkBillingSupported()) {
         	updateDonateView(DonateStatus.NONE);
         	return;
         }
@@ -129,7 +124,7 @@ public class PreferencesActivity extends PreferenceActivity {
         
         this.donate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference preference) {
-				PreferencesActivity.this.billingService.requestPurchase(DONATE_ITEM_ID, null);
+				PreferencesActivity.this.billingService.requestPurchase(DONATE_PRODUCT_ID, null);
 				preference.setEnabled(false);
 				return true;
 			}
@@ -138,18 +133,18 @@ public class PreferencesActivity extends PreferenceActivity {
     
     class DonatePurchaseObserver extends PurchaseObserver {
 
-    	DonateDatabase db;
+    	DonateStorage storage;
     	
 		public DonatePurchaseObserver() {
 			super(PreferencesActivity.this, PreferencesActivity.this.handler);
-			this.db = PreferencesActivity.this.donateDb;
+			this.storage = PreferencesActivity.this.donateStorage;
 		}
 
 		@Override
 		public void onBillingSupported(boolean supported) {
 			if (supported) {
-				if (DonateStatus.NONE.equals(this.db.getStatus())) {
-	        		this.db.setStatus(DonateStatus.EXPECTING);
+				if (DonateStatus.NONE.equals(this.storage.getStatus())) {
+	        		this.storage.setStatus(DonateStatus.EXPECTING);
 	        		updateDonateView(DonateStatus.EXPECTING);
 	        	}
             } else {
@@ -161,8 +156,8 @@ public class PreferencesActivity extends PreferenceActivity {
 		public void onPurchaseStateChange(PurchaseState purchaseState,
 				String itemId, long purchaseTime, String developerPayload) {
             if (PurchaseState.PURCHASED.equals(purchaseState) &&
-            		DONATE_ITEM_ID.equals(itemId)) {
-            	this.db.setStatus(purchaseState);	//TODO: is this necessary?
+            		DONATE_PRODUCT_ID.equals(itemId)) {
+            	this.storage.setStatus(purchaseState);
             	updateDonateView(DonateStatus.PURCHASED);
             }
 		}
@@ -171,10 +166,10 @@ public class PreferencesActivity extends PreferenceActivity {
 		public void onRequestPurchaseResponse(RequestPurchase request,
 				ResponseCode responseCode) {
 			if (responseCode == ResponseCode.RESULT_OK) {
-				this.db.setStatus(DonateStatus.PENDING);
+				this.storage.setStatus(DonateStatus.PENDING);
 				updateDonateView(DonateStatus.PENDING);
             } else {
-				this.db.setStatus(DonateStatus.EXPECTING);
+				this.storage.setStatus(DonateStatus.EXPECTING);
 				updateDonateView(DonateStatus.EXPECTING);
             }
 		}
@@ -182,7 +177,10 @@ public class PreferencesActivity extends PreferenceActivity {
 		@Override
 		public void onRestoreTransactionsResponse(RestoreTransactions request,
 				ResponseCode responseCode) {
-     		updateDonateView(this.db.getStatus());
+			if (DonateStatus.NONE.equals(this.storage.getStatus())) {
+        		this.storage.setStatus(DonateStatus.EXPECTING);
+        		updateDonateView(DonateStatus.EXPECTING);
+        	}
 		}
     	
     }
