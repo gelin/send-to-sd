@@ -1,6 +1,5 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.IntentParams.EXTRA_FILE_NAME;
 import static ru.gelin.android.sendtosd.Tag.TAG;
 
 import java.io.File;
@@ -18,7 +17,6 @@ import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -141,16 +139,6 @@ public class SendActivity extends SendToFolderActivity
         return this.intentFile.isDeletable();
     }
 
-    /**
-     *  Creates the intent to change the folder.
-     */
-    @Override
-    Intent getChangeFolderIntent(File folder) {
-        Intent intent = super.getChangeFolderIntent(folder);
-        intent.putExtra(EXTRA_FILE_NAME, this.fileName);
-        return intent;
-    }
-    
     static enum Result {
         MOVED, COPIED, ERROR;
     }

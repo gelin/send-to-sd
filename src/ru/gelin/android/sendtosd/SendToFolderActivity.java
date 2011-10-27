@@ -1,6 +1,5 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.IntentParams.EXTRA_PATH;
 import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_LAST_FOLDERS_NUMBER;
 import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_LAST_FOLDERS_NUMBER_INT;
 import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDERS_NUMBER;
@@ -10,10 +9,13 @@ import static ru.gelin.android.sendtosd.Tag.TAG;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import ru.gelin.android.sendtosd.intent.IntentException;
@@ -56,14 +58,19 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     public static final String PREF_LAST_FOLDERS = "last_folders";
     /** "Folders" preference key */
     public static final String PREF_FOLDERS = "folders";
-    /** Request code for directory traversing */
-    public static final int REQ_CODE_FOLDER = 0;
+    
+    /** Key to store the path history */
+    static final String KEY_PATH_HISTORY = "path_history";
+    
     /** New Folder dialog ID */
     static final int NEW_FOLDER_DIALOG = 0;
     /** Copy progress dialog ID */
     static final int COPY_DIALOG = 1;
     /** Move progress dialog ID */
     static final int MOVE_DIALOG = 2;
+    
+    /** Index of the list head to use list as a stack */
+    static final int HEAD = 0;
     
     /** Intent information */
     IntentInfo intentInfo;
@@ -75,6 +82,9 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     List<File> folders;
     /** Wrapper for MediaScanner */
     MediaScanner mediaScanner;
+    
+    /** History of paths */
+    List<File> pathHistory = new LinkedList<File>();
     
     /** Dialog to show the progress */
     volatile Progress progress = new DummyProgress();   //can be used from other threads
@@ -98,6 +108,37 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         } catch (Throwable e) {
             error(R.string.unsupported_intent, e);
             return;
+        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_PATH_HISTORY)) {
+        	this.pathHistory.clear();
+        	@SuppressWarnings("unchecked")
+        	Collection<File> restoredHistory = (Collection<File>)savedInstanceState.getSerializable(KEY_PATH_HISTORY);
+        	this.pathHistory.addAll(restoredHistory);
+        }
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState);
+    	outState.putSerializable(KEY_PATH_HISTORY, (Serializable)this.pathHistory);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
+        if (this.intentInfo == null) {
+            return; //not initialized, should be finished immediately from onCreate()
+        }
+        if (this.pathHistory.isEmpty()) {
+            if (existedLastFolders == null) {
+                getPreferenceScreen().addPreference(lastFolders);
+            }
+            listLastFolders();
+        } else {
+            if (existedLastFolders != null) {
+                getPreferenceScreen().removePreference(lastFolders);
+            }
         }
     }
     
@@ -156,25 +197,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
         if (!hasDeletableFile()) {
             getPreferenceScreen().removePreference(moveHerePreference);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
-        if (this.intentInfo == null) {
-            return; //not initialized, should be finished immediately from onCreate()
-        }
-        if (this.intentInfo.isInitial()) {
-            if (existedLastFolders == null) {
-                getPreferenceScreen().addPreference(lastFolders);
-            }
-            listLastFolders();
-        } else {
-            if (existedLastFolders != null) {
-                getPreferenceScreen().removePreference(lastFolders);
-            }
         }
     }
     
@@ -248,20 +270,22 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  Changes the current folder.
      */
     public void changeFolder(File folder) {
-        startActivityForResult(getChangeFolderIntent(folder), REQ_CODE_FOLDER);
+    	this.pathHistory.add(HEAD, this.path);
+    	this.path = folder;
+    	new InitTask().execute();
     }
     
-    /**
-     *  Creates the intent to change the folder.
-     */
-    Intent getChangeFolderIntent(File folder) {
-        Intent intent = new Intent(getIntent());
-        intent.putExtra(EXTRA_PATH, folder.toString());
-        //intent.setComponent(getIntent().getComponent());
-        intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        return intent;
+    @Override
+    public void onBackPressed() {
+    	if (this.pathHistory.isEmpty()) {
+    		super.onBackPressed();
+    		return;
+    	}
+    	File oldPath = this.pathHistory.remove(HEAD);
+    	this.path = oldPath;
+    	new InitTask().execute();
     }
-
+    
     /**
      *  Saves the current folder to the list of last folders.
      */
@@ -469,7 +493,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             Log.e(TAG, exception.toString(), exception);
         }
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
-        setResult(RESULT_CANCELED);
         finish();
     }
     
@@ -478,7 +501,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     void complete(int messageId) {
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
-        setResult(RESULT_OK);
         finish();
     }
     
@@ -487,20 +509,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     void complete(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        setResult(RESULT_OK);
         finish();
-    }
-
-    /**
-     *  Finishes the whole task of this application on getting OK result.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            setResult(RESULT_OK);
-            finish();
-        }
     }
 
 }

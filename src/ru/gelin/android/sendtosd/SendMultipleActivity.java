@@ -39,7 +39,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
     protected void onInit() {
         super.onInit();
         IntentFiles storage = IntentFiles.getInstance();
-        if (this.intentInfo.isInitial()) {
+        if (this.pathHistory.isEmpty()) {
             try {
                 this.intentFiles = ((SendMultipleIntentInfo)this.intentInfo).getFiles();
             } catch (IntentFileException e) {

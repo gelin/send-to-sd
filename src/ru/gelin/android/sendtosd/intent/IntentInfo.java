@@ -69,10 +69,9 @@ public class IntentInfo {
     }
 
     /**
-     *  Returns true if the intent is initial intent for the application.
-     *  I.e. not modified intent for sub-activities.
+     *  Returns true if the intent contains path extra.
      */
-    public boolean isInitial() {
+    public boolean hasPath() {
         return !this.intent.hasExtra(EXTRA_PATH);
     }
 
