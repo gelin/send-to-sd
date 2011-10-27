@@ -36,7 +36,10 @@ public class SendActivity extends SendToFolderActivity
         implements FileSaver {
 
     /** Choose File Name dialog ID */
-    static final int FILE_NAME_DIALOG = 10; 
+    static final int FILE_NAME_DIALOG = 10;
+    
+    /** Key to store the file name */
+    static final String KEY_FILE_NAME = "file_name";
     
     /** File to save from intent */
     IntentFile intentFile;
@@ -62,7 +65,18 @@ public class SendActivity extends SendToFolderActivity
             error(R.string.no_files);
             return;
         }
+        if (savedInstanceState != null) {
+        	if (savedInstanceState.containsKey(KEY_FILE_NAME)) {
+        		this.fileName = savedInstanceState.getString(KEY_FILE_NAME);
+        	}
+        }
         setTitle(this.fileName);
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState);
+    	outState.putString(KEY_FILE_NAME, this.fileName);
     }
     
     @Override
