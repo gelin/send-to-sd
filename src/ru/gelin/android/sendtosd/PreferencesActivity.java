@@ -3,6 +3,7 @@ package ru.gelin.android.sendtosd;
 import ru.gelin.android.sendtosd.donate.BillingService;
 import ru.gelin.android.sendtosd.donate.DonateStorage;
 import ru.gelin.android.sendtosd.donate.PurchaseObserver;
+import ru.gelin.android.sendtosd.donate.R;
 import ru.gelin.android.sendtosd.donate.ResponseHandler;
 import ru.gelin.android.sendtosd.donate.BillingService.RequestPurchase;
 import ru.gelin.android.sendtosd.donate.BillingService.RestoreTransactions;

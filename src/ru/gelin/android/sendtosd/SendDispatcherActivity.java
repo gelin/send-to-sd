@@ -3,6 +3,7 @@ package ru.gelin.android.sendtosd;
 import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_VIEW_TYPE;
 import static ru.gelin.android.sendtosd.PreferenceParams.PREF_VIEW_TYPE;
 import ru.gelin.android.sendtosd.PreferenceParams.ViewType;
+import ru.gelin.android.sendtosd.donate.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

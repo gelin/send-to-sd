@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import ru.gelin.android.sendtosd.donate.R;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.progress.DummyProgress;
