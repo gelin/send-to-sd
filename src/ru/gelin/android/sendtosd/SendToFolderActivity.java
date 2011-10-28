@@ -35,6 +35,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -283,14 +284,17 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     }
     
     @Override
-    public void onBackPressed() {
-    	if (this.pathHistory.isEmpty()) {
-    		super.onBackPressed();
-    		return;
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    	if (keyCode != KeyEvent.KEYCODE_BACK) {
+    		return super.onKeyUp(keyCode, event);
     	}
+    	if (this.pathHistory.isEmpty()) {
+        	return super.onKeyUp(keyCode, event);
+        }
     	File oldPath = this.pathHistory.remove(HEAD);
     	this.path = oldPath;
     	new InitTask().execute();
+    	return true;
     }
     
     /**
