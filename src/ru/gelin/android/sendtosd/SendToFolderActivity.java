@@ -81,12 +81,15 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     File path;
     /** History of paths */
     List<File> pathHistory = new LinkedList<File>();
-    /** Last folders preference. Saved here to remove from or add to hierarchy. */
-    Preference lastFolders;
     /** List of current subfolders */
     List<File> folders;
     /** Wrapper for MediaScanner */
     MediaScanner mediaScanner;
+    
+    /** Move here preference. Saved here to remove from or add to hierarchy. */
+    MoveHerePreference moveHerePreference;
+    /** Last folders preference. Saved here to remove from or add to hierarchy. */
+    Preference lastFoldersPreference;
     
     /** Dialog to show the progress */
     volatile Progress progress = new DummyProgress();   //can be used from other threads
@@ -97,7 +100,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         super.onCreate(savedInstanceState);
         this.mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
-        this.lastFolders = findPreference(PREF_LAST_FOLDERS);
+        this.lastFoldersPreference = findPreference(PREF_LAST_FOLDERS);
+        this.moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
         if (getIntent() == null) {
             error(R.string.unsupported_intent);
             return;
@@ -140,12 +144,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
         if (this.pathHistory.isEmpty()) {
             if (existedLastFolders == null) {
-                getPreferenceScreen().addPreference(lastFolders);
+                getPreferenceScreen().addPreference(lastFoldersPreference);
             }
             listLastFolders();
         } else {
             if (existedLastFolders != null) {
-                getPreferenceScreen().removePreference(lastFolders);
+                getPreferenceScreen().removePreference(lastFoldersPreference);
             }
         }
     }
@@ -195,17 +199,25 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     protected void onPostInit() {
         fillFolders();
+        
         CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
-        MoveHerePreference moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
+        Preference moveHere = findPreference(PREF_MOVE_HERE);
+        
+        if (hasDeletableFile()) {
+        	if (moveHere == null) {
+        		getPreferenceScreen().addPreference(this.moveHerePreference);
+        	}
+        } else {
+            getPreferenceScreen().removePreference(this.moveHerePreference);
+        }
+        
         copyHerePreference.setFileSaver(this);
-        moveHerePreference.setFileSaver(this);
+        this.moveHerePreference.setFileSaver(this);
         if (this.path.canWrite()) {
             copyHerePreference.setEnabled(true);
-            moveHerePreference.setEnabled(true);
+            this.moveHerePreference.setEnabled(true);
         }
-        if (!hasDeletableFile()) {
-            getPreferenceScreen().removePreference(moveHerePreference);
-        }
+        
     }
     
     @Override
