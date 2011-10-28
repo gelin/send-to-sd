@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -168,6 +169,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     	protected void onPostExecute(Void result) {
     		onPostInit();
     		setProgressBarIndeterminateVisibility(false);
+    		//Log.d(TAG, "history: " + SendToFolderActivity.this.pathHistory);
     	}
     }
     
@@ -296,12 +298,37 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     }
     
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-    	if (keyCode != KeyEvent.KEYCODE_BACK) {
-    		return super.onKeyUp(keyCode, event);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	//TODO: check, maybe it's possible to use Android 2.0 onBackPressed() method
+    	//Log.d(TAG, "key down: " + event);
+    	boolean result = false;
+    	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR &&
+    			keyCode == KeyEvent.KEYCODE_BACK) {
+    		result = backPress();
     	}
+    	if (result == false) {
+    		result = super.onKeyDown(keyCode, event);
+    	}
+    	return result;
+    }
+    
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    	//Log.d(TAG, "key up: " + event);
+    	boolean result = false;
+    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR &&
+    			keyCode == KeyEvent.KEYCODE_BACK) {
+        	result = backPress();
+    	}
+    	if (result == false) {
+    		result = super.onKeyUp(keyCode, event);
+    	}
+    	return result;
+    }
+    
+    boolean backPress() {
     	if (this.pathHistory.isEmpty()) {
-        	return super.onKeyUp(keyCode, event);
+        	return false;
         }
     	File oldPath = this.pathHistory.remove(HEAD);
     	this.path = oldPath;
