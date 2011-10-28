@@ -82,6 +82,9 @@ public class IntentInfo {
         InitialFolder initialFolder = InitialFolder.legacyValueOf(
         		this.preferences.getString(PREF_INITIAL_FOLDER, DEFAULT_INITIAL_FOLDER));
         File root = Environment.getExternalStorageDirectory();
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+        	root = new File("/");
+        }
         if (InitialFolder.LAST_FOLDER.equals(initialFolder)) {
             String lastFolder = this.preferences.getString(PREF_LAST_FOLDER, null);
             if (lastFolder == null) {
