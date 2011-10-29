@@ -379,6 +379,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             PathFolderPreference folderPref = new PathFolderPreference(this, folder, this);
             lastFoldersCategory.addPreference(folderPref);
         }
+        
+        if (lastFoldersCategory.getPreferenceCount() <= 0) {
+        	getPreferenceScreen().removePreference(lastFoldersCategory);
+        }
     }
 
     /**
