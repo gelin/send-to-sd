@@ -202,11 +202,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         
         copyHerePreference.setFileSaver(this);
         this.moveHerePreference.setFileSaver(this);
-        if (this.path.canWrite()) {
-            copyHerePreference.setEnabled(true);
-            this.moveHerePreference.setEnabled(true);
-        }
         
+        boolean enable = this.path.canWrite();
+        copyHerePreference.setEnabled(enable);
+        this.moveHerePreference.setEnabled(enable);
     }
     
     @Override
