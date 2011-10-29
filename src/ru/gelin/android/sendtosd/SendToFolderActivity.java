@@ -139,20 +139,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
-        if (this.intentInfo == null) {
-            return; //not initialized, should be finished immediately from onCreate()
-        }
-        if (this.pathHistory.isEmpty()) {
-            if (existedLastFolders == null) {
-                getPreferenceScreen().addPreference(lastFoldersPreference);
-            }
-            listLastFolders();
-        } else {
-            if (existedLastFolders != null) {
-                getPreferenceScreen().removePreference(lastFoldersPreference);
-            }
-        }
+        updateLastFolders();
     }
     
     class InitTask extends AsyncTask<Void, Void, Void> {
@@ -294,6 +281,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     public void changeFolder(File folder) {
     	this.pathHistory.add(HEAD, this.path);
     	this.path = folder;
+    	updateLastFolders();
     	new InitTask().execute();
     }
     
@@ -332,6 +320,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
     	File oldPath = this.pathHistory.remove(HEAD);
     	this.path = oldPath;
+    	updateLastFolders();
     	new InitTask().execute();
     	return true;
     }
@@ -347,6 +336,26 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     public abstract void copyFile();
     
     public abstract void moveFile();
+    
+    /** 
+     * 	Updates last folders group. Hides them if necessary.
+     */
+    void updateLastFolders() {
+    	Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
+        if (this.intentInfo == null) {
+            return; //not initialized, should be finished immediately from onCreate()
+        }
+        if (this.pathHistory.isEmpty()) {
+            if (existedLastFolders == null) {
+                getPreferenceScreen().addPreference(lastFoldersPreference);
+            }
+            listLastFolders();
+        } else {
+            if (existedLastFolders != null) {
+                getPreferenceScreen().removePreference(lastFoldersPreference);
+            }
+        }
+    }
     
     /**
      *  Fills the list of last folders.
@@ -493,8 +502,6 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         } while (new File(this.path, newName).exists());
         return newName;
     }
-    
-
     
     /**
      *  Creates the new folder.
