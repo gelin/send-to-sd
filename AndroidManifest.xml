@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="ru.gelin.android.sendtosd.donate"
         android:installLocation="auto"
-        android:versionCode="33"
-        android:versionName="0.3.7-beta1">
+        android:versionCode="34"
+        android:versionName="0.3.7-beta2">
     
     <application android:icon="@drawable/icon" android:label="@string/app_name"
             android:debuggable="true">
@@ -27,7 +27,7 @@
                 android:label="@string/sd_card">
         </activity>
         
-        <activity android:name=".SendDialogActivity"
+        <activity android:name="ru.gelin.android.sendtosd.SendDialogActivity"
                 android:label="@string/sd_card"
                 android:theme="@android:style/Theme.Dialog">
         </activity>
@@ -36,7 +36,7 @@
                 android:label="@string/sd_card">
         </activity>
         
-        <activity android:name=".SendMultipleDialogActivity"
+        <activity android:name="ru.gelin.android.sendtosd.SendMultipleDialogActivity"
                 android:label="@string/sd_card"
                 android:theme="@android:style/Theme.Dialog">
         </activity>
