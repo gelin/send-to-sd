@@ -28,7 +28,7 @@ import android.util.Log;
 public class SendMultipleActivity extends SendToFolderActivity {
     
     /** Files to save from intent */
-    IntentFile[] intentFiles;
+    IntentFile[] intentFiles = new IntentFile[0];
 
     @Override
     protected IntentInfo getIntentInfo() throws IntentException {
