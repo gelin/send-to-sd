@@ -64,7 +64,7 @@ public class StreamFile extends IntentFile {
     @Override
     public String getName() {
         String fileName = this.uri.getLastPathSegment();
-        return addExtension(fileName);
+        return addExtension(removeLeadingDots(fileName));
     }
     
     /**
@@ -148,6 +148,18 @@ public class StreamFile extends IntentFile {
             }
         }
         return fileName;
+    }
+
+    /**
+     *  Removes the leading dots from the filename.
+     *  To make the file not-hidden.
+     */
+    String removeLeadingDots(String fileName) {
+        String result = fileName;
+        while (result.startsWith(".")) {
+            result = result.substring(1);
+        }
+        return result;
     }
     
     /**

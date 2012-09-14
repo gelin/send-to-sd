@@ -85,7 +85,7 @@ public class ContentFile extends AbstractFileFile {
         if (this.file == null) {
             return super.getName();
         }
-        return addExtension(this.file.getName());
+        return addExtension(removeLeadingDots(this.file.getName()));
     }
     
     /**
