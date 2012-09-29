@@ -19,10 +19,10 @@ public class TextFile extends IntentFile {
     private static final String TEXT_MIME_TYPE = "text/plain";
     
     /** The text content of the file */
-    String text = "";
+    CharSequence text = "";
     
     TextFile(Intent intent) throws IntentFileException {
-        this.text = intent.getStringExtra(Intent.EXTRA_TEXT);
+        this.text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT);
         if (this.text == null) {
             throw new IntentFileException("null text");
         }
@@ -81,7 +81,7 @@ public class TextFile extends IntentFile {
     @Override
     public void saveAs(File file) throws IOException {
         Writer out = new FileWriter(file);
-        out.write(this.text);
+        out.write(String.valueOf(this.text));
         out.close();
     }
     
