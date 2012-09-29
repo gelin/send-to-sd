@@ -29,7 +29,7 @@
         
         <activity android:name="ru.gelin.android.sendtosd.SendDialogActivity"
                 android:label="@string/sd_card"
-                android:theme="@android:style/Theme.Dialog">
+                android:theme="@style/Theme.Dialog">
         </activity>
         
         <activity android:name="ru.gelin.android.sendtosd.SendMultipleActivity"
@@ -38,7 +38,7 @@
         
         <activity android:name="ru.gelin.android.sendtosd.SendMultipleDialogActivity"
                 android:label="@string/sd_card"
-                android:theme="@android:style/Theme.Dialog">
+                android:theme="@style/Theme.Dialog">
         </activity>
         
         <activity android:name="ru.gelin.android.sendtosd.PreferencesActivity"
@@ -64,7 +64,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
     
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="8"/>
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11"/>
     <supports-screens/>
 
 </manifest> 
