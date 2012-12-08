@@ -11,7 +11,6 @@ public class SendDialogActivity extends SendActivity {
     protected void onCreate(Bundle savedInstanceState) {
         PopupDialogUtil.showAsPopup(this);
         super.onCreate(savedInstanceState);
-
     }
 
 }

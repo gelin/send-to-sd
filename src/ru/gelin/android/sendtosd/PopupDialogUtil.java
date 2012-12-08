@@ -27,7 +27,7 @@ public class PopupDialogUtil {
         Display display = activity.getWindowManager().getDefaultDisplay();
         WindowManager.LayoutParams params = window.getAttributes();
         params.height = (int)(display.getHeight() * 0.95);
-        params.width = Math.min((int)(display.getWidth() * 0.9), (int)(params.height * 0.75));
+        params.width = Math.min((int)(display.getWidth() * 0.9), (int)(params.height * 0.85));
         params.gravity = Gravity.BOTTOM;
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
