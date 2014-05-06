@@ -48,17 +48,5 @@
                 android:defaultValue="FULL_SCREEN"/>
         
     </PreferenceCategory>
-    
-    <PreferenceCategory
-            android:key="donate_category"
-            android:title="@string/donate">
-        
-        <Preference
-                android:key="donate"
-                android:persistent="false"
-                android:title="@string/donate"
-                android:summary="@string/donate_summary"/>
-        
-    </PreferenceCategory>
-    
+
 </PreferenceScreen>
