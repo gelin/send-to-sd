@@ -1,9 +1,13 @@
 package ru.gelin.android.sendtosd;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import ru.gelin.android.sendtosd.donate.DonateStatus;
 import ru.gelin.android.sendtosd.donate.DonateStatusListener;
 import ru.gelin.android.sendtosd.donate.Donation;
@@ -18,6 +22,8 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 	
 	/** Special package name for donate version of the app */
 	static final String DONATE_PACKAGE_NAME = "ru.gelin.android.sendtosd.donate";
+
+	static final int REQUEST_CODE = 1;
 	
 	Preference donateCategory;
 	Preference donate;
@@ -41,8 +47,8 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 		this.donation = new Donation(this, this);
 		this.donate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference preference) {
-//					PreferencesActivity.this.billingService.requestPurchase(DONATE_PRODUCT_ID, null);
 				preference.setEnabled(false);
+				startDonatePurchase();
 				return true;
 			}
 		});
@@ -87,4 +93,29 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 		updateDonateView(status);
 	}
 
+	void startDonatePurchase() {
+		if (this.donation == null) {
+			return;
+		}
+		PendingIntent intent = this.donation.getPurchaseIntent();
+		if (intent == null) {
+			return;
+		}
+		try {
+			startIntentSenderForResult(intent.getIntentSender(), REQUEST_CODE, new Intent(), 0, 0, 0);
+		} catch (IntentSender.SendIntentException e) {
+			Log.w(Tag.TAG, "startIntentSenderForResult() failed", e);
+			return;
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_CODE) {
+			if (this.donation == null) {
+				return;
+			}
+			this.donation.processPurchaseResult(data);
+		}
+	}
 }

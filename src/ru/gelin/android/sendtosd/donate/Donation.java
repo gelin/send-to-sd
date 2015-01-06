@@ -1,5 +1,6 @@
 package ru.gelin.android.sendtosd.donate;
 
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import com.android.vending.billing.IInAppBillingService;
+import org.json.JSONObject;
 import ru.gelin.android.sendtosd.Tag;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  */
 public class Donation {
 
-    //static final String PRODUCT_ID = "android.test.purchased";	//for tests
+//    static final String PRODUCT_ID = "android.test.purchased";	//for tests
     static final String PRODUCT_ID = "donate";
 
     static final int API_VERSION = 3;
@@ -40,13 +42,51 @@ public class Donation {
     }
 
     public void destroy() {
-        if (this.billingService != null) {
-            context.unbindService(this.connection);
+        if (this.billingService == null) {
+            return;
         }
+        context.unbindService(this.connection);
     }
 
     public DonateStatus getStatus() {
         return this.status;
+    }
+
+    public PendingIntent getPurchaseIntent() {
+        if (this.billingService == null) {
+            return null;
+        }
+        try {
+            Bundle buyIntentBundle = this.billingService.getBuyIntent(
+                    API_VERSION, this.context.getPackageName(), PRODUCT_ID, ITEM_TYPE, null);
+            int responseCode = buyIntentBundle.getInt("RESPONSE_CODE");
+            if (RESULT_OK != responseCode) {
+                return null;
+            }
+            return buyIntentBundle.getParcelable("BUY_INTENT");
+        } catch (RemoteException e) {
+            Log.w(Tag.TAG, "getBuyIntent() failed", e);
+            return null;
+        }
+    }
+
+    public void processPurchaseResult(Intent data) {
+        int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
+        if (RESULT_OK != responseCode) {
+            return;
+        }
+        try {
+            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+            JSONObject json = new JSONObject(purchaseData);
+            String productId = json.getString("productId");
+            if (PRODUCT_ID == productId) {
+                setStatus(DonateStatus.PURCHASED);
+                return;
+            }
+        } catch (Exception e) {
+            Log.w(Tag.TAG, "parsing of purchase data failed", e);
+            return;
+        }
     }
 
     /**
@@ -122,8 +162,8 @@ public class Donation {
         try {
             Bundle ownedItems = this.billingService.getPurchases(
                     API_VERSION, this.context.getPackageName(), ITEM_TYPE, null);
-            int response = ownedItems.getInt("RESPONSE_CODE");
-            if (RESULT_OK != response) {
+            int responseCode = ownedItems.getInt("RESPONSE_CODE");
+            if (RESULT_OK != responseCode) {
                 return false;
             }
             ArrayList<String> ownedSkus =
