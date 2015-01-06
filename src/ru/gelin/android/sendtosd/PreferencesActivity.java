@@ -111,11 +111,17 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_CODE) {
-			if (this.donation == null) {
-				return;
-			}
-			this.donation.processPurchaseResult(data);
+		if (requestCode != REQUEST_CODE) {
+			return;
 		}
+		if (resultCode != RESULT_OK) {
+			updateDonateView(DonateStatus.EXPECTING);
+			return;
+		}
+		if (this.donation == null) {
+			return;
+		}
+		this.donation.processPurchaseResult(data);
 	}
+
 }

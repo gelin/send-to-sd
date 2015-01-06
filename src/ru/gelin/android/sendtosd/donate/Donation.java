@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class Donation {
 
 //    static final String PRODUCT_ID = "android.test.purchased";	//for tests
-    static final String PRODUCT_ID = "donate";
+    static final String PRODUCT_ID = "test";
 
     static final int API_VERSION = 3;
     static final int RESULT_OK = 0;
@@ -82,8 +82,17 @@ public class Donation {
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
             JSONObject json = new JSONObject(purchaseData);
             String productId = json.getString("productId");
-            if (PRODUCT_ID == productId) {
+            if (PRODUCT_ID != productId) {
+                setStatus(DonateStatus.EXPECTING);
+                return;
+            }
+            int purchaseState = json.getInt("purchaseState");
+            if (RESULT_OK == purchaseState) {
                 setStatus(DonateStatus.PURCHASED);
+                return;
+            } else {
+                Log.w(Tag.TAG, "purchase state = " + purchaseState);
+                setStatus(DonateStatus.EXPECTING);
                 return;
             }
         } catch (Exception e) {
