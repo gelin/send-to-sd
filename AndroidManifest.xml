@@ -48,22 +48,12 @@
             </intent-filter>
         </activity>
         
-        <service android:name="ru.gelin.android.sendtosd.donate.BillingService" />
-
-        <receiver android:name="ru.gelin.android.sendtosd.donate.BillingReceiver">
-            <intent-filter>
-                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
-                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
-                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-
     </application>
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
     
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="21"/>
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="21"/>
     <supports-screens/>
 
 </manifest> 

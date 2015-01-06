@@ -53,9 +53,7 @@
     <string name="kb_progress" formatted="false">%1.1f/%1.1f Кб</string>
     <string name="mb_progress" formatted="false">%1.1f/%1.1f Мб</string>
     <string name="donate">Поддержать разработчика</string>
-    <string name="buy_donate_version">Купить платную версию приложения</string>
-    <string name="donate_with_moneybookers">Подарите $1 через moneybookers</string>
-    <string name="donate_summary">Подарите $1 через Android Market</string>
+    <string name="donate_summary">Подарите $1 через Google Play</string>
     <string name="donate_thanks">Спасибо!</string>
     <string name="view_type">Внешний вид</string>
     <string name="full_screen_view">На весь экран</string>
