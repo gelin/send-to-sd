@@ -61,6 +61,7 @@ public class Donation {
                     API_VERSION, this.context.getPackageName(), PRODUCT_ID, ITEM_TYPE, null);
             int responseCode = buyIntentBundle.getInt("RESPONSE_CODE");
             if (RESULT_OK != responseCode) {
+                Log.w(Tag.TAG, "getBuyIntent() returned " + responseCode);
                 return null;
             }
             return buyIntentBundle.getParcelable("BUY_INTENT");
@@ -73,6 +74,8 @@ public class Donation {
     public void processPurchaseResult(Intent data) {
         int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
         if (RESULT_OK != responseCode) {
+            Log.w(Tag.TAG, "purchase returned " + responseCode);
+            setStatus(DonateStatus.EXPECTING);
             return;
         }
         try {
@@ -85,6 +88,7 @@ public class Donation {
             }
         } catch (Exception e) {
             Log.w(Tag.TAG, "parsing of purchase data failed", e);
+            setStatus(DonateStatus.EXPECTING);
             return;
         }
     }
@@ -147,6 +151,7 @@ public class Donation {
                     API_VERSION, this.context.getPackageName(), ITEM_TYPE)) {
                 return true;
             } else {
+                Log.w(Tag.TAG, "isBillingSupported() returned false");
                 return false;
             }
         } catch (RemoteException e) {
@@ -164,6 +169,7 @@ public class Donation {
                     API_VERSION, this.context.getPackageName(), ITEM_TYPE, null);
             int responseCode = ownedItems.getInt("RESPONSE_CODE");
             if (RESULT_OK != responseCode) {
+                Log.w(Tag.TAG, "getPurchases() returned " + responseCode);
                 return false;
             }
             ArrayList<String> ownedSkus =
