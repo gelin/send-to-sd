@@ -82,6 +82,9 @@ public class ExternalStorageRoots {
         } catch (IOException e) {
             //bad, but can be skipped
         }
+        if (this.roots.contains(path)) {
+            return;
+        }
         if (path.isDirectory() && path.canWrite()) {
             this.roots.add(path);
         }
