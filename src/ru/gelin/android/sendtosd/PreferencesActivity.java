@@ -77,6 +77,7 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 
 	void updateInitialFolderView() {
 		ListPreference initialFolder = (ListPreference) findPreference(PREF_INITIAL_FOLDER);
+		String value = initialFolder.getValue();
 		List<String> entries = new ArrayList<String>();
 		List<String> values = new ArrayList<String>();
 		entries.add(getString(R.string.last_folder));
@@ -88,6 +89,7 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 		}
 		initialFolder.setEntries(entries.toArray(new String[]{}));
 		initialFolder.setEntryValues(values.toArray(new String[]{}));
+		initialFolder.setValue(value);
 	}
     
     void updateDonateView(DonateStatus status) {

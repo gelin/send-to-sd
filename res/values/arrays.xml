@@ -5,7 +5,7 @@
         <item>@string/last_folder</item>
     </string-array>
     <string-array name="initial_folder_values">
-        <item>last_folder</item>
+        <item>LAST_FOLDER</item>
     </string-array>
     
     <string-array name="last_folders_number_values">

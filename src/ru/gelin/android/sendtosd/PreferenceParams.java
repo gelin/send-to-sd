@@ -8,17 +8,12 @@ public class PreferenceParams {
     /** "How to use" preference key */
     public static final String PREF_HOW_TO_USE = "how_to_use";
     
-    public static enum InitialFolder {
-    	SD_CARD_ROOT, LAST_FOLDER;
-    	public static InitialFolder legacyValueOf(String value) {
-    		return valueOf(value.toUpperCase());
-    	}
-    }
-    
     /** "Initial folder" preference key */
     public static final String PREF_INITIAL_FOLDER = "initial_folder";
+    /** "LAST_FOLDER" initial folder */
+    public static final String LAST_FOLDER_INITIAL_FOLDER = "LAST_FOLDER";
     /** Initial folder default value */
-    public static final String DEFAULT_INITIAL_FOLDER = String.valueOf(InitialFolder.LAST_FOLDER);
+    public static final String DEFAULT_INITIAL_FOLDER = LAST_FOLDER_INITIAL_FOLDER;
     
     /** Last folder preference key */
     public static final String PREF_LAST_FOLDER = "last_folder";

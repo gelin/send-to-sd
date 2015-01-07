@@ -17,14 +17,8 @@ public class SummaryListPreference extends ListPreference {
     }
     
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        super.onSetInitialValue(restoreValue, defaultValue);
-        setSummary(getEntry());
-    }
-    
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
+    public void setValue(String value) {
+        super.setValue(value);
         setSummary(getEntry());
     }
 

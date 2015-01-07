@@ -1,22 +1,19 @@
 package ru.gelin.android.sendtosd.intent;
 
-import static ru.gelin.android.sendtosd.IntentParams.EXTRA_PATH;
-import static ru.gelin.android.sendtosd.PreferenceParams.PREF_INITIAL_FOLDER;
-import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_INITIAL_FOLDER;
-import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDER;
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
-import java.io.File;
-import java.io.IOException;
-
-import ru.gelin.android.sendtosd.PreferenceParams.InitialFolder;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import ru.gelin.android.sendtosd.PreferenceParams;
+
+import java.io.File;
+import java.io.IOException;
+
+import static ru.gelin.android.sendtosd.IntentParams.EXTRA_PATH;
+import static ru.gelin.android.sendtosd.PreferenceParams.*;
+import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
  *  Extracts some necessary information from the intent.
@@ -79,24 +76,32 @@ public class IntentInfo {
      *  Returns default path. The return value can differs for different preferences. 
      */
     File getDefaultPath() {
-        InitialFolder initialFolder = InitialFolder.legacyValueOf(
-        		this.preferences.getString(PREF_INITIAL_FOLDER, DEFAULT_INITIAL_FOLDER));
-        File root = Environment.getExternalStorageDirectory();
-        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-        	root = new File("/");
-        }
-        if (InitialFolder.LAST_FOLDER.equals(initialFolder)) {
+        String initialFolder = this.preferences.getString(PREF_INITIAL_FOLDER, DEFAULT_INITIAL_FOLDER);
+        File safeRoot = Environment.getExternalStorageDirectory();
+        safeRoot = getReadableParent(safeRoot);
+        if (PreferenceParams.LAST_FOLDER_INITIAL_FOLDER.equals(initialFolder)) {
             String lastFolder = this.preferences.getString(PREF_LAST_FOLDER, null);
             if (lastFolder == null) {
-                return root;
+                return safeRoot;
             }
-            File lastFolderFile = new File(lastFolder);
-            if (!lastFolderFile.isDirectory() || !lastFolderFile.canWrite()) {
-                return root;
-            }
-            return lastFolderFile;
+            return getReadableParent(new File(lastFolder));
+        } else {
+            return getReadableParent(new File(initialFolder));
         }
-        return root;
+    }
+
+    /**
+     *  Finds closest existing and readable parent of the folder in case the folder doesn't exist.
+     */
+    File getReadableParent(File path) {
+        File result = path;
+        if (result.isDirectory() && result.canWrite()) {
+            return result;
+        }
+        while (!(result.isDirectory() && result.canRead())) {
+            result = result.getParentFile();
+        }
+        return result;
     }
     
     /**
