@@ -5,12 +5,22 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 import ru.gelin.android.sendtosd.donate.DonateStatus;
 import ru.gelin.android.sendtosd.donate.DonateStatusListener;
 import ru.gelin.android.sendtosd.donate.Donation;
+import ru.gelin.android.sendtosd.intent.ExternalStorageRoots;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_INITIAL_FOLDER;
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_INITIAL_FOLDER;
+
 
 /**
  *  Application preferences.
@@ -35,7 +45,9 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.app_preferences);
-        this.donateCategory = findPreference(PREF_DONATE_CATEGORY);
+        updateInitialFolderView();
+
+		this.donateCategory = findPreference(PREF_DONATE_CATEGORY);
     	this.donate = findPreference(PREF_DONATE);
 
 		if (DONATE_PACKAGE_NAME.equals(getPackageName())) {
@@ -62,6 +74,21 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 			this.donation = null;
 		}
     }
+
+	void updateInitialFolderView() {
+		ListPreference initialFolder = (ListPreference) findPreference(PREF_INITIAL_FOLDER);
+		List<String> entries = new ArrayList<String>();
+		List<String> values = new ArrayList<String>();
+		entries.add(getString(R.string.last_folder));
+		values.add(DEFAULT_INITIAL_FOLDER);
+		for (File root : new ExternalStorageRoots().getRoots()) {
+			String rootName = String.valueOf(root);
+			entries.add(rootName);
+			values.add(rootName);
+		}
+		initialFolder.setEntries(entries.toArray(new String[]{}));
+		initialFolder.setEntryValues(values.toArray(new String[]{}));
+	}
     
     void updateDonateView(DonateStatus status) {
     	Preference category = findPreference(PREF_DONATE_CATEGORY);
