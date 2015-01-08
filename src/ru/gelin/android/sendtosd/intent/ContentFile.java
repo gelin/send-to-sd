@@ -22,7 +22,7 @@ public class ContentFile extends AbstractFileFile {
 
     /** content:// URIs which are writable */
     static final String[] DELETABLE_URIS = {
-        //MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),   //???
+        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
     };
