@@ -505,6 +505,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         boolean result = newFolder.mkdirs();
         if (result) {
             Toast.makeText(this, R.string.folder_created, Toast.LENGTH_LONG).show();
+            removeDialog(NEW_FOLDER_DIALOG);    //to clear folder name, don't expect to create more folders
             listFolders();
         } else {
             Toast.makeText(this, R.string.folder_not_created, Toast.LENGTH_LONG).show();
