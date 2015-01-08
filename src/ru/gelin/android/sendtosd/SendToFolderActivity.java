@@ -1,33 +1,11 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_LAST_FOLDERS_NUMBER;
-import static ru.gelin.android.sendtosd.PreferenceParams.DEFAULT_LAST_FOLDERS_NUMBER_INT;
-import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDERS_NUMBER;
-import static ru.gelin.android.sendtosd.PreferenceParams.PREF_SHOW_LAST_FOLDERS;
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
-import ru.gelin.android.sendtosd.intent.IntentException;
-import ru.gelin.android.sendtosd.intent.IntentInfo;
-import ru.gelin.android.sendtosd.progress.DummyProgress;
-import ru.gelin.android.sendtosd.progress.Progress;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,14 +14,22 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.EditText;
 import android.widget.Toast;
+import ru.gelin.android.sendtosd.intent.IntentException;
+import ru.gelin.android.sendtosd.intent.IntentInfo;
+import ru.gelin.android.sendtosd.progress.DummyProgress;
+import ru.gelin.android.sendtosd.progress.Progress;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+
+import static ru.gelin.android.sendtosd.PreferenceParams.*;
+import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
  *  Base class for activities to copy/move file/files to folder.
@@ -99,6 +85,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+
         this.mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
         this.lastFoldersPreference = findPreference(PREF_LAST_FOLDERS);
@@ -107,6 +94,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             error(R.string.unsupported_intent);
             return;
         }
+
         try {
             this.intentInfo = getIntentInfo();
             this.intentInfo.log();
@@ -116,6 +104,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             error(R.string.unsupported_intent, e);
             return;
         }
+
         if (savedInstanceState != null) {
         	if (savedInstanceState.containsKey(KEY_PATH)) {
         		this.path = new File(savedInstanceState.getString(KEY_PATH));
@@ -177,6 +166,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      *  Avoid UI changes here!
      */
     protected void onInit() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getExternalFilesDirs(null); // create a writable folder on external storages
+        } else {
+            getExternalFilesDir(null);  // create a writable folder on external storage
+        }
+
         this.folders = getFolders(this.path);
     }
     
