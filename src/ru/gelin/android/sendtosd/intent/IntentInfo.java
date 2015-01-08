@@ -98,8 +98,11 @@ public class IntentInfo {
         if (result.isDirectory() && result.canWrite()) {
             return result;
         }
-        while (!(result.isDirectory() && result.canRead())) {
+        while (result != null && !(result.isDirectory() && result.canRead())) {
             result = result.getParentFile();
+        }
+        if (result == null) {
+            result = new File("/");
         }
         return result;
     }
