@@ -1,11 +1,12 @@
 package ru.gelin.android.sendtosd.intent;
 
+import android.content.Intent;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-
-import android.content.Intent;
+import java.util.List;
 
 /**
  *  File with text/plain content.
@@ -71,7 +72,7 @@ public class TextFile extends IntentFile {
      *  Returns false.
      */
     @Override
-    public boolean isMovable(File dest) {
+    public boolean isMovable(File dest, List<File> roots) {
         return false;
     }
     

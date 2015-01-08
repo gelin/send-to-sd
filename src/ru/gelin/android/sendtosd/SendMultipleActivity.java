@@ -1,25 +1,18 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
-import java.io.File;
-import java.text.MessageFormat;
-
-import ru.gelin.android.i18n.PluralForms;
-import ru.gelin.android.sendtosd.intent.IntentException;
-import ru.gelin.android.sendtosd.intent.IntentFile;
-import ru.gelin.android.sendtosd.intent.IntentFileException;
-import ru.gelin.android.sendtosd.intent.IntentInfo;
-import ru.gelin.android.sendtosd.intent.SendMultipleIntentInfo;
-import ru.gelin.android.sendtosd.progress.FileInfo;
-import ru.gelin.android.sendtosd.progress.MultipleCopyDialog;
-import ru.gelin.android.sendtosd.progress.MultipleMoveDialog;
-import ru.gelin.android.sendtosd.progress.Progress;
-import ru.gelin.android.sendtosd.progress.ProgressDialog;
-import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
 import android.app.Dialog;
 import android.os.AsyncTask;
 import android.util.Log;
+import ru.gelin.android.i18n.PluralForms;
+import ru.gelin.android.sendtosd.intent.*;
+import ru.gelin.android.sendtosd.progress.*;
+import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
+
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.List;
+
+import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
  *  Activity which displays the list of folders
@@ -205,10 +198,11 @@ public class SendMultipleActivity extends SendToFolderActivity {
     		Result result = new Result();
     		IntentFile[] intentFiles = params[0];
             publishProgress(ProgressEvent.newSetFilesEvent(intentFiles.length));
+            List<File> roots = new ExternalStorageRoots().getRoots();
             for (IntentFile file : intentFiles) {
                 String uniqueFileName = getUniqueFileName(file.getName());
                 File dest = new File(SendMultipleActivity.this.path, uniqueFileName);
-                if (file.isMovable(dest)) {
+                if (file.isMovable(dest, roots)) {
                     publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName)));
                     try {
                         file.moveTo(dest);

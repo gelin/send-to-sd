@@ -1,19 +1,14 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
+import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
+
+import java.io.*;
+import java.util.List;
 
 /**
  *  Intent file which reads the content of the file from
@@ -97,7 +92,7 @@ public class StreamFile extends IntentFile {
      *  Returns false.
      */
     @Override
-    public boolean isMovable(File dest) {
+    public boolean isMovable(File dest, List<File> roots) {
         return false;
     }
     

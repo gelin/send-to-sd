@@ -1,10 +1,5 @@
 package ru.gelin.android.sendtosd.intent;
 
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
-import java.io.File;
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,15 +7,21 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static ru.gelin.android.sendtosd.Tag.TAG;
+
 /**
  *  File for content:// URI.
  *  Deletable only for some MediaStorage URIs.
- *  Movable only when the actual file location is known and it's on SD card already.
+ *  Movable only when the actual file location is known and it's on the same filesystem as the destination.
  */
 public class ContentFile extends AbstractFileFile {
 
     /** content:// URIs which are writable */
-    static final String[] WRITABLE_URIS = {
+    static final String[] DELETABLE_URIS = {
         //MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),   //???
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
@@ -104,7 +105,7 @@ public class ContentFile extends AbstractFileFile {
     @Override
     public boolean isDeletable() {
         String uri = this.uri.toString();
-        for (String contentUri : WRITABLE_URIS) {
+        for (String contentUri : DELETABLE_URIS) {
             if (uri.startsWith(contentUri)) {
                 return true;
             }
@@ -114,13 +115,12 @@ public class ContentFile extends AbstractFileFile {
     
     /**
      *  Returns true if the original file is writable
-     *  and is already located on SD card and the move
-     *  destination is on SD card too.
+     *  and is located on the same filesystem as the move destination.
      */
     @Override
-    public boolean isMovable(File dest) {
+    public boolean isMovable(File dest, List<File> roots) {
         queryContent();
-        return super.isMovable(dest);
+        return super.isMovable(dest, roots);
     }
     
     /**

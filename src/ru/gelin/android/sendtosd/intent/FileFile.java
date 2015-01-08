@@ -1,18 +1,17 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 /**
  *  File for file:// URI.
  *  The file is deletable if the original file is writable.
- *  The file is movable if the original file is writable and
- *  is already located on SD card. 
+ *  The file is movable if the original file is writable and is located on the same filesystem as the destination.
  */
 public class FileFile extends AbstractFileFile {
 

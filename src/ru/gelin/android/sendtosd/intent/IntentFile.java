@@ -1,13 +1,14 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.io.File;
-import java.io.IOException;
-
-import ru.gelin.android.sendtosd.progress.DummyProgress;
-import ru.gelin.android.sendtosd.progress.Progress;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import ru.gelin.android.sendtosd.progress.DummyProgress;
+import ru.gelin.android.sendtosd.progress.Progress;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  *  A file provided with the intent to be saved on SD card.
@@ -77,7 +78,7 @@ public abstract class IntentFile {
     
     /**
      *  Returns the file size, in bytes.
-     *  Can return {@link Progress#UNKNOWN_SIZE}.
+     *  Can return {@link ru.gelin.android.sendtosd.progress.File#UNKNOWN_SIZE}.
      */
     abstract public long getSize();
     
@@ -89,9 +90,11 @@ public abstract class IntentFile {
     /**
      *  Returns true if the file can be moved by one moveTo()
      *  operation instead of saveAs() and delete().
+     *  Usually both source and destination files must be on the same filesystem.
      *  @param  dest    file moving destination
+     *  @param  roots   list of known filesystem roots
      */
-    abstract public boolean isMovable(File dest);
+    abstract public boolean isMovable(File dest, List<File> roots);
     
     /**
      *  Saves the file as the specified location on SD card.

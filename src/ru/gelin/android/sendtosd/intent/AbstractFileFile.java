@@ -1,24 +1,20 @@
 package ru.gelin.android.sendtosd.intent;
 
-import java.io.File;
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  *  File which represents real file located on filesystem.
  *  The file is deletable if the original file is writable.
  *  The file is movable if the original file is writable and
- *  is already located on SD card. 
+ *  is located under the same filesystem root as a destination.
  */
 public abstract class AbstractFileFile extends StreamFile {
-
-    /** External storage directory, as string */
-    static final String EX_STORAGE = 
-            Environment.getExternalStorageDirectory().getAbsolutePath();
 
     File file;
     
@@ -36,36 +32,48 @@ public abstract class AbstractFileFile extends StreamFile {
      *  is located on SD card too.
      */
     @Override
-    public boolean isMovable(File dest) {
+    public boolean isMovable(File dest, List<File> roots) {
         if (this.file == null) {
             return false;
         }
         if (dest == null) {
             return false;
         }
+        if (roots == null || roots.isEmpty()) {
+            return false;
+        }
         if (!isDeletable()) {
             return false;
         }
-        if (isOnExStorage(this.file) && isOnExStorage(dest)) {
-            return true;
+        for (File root : roots) {
+            if (areOnSameFilesystem(root, this.file, dest)) {
+                return true;
+            }
         }
         return false;
     }
     
     /**
-     *  Returns true if the file is located on SD card.
+     *  Returns true if the files are on the same filesystem.
      */
-    static boolean isOnExStorage(File file) {
-        if (file == null) {
+    static boolean areOnSameFilesystem(File root, File source, File dest) {
+        if (root == null || source == null || dest == null) {
             return false;
         }
+        String rootPath = root.getPath();
+        String sourcePath = getCanonicalPath(source);
+        String destPath = getCanonicalPath(dest);
+        return sourcePath.startsWith(rootPath) && destPath.startsWith(rootPath);
+    }
+
+    static String getCanonicalPath(File file) {
         String path;
         try {
             path = file.getCanonicalPath();
         } catch (IOException e) {
             path = file.getAbsolutePath();
         }
-        return path.startsWith(EX_STORAGE);
+        return path;
     }
     
     /**

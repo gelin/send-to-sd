@@ -1,19 +1,5 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
-import java.io.File;
-
-import ru.gelin.android.sendtosd.intent.IntentException;
-import ru.gelin.android.sendtosd.intent.IntentFile;
-import ru.gelin.android.sendtosd.intent.IntentInfo;
-import ru.gelin.android.sendtosd.intent.SendIntentInfo;
-import ru.gelin.android.sendtosd.progress.FileInfo;
-import ru.gelin.android.sendtosd.progress.Progress;
-import ru.gelin.android.sendtosd.progress.ProgressDialog;
-import ru.gelin.android.sendtosd.progress.SingleCopyDialog;
-import ru.gelin.android.sendtosd.progress.SingleMoveDialog;
-import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -21,12 +7,16 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.EditText;
+import ru.gelin.android.sendtosd.intent.*;
+import ru.gelin.android.sendtosd.progress.*;
+import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
+
+import java.io.File;
+import java.util.List;
+
+import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
  *  Activity which displays the list of folders
@@ -249,7 +239,8 @@ public class SendActivity extends SendToFolderActivity
             publishProgress(ProgressEvent.newSetFilesEvent(1));   //single file in this activity
             String uniqueFileName = getUniqueFileName(SendActivity.this.fileName);
             File dest = new File(SendActivity.this.path, uniqueFileName);
-            if (intentFile.isMovable(dest)) {
+            List<File> roots = new ExternalStorageRoots().getRoots();
+            if (intentFile.isMovable(dest, roots)) {
                 publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName)));
                 try {
                     intentFile.moveTo(dest);
