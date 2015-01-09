@@ -52,7 +52,9 @@
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="com.android.vending.BILLING"/>
-    
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="21"/>
     <supports-screens/>
 
