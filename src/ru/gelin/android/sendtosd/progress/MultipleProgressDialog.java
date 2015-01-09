@@ -1,9 +1,9 @@
 package ru.gelin.android.sendtosd.progress;
 
-import ru.gelin.android.sendtosd.R;
 import android.app.Activity;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import ru.gelin.android.sendtosd.R;
 
 public class MultipleProgressDialog extends ProgressDialog {
 
@@ -18,8 +18,12 @@ public class MultipleProgressDialog extends ProgressDialog {
         progress.setMax(manager.getFiles());
         progress.setProgress(manager.getFile());
         TextView text = (TextView)findViewById(R.id.total_files);
+        int curFile = manager.getFile() + 1;
+        if (curFile > manager.getFiles()) {
+            curFile = manager.getFiles();
+        }
         text.setText(getContext().getString(R.string.files_progress,
-                manager.getFile(), manager.getFiles()));
+                curFile, manager.getFiles()));
     }
 
 }
