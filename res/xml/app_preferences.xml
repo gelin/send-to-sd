@@ -14,7 +14,7 @@
                 android:title="@string/initial_folder"
                 android:entries="@array/initial_folder_entries"
                 android:entryValues="@array/initial_folder_values"
-                android:defaultValue="last_folder"/>
+                android:defaultValue="LAST_FOLDER"/>
 
     </PreferenceCategory>
     
