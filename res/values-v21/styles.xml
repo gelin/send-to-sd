@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="Theme.Dialog" parent="@android:style/Theme.Material.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+</resources>
