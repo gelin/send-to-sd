@@ -44,7 +44,7 @@ public class ExternalStorageRoots {
     void addPrimaryExternalStorage() {
         File root = Environment.getExternalStorageDirectory();
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            addWritableDir(root);
+            this.roots.add(root.getAbsoluteFile());     // always add this root, if mounted
         }
     }
 
@@ -65,7 +65,7 @@ public class ExternalStorageRoots {
                 if (!FILESYSTEMS.contains(filesystem)) {
                     continue;
                 }
-                addWritableDir(new File(path));
+                addWritableDir(new File(path));     // other roots are added only when writable
             }
             reader.close();
         } catch (IOException e) {
@@ -74,18 +74,11 @@ public class ExternalStorageRoots {
     }
 
     void addWritableDir(File path) {
-        if (this.roots.contains(path)) {
+        File absPath = path.getAbsoluteFile();
+        if (this.roots.contains(absPath)) {
             return;
         }
-        try {
-            path = path.getCanonicalFile();
-        } catch (IOException e) {
-            //bad, but can be skipped
-        }
-        if (this.roots.contains(path)) {
-            return;
-        }
-        if (path.isDirectory() && path.canWrite()) {
+        if (absPath.isDirectory() && absPath.canWrite()) {
             this.roots.add(path);
         }
     }

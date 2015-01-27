@@ -61,21 +61,11 @@ public abstract class AbstractFileFile extends StreamFile {
             return false;
         }
         String rootPath = root.getPath();
-        String sourcePath = getCanonicalPath(source);
-        String destPath = getCanonicalPath(dest);
+        String sourcePath = source.getAbsolutePath();
+        String destPath = dest.getAbsolutePath();
         return sourcePath.startsWith(rootPath) && destPath.startsWith(rootPath);
     }
 
-    static String getCanonicalPath(File file) {
-        String path;
-        try {
-            path = file.getCanonicalPath();
-        } catch (IOException e) {
-            path = file.getAbsolutePath();
-        }
-        return path;
-    }
-    
     /**
      *  Moves the file using the filesystem operations.
      */
