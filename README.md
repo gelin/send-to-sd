@@ -3,6 +3,13 @@ Summary
 
 Simple utility which adds a new item to the list of Send To (or Share) menu, which allows to copy any file from any application to any folder on the SD card.
 
+Download
+--------
+
+[Google Play](https://play.google.com/store/apps/details?id=ru.gelin.android.sendtosd)
+
+[F-Droid](https://f-droid.org/repository/browse/?fdid=ru.gelin.android.sendtosd)
+
 How to use
 ==========
 
