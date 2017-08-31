@@ -16,6 +16,7 @@ public class ExternalStorageRoots {
     static final File MOUNT_FILE = new File("/proc/mounts");
 
     static final Set FILESYSTEMS = new HashSet<String>();
+
     static {
         FILESYSTEMS.add("ext4");
         FILESYSTEMS.add("vfat");
@@ -25,8 +26,8 @@ public class ExternalStorageRoots {
     List<File> roots = new ArrayList<File>();
 
     /**
-     *  Scans mounted filesystems and returns mount paths for filesystems which are available to write.
-     *  Also prepends the list by the {@link android.os.Environment#getExternalStorageDirectory()}
+     * Scans mounted filesystems and returns mount paths for filesystems which are available to write.
+     * Also prepends the list by the {@link android.os.Environment#getExternalStorageDirectory()}
      */
     public ExternalStorageRoots() {
         addPrimaryExternalStorage();
@@ -34,8 +35,9 @@ public class ExternalStorageRoots {
     }
 
     /**
-     *  Returns found roots.
-     *  @return the list of mounted and writable external storage roots.
+     * Returns found roots.
+     *
+     * @return the list of mounted and writable external storage roots.
      */
     public List<File> getRoots() {
         return Collections.unmodifiableList(this.roots);

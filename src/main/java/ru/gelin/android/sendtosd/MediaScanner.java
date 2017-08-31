@@ -10,32 +10,39 @@ import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
 
 /**
- *  Wrapper for {@link MediaScannerConnection}.
- *  Creates the connection only on the first call to {@link #scanFile}.
- *  Calls to {@link #scanFile} are asynchronous, no need to wait for
- *  connect.
+ * Wrapper for {@link MediaScannerConnection}.
+ * Creates the connection only on the first call to {@link #scanFile}.
+ * Calls to {@link #scanFile} are asynchronous, no need to wait for
+ * connect.
  */
 public class MediaScanner {
 
-    /** Context */
-    Context context;
-    /** Connection to MediaScanner */
-    MediaScannerConnection mediaScanner;
-    /** Queue of the scan requests which comes while connecting */
-    Queue<FileInfo> waitScans = new ConcurrentLinkedQueue<FileInfo>();
-    
     /**
-     *  Creates the scanner for context.
+     * Context
+     */
+    Context context;
+    /**
+     * Connection to MediaScanner
+     */
+    MediaScannerConnection mediaScanner;
+    /**
+     * Queue of the scan requests which comes while connecting
+     */
+    Queue<FileInfo> waitScans = new ConcurrentLinkedQueue<FileInfo>();
+
+    /**
+     * Creates the scanner for context.
      */
     public MediaScanner(Context context) {
         this.context = context;
     }
-    
+
     /**
-     *  Scans the file with media scanner.
-     *  On the first scan the connection to actual media scanner is created.
-     *  @param  file    file location
-     *  @param  type    file mime type, can be null
+     * Scans the file with media scanner.
+     * On the first scan the connection to actual media scanner is created.
+     *
+     * @param file file location
+     * @param type file mime type, can be null
      */
     public void scanFile(File file, String type) {
         //Log.d(TAG, "scanning " + file + " [" + type + "]");
@@ -48,9 +55,9 @@ public class MediaScanner {
             waitScans.offer(new FileInfo(file, type));
         }
     }
-    
+
     /**
-     *  Disconnects from the media scanner.
+     * Disconnects from the media scanner.
      */
     public void disconnect() {
         if (mediaScanner == null) {
@@ -61,16 +68,16 @@ public class MediaScanner {
         }
         mediaScanner.disconnect();
     }
-    
+
     void createMediaScanner() {
-        mediaScanner = new MediaScannerConnection(context, 
-                new MediaScannerClient());
+        mediaScanner = new MediaScannerConnection(context,
+            new MediaScannerClient());
         mediaScanner.connect();
     }
-    
+
     /**
-     *  Returns true if the connection to media scanner is established and
-     *  the queue of the scans, which came while connecting, is empty.
+     * Returns true if the connection to media scanner is established and
+     * the queue of the scans, which came while connecting, is empty.
      */
     boolean isConnected() {
         if (mediaScanner == null) {
@@ -81,16 +88,17 @@ public class MediaScanner {
         }
         return waitScans.isEmpty();
     }
-    
+
     static private class FileInfo {
         public File path;
         public String type;
+
         public FileInfo(File path, String type) {
             this.path = path;
             this.type = type;
         }
     }
-    
+
     private class MediaScannerClient implements MediaScannerConnectionClient {
         //@Override
         public void onMediaScannerConnected() {
@@ -100,6 +108,7 @@ public class MediaScanner {
                 file = waitScans.poll();
             }
         }
+
         //@Override
         public void onScanCompleted(String path, Uri uri) {
             //we're not interesting in this

@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class Donation {
 
-//    static final String PRODUCT_ID = "android.test.purchased";	//for tests
+    //    static final String PRODUCT_ID = "android.test.purchased";	//for tests
     static final String PRODUCT_ID = "donate";
 
     static final int API_VERSION = 3;
@@ -58,7 +58,7 @@ public class Donation {
         }
         try {
             Bundle buyIntentBundle = this.billingService.getBuyIntent(
-                    API_VERSION, this.context.getPackageName(), PRODUCT_ID, ITEM_TYPE, null);
+                API_VERSION, this.context.getPackageName(), PRODUCT_ID, ITEM_TYPE, null);
             int responseCode = buyIntentBundle.getInt("RESPONSE_CODE");
             if (RESULT_OK != responseCode) {
                 Log.w(Tag.TAG, "getBuyIntent() returned " + responseCode);
@@ -103,9 +103,9 @@ public class Donation {
     }
 
     /**
-     *  Initiates the donation state, binds and makes calls to billing service.
-     *  Do it in background thread, calls {@link ru.gelin.android.sendtosd.donate.DonateStatusListener}
-     *  if the status is changed.
+     * Initiates the donation state, binds and makes calls to billing service.
+     * Do it in background thread, calls {@link ru.gelin.android.sendtosd.donate.DonateStatusListener}
+     * if the status is changed.
      */
     void init() {
         this.connection = new ServiceConnection() {
@@ -113,6 +113,7 @@ public class Donation {
             public void onServiceDisconnected(ComponentName name) {
                 Donation.this.billingService = null;
             }
+
             @Override
             public void onServiceConnected(ComponentName name,
                                            IBinder service) {
@@ -138,6 +139,7 @@ public class Donation {
                 return DonateStatus.EXPECTING;
             }
         }
+
         @Override
         protected void onPostExecute(DonateStatus status) {
             setStatus(status);
@@ -157,7 +159,7 @@ public class Donation {
         }
         try {
             if (RESULT_OK == this.billingService.isBillingSupported(
-                    API_VERSION, this.context.getPackageName(), ITEM_TYPE)) {
+                API_VERSION, this.context.getPackageName(), ITEM_TYPE)) {
                 return true;
             } else {
                 Log.w(Tag.TAG, "isBillingSupported() returned false");
@@ -175,14 +177,14 @@ public class Donation {
         }
         try {
             Bundle ownedItems = this.billingService.getPurchases(
-                    API_VERSION, this.context.getPackageName(), ITEM_TYPE, null);
+                API_VERSION, this.context.getPackageName(), ITEM_TYPE, null);
             int responseCode = ownedItems.getInt("RESPONSE_CODE");
             if (RESULT_OK != responseCode) {
                 Log.w(Tag.TAG, "getPurchases() returned " + responseCode);
                 return false;
             }
             ArrayList<String> ownedSkus =
-                    ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+                ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
             if (ownedSkus.contains(PRODUCT_ID)) {
                 return true;
             } else {

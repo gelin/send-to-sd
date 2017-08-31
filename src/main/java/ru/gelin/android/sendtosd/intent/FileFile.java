@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- *  File for file:// URI.
- *  The file is deletable if the original file is writable.
- *  The file is movable if the original file is writable and is located on the same filesystem as the destination.
+ * File for file:// URI.
+ * The file is deletable if the original file is writable.
+ * The file is movable if the original file is writable and is located on the same filesystem as the destination.
  */
 public class FileFile extends AbstractFileFile {
 
@@ -19,22 +19,22 @@ public class FileFile extends AbstractFileFile {
         super(context, intent);
         this.file = getFile();
     }
-    
+
     public FileFile(Context context, Uri uri) throws IntentFileException {
         super(context, uri);
         this.file = getFile();
     }
-    
+
     /**
-     *  Returns the file size.
+     * Returns the file size.
      */
     @Override
     public long getSize() {
         return this.file.length();
     }
-    
+
     /**
-     *  Returns true if the original file is writable.
+     * Returns true if the original file is writable.
      */
     @Override
     public boolean isDeletable() {
@@ -46,7 +46,7 @@ public class FileFile extends AbstractFileFile {
     }
 
     /**
-     *  Deletes the original file.
+     * Deletes the original file.
      */
     @Override
     public void delete() throws IOException {
@@ -55,10 +55,11 @@ public class FileFile extends AbstractFileFile {
             throw new IOException(file + " was not deleted");
         }
     }
-    
+
     /**
-     *  Returns the file as File for file:/// URIs
-     *  @throws IntentFileException if the URI cannot be converted to file 
+     * Returns the file as File for file:/// URIs
+     *
+     * @throws IntentFileException if the URI cannot be converted to file
      */
     File getFile() throws IntentFileException {
         try {
@@ -72,10 +73,10 @@ public class FileFile extends AbstractFileFile {
             throw new IntentFileException("cannot convert URI to file", e);
         }
     }
-    
+
     @Override
     public String toString() {
-    	return "file: [" + this.type + "] " + this.uri + " -> " + this.file;
+        return "file: [" + this.type + "] " + this.uri + " -> " + this.file;
     }
 
 }

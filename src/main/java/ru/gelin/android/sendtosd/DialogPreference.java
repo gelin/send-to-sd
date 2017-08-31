@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 /**
- *  Subclass of DialogPreference to instantiate it.
- *  {@link http://code.google.com/p/android/issues/detail?id=3972}
+ * Subclass of DialogPreference to instantiate it.
+ * {@link http://code.google.com/p/android/issues/detail?id=3972}
  */
 public class DialogPreference extends android.preference.DialogPreference {
 

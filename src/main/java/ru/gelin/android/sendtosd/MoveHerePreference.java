@@ -8,7 +8,7 @@ public class MoveHerePreference extends CopyHerePreference {
     public MoveHerePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    
+
     @Override
     protected void onClick() {
         fileSaver.moveFile();

@@ -1,12 +1,14 @@
 package ru.gelin.android.sendtosd;
 
 public class Tag {
-	
-	/** Tag for logs */
+
+    /**
+     * Tag for logs
+     */
     public static final String TAG = Tag.class.getPackage().getName();
-	
-	private Tag() {
-		//avoid instantiation
-	}
+
+    private Tag() {
+        //avoid instantiation
+    }
 
 }

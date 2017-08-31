@@ -15,72 +15,74 @@ import java.util.List;
 import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
- *  Activity which displays the list of folders
- *  and allows to copy/move multiple files to folder.
+ * Activity which displays the list of folders
+ * and allows to copy/move multiple files to folder.
  */
 public class SendMultipleActivity extends SendToFolderActivity {
-    
-    /** Files to save from intent */
+
+    /**
+     * Files to save from intent
+     */
     IntentFile[] intentFiles = new IntentFile[0];
 
     @Override
     protected IntentInfo getIntentInfo() throws IntentException {
         return new SendMultipleIntentInfo(this, getIntent());
     }
-    
+
     @Override
     protected void onInit() {
         super.onInit();
         IntentFiles storage = IntentFiles.getInstance();
         if (this.pathHistory.isEmpty()) {
             try {
-                this.intentFiles = ((SendMultipleIntentInfo)this.intentInfo).getFiles();
+                this.intentFiles = ((SendMultipleIntentInfo) this.intentInfo).getFiles();
             } catch (IntentFileException e) {
                 Log.e(TAG, "cannot get files list", e);
             }
             storage.init(this.intentFiles);
             for (IntentFile file : this.intentFiles) {
-            	Log.d(TAG, String.valueOf(file));
+                Log.d(TAG, String.valueOf(file));
             }
         } else {
             this.intentFiles = storage.getFiles();
         }
     }
-    
+
     @Override
     protected void onPostInit() {
         if (this.intentFiles == null || this.intentFiles.length == 0) {
             error(R.string.no_files);
             return;
         }
-        setTitle(MessageFormat.format(getString(R.string.files_title), 
-                this.intentFiles.length, 
-                PluralForms.getInstance().getForm(this.intentFiles.length)));
+        setTitle(MessageFormat.format(getString(R.string.files_title),
+            this.intentFiles.length,
+            PluralForms.getInstance().getForm(this.intentFiles.length)));
         super.onPostInit();
     }
-    
+
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case COPY_DIALOG: {
-            ProgressDialog progress = new MultipleCopyDialog(this);
-            this.progress = progress;
-            return progress;
-        }
-        case MOVE_DIALOG: {
-            ProgressDialog progress = new MultipleMoveDialog(this);
-            this.progress = progress;
-            return progress;
-        }
-        default:
-            return super.onCreateDialog(id);
+            case COPY_DIALOG: {
+                ProgressDialog progress = new MultipleCopyDialog(this);
+                this.progress = progress;
+                return progress;
+            }
+            case MOVE_DIALOG: {
+                ProgressDialog progress = new MultipleMoveDialog(this);
+                this.progress = progress;
+                return progress;
+            }
+            default:
+                return super.onCreateDialog(id);
         }
     }
 
     /**
-     *  Return true if the intent has deletable file which can be moved.
-     *  This implementation returns true if one or more files are
-     *  deletable.
+     * Return true if the intent has deletable file which can be moved.
+     * This implementation returns true if one or more files are
+     * deletable.
      */
     public boolean hasDeletableFile() {
         if (this.intentFiles == null) {
@@ -99,46 +101,46 @@ public class SendMultipleActivity extends SendToFolderActivity {
         int copied = 0;
         int errors = 0;
     }
-    
+
     abstract class ProgressTask extends AsyncTask<IntentFile[], ProgressEvent, Result> implements Progress {
 
-    	protected Progress progress;
-    	
-		//from Progress interface
-		public void progress(ProgressEvent event) {
-			publishProgress(event);
-		}
-		
-		@Override
-		protected void onProgressUpdate(ProgressEvent... events) {
-			//Log.d(TAG, events[0].type.toString());
-			this.progress.progress(events[0]);
-		}    	
-    	
+        protected Progress progress;
+
+        //from Progress interface
+        public void progress(ProgressEvent event) {
+            publishProgress(event);
+        }
+
+        @Override
+        protected void onProgressUpdate(ProgressEvent... events) {
+            //Log.d(TAG, events[0].type.toString());
+            this.progress.progress(events[0]);
+        }
+
     }
-    
+
     /**
-     *  Copies the files.
+     * Copies the files.
      */
     @Override
     public void copyFile() {
-    	new CopyFileTask().execute(this.intentFiles);
+        new CopyFileTask().execute(this.intentFiles);
     }
-    
+
     class CopyFileTask extends ProgressTask {
-    	
-    	@Override
-    	protected void onPreExecute() {
+
+        @Override
+        protected void onPreExecute() {
             saveLastFolder();
             showDialog(COPY_DIALOG);
-    		this.progress = SendMultipleActivity.this.progress;
-    	}
-    	
-    	@Override
-    	protected Result doInBackground(IntentFile[]... params) {
-    		IntentFile[] intentFiles = params[0];
-    		Result result = new Result();
-    		publishProgress(ProgressEvent.newSetFilesEvent(intentFiles.length));
+            this.progress = SendMultipleActivity.this.progress;
+        }
+
+        @Override
+        protected Result doInBackground(IntentFile[]... params) {
+            IntentFile[] intentFiles = params[0];
+            Result result = new Result();
+            publishProgress(ProgressEvent.newSetFilesEvent(intentFiles.length));
             for (IntentFile file : intentFiles) {
                 String uniqueFileName = getUniqueFileName(file.getName());
                 publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName, file.getSize())));
@@ -155,48 +157,48 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 result.copied++;
             }
             return result;
-    	}
-    	
-    	@Override
-    	protected void onPostExecute(Result result) {
+        }
+
+        @Override
+        protected void onPostExecute(Result result) {
             this.progress.progress(ProgressEvent.newCompleteEvent());
-    		removeDialog(COPY_DIALOG);
+            removeDialog(COPY_DIALOG);
             PluralForms plurals = PluralForms.getInstance();
             StringBuilder message = new StringBuilder();
             message.append(MessageFormat.format(
-                    getString(R.string.files_are_copied),
-                    result.copied, plurals.getForm(result.copied)));
+                getString(R.string.files_are_copied),
+                result.copied, plurals.getForm(result.copied)));
             if (result.errors > 0) {
                 message.append('\n');
                 message.append(MessageFormat.format(
-                        getString(R.string.errors_appeared),
-                        result.errors, plurals.getForm(result.errors)));
+                    getString(R.string.errors_appeared),
+                    result.errors, plurals.getForm(result.errors)));
             }
             complete(message.toString());
-    	}
-    	
+        }
+
     }
-    
+
     /**
-     *  Moves the files.
+     * Moves the files.
      */
     public void moveFile() {
-    	new MoveFileTask().execute(this.intentFiles);
+        new MoveFileTask().execute(this.intentFiles);
     }
 
     class MoveFileTask extends ProgressTask {
-    	
-    	@Override
-    	protected void onPreExecute() {
+
+        @Override
+        protected void onPreExecute() {
             saveLastFolder();
             showDialog(MOVE_DIALOG);
             this.progress = SendMultipleActivity.this.progress;
-    	}
-    	
-    	@Override
-    	protected Result doInBackground(IntentFile[]... params) {
-    		Result result = new Result();
-    		IntentFile[] intentFiles = params[0];
+        }
+
+        @Override
+        protected Result doInBackground(IntentFile[]... params) {
+            Result result = new Result();
+            IntentFile[] intentFiles = params[0];
             publishProgress(ProgressEvent.newSetFilesEvent(intentFiles.length));
             List<File> roots = new ExternalStorageRoots().getRoots();
             for (IntentFile file : intentFiles) {
@@ -211,7 +213,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
                     } catch (Exception e) {
                         Log.w(TAG, e.toString(), e);
                         publishProgress(ProgressEvent.newUpdateFileEvent(
-                        		new FileInfo(uniqueFileName, file.getSize())));
+                            new FileInfo(uniqueFileName, file.getSize())));
                         saveAndDeleteFile(file, uniqueFileName, result);
                     }
                 } else {
@@ -220,9 +222,9 @@ public class SendMultipleActivity extends SendToFolderActivity {
                 }
             }
             return result;
-    	}
-    	
-    	void saveAndDeleteFile(IntentFile file, String uniqueFileName, Result result) {
+        }
+
+        void saveAndDeleteFile(IntentFile file, String uniqueFileName, Result result) {
             try {
                 file.setProgress(this);
                 File dest = new File(SendMultipleActivity.this.path, uniqueFileName);
@@ -242,31 +244,31 @@ public class SendMultipleActivity extends SendToFolderActivity {
             }
             result.moved++;
         }
-    	
-    	@Override
-    	protected void onPostExecute(Result result) {
+
+        @Override
+        protected void onPostExecute(Result result) {
             this.progress.progress(ProgressEvent.newCompleteEvent());
             removeDialog(MOVE_DIALOG);
             PluralForms plurals = PluralForms.getInstance();
             StringBuilder message = new StringBuilder();
             message.append(MessageFormat.format(
-                    getString(R.string.files_are_moved),
-                    result.moved, plurals.getForm(result.moved)));
+                getString(R.string.files_are_moved),
+                result.moved, plurals.getForm(result.moved)));
             if (result.copied > 0) {
                 message.append('\n');
                 message.append(MessageFormat.format(
-                        getString(R.string.files_are_only_copied),
-                        result.copied, plurals.getForm(result.copied)));
+                    getString(R.string.files_are_only_copied),
+                    result.copied, plurals.getForm(result.copied)));
             }
             if (result.errors > 0) {
                 message.append('\n');
                 message.append(MessageFormat.format(
-                        getString(R.string.errors_appeared),
-                        result.errors, plurals.getForm(result.errors)));
+                    getString(R.string.errors_appeared),
+                    result.errors, plurals.getForm(result.errors)));
             }
             complete(message.toString());
-    	}
-    	
+        }
+
     }
-    
+
 }

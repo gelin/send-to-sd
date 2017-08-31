@@ -14,44 +14,50 @@ import java.util.List;
 import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
- *  File for content:// URI.
- *  Deletable only for some MediaStorage URIs.
- *  Movable only when the actual file location is known and it's on the same filesystem as the destination.
+ * File for content:// URI.
+ * Deletable only for some MediaStorage URIs.
+ * Movable only when the actual file location is known and it's on the same filesystem as the destination.
  */
 public class ContentFile extends AbstractFileFile {
 
-    /** content:// URIs which are writable */
+    /**
+     * content:// URIs which are writable
+     */
     static final String[] DELETABLE_URIS = {
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
     };
-    
-    /** Projection to select some useful data */
+
+    /**
+     * Projection to select some useful data
+     */
     static final String[] PROJECTION = {
-            MediaStore.MediaColumns.DATA,
-            MediaStore.MediaColumns.MIME_TYPE,
-            MediaStore.MediaColumns.SIZE,
-            //MediaStore.MediaColumns.DISPLAY_NAME,
-            //MediaStore.MediaColumns.TITLE,
+        MediaStore.MediaColumns.DATA,
+        MediaStore.MediaColumns.MIME_TYPE,
+        MediaStore.MediaColumns.SIZE,
+        //MediaStore.MediaColumns.DISPLAY_NAME,
+        //MediaStore.MediaColumns.TITLE,
     };
-    
-    /** Content size, in bytes */
+
+    /**
+     * Content size, in bytes
+     */
     long size = ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
 
     ContentFile(Context context, Intent intent) throws IntentFileException {
         super(context, intent);
         queryContent();     //called from SEND, can init here
     }
-    
+
     ContentFile(Context context, Uri uri) throws IntentFileException {
         super(context, uri);
         //queryContent();   //called from SEND_MULTIPLE, better to init later
     }
-    
+
     /**
-     *  Queries the content for file name, mime type and size.
-     *  If the query was done before the new attempt is skipped.
+     * Queries the content for file name, mime type and size.
+     * If the query was done before the new attempt is skipped.
      */
     @Override
     void queryContent() {
@@ -76,9 +82,9 @@ public class ContentFile extends AbstractFileFile {
         }
         this.queried = true;
     }
-    
+
     /**
-     *  Makes the query to the content provider to select the file name.
+     * Makes the query to the content provider to select the file name.
      */
     @Override
     public String getName() {
@@ -88,19 +94,19 @@ public class ContentFile extends AbstractFileFile {
         }
         return addExtension(removeLeadingDots(this.file.getName()));
     }
-    
+
     /**
-     *  Makes the query to the content provider to select the file size.
+     * Makes the query to the content provider to select the file size.
      */
     @Override
     public long getSize() {
         queryContent();
         return this.size;
     }
-    
+
     /**
-     *  Returns true if the file can be deleted.
-     *  Returns true only for some supported providers.
+     * Returns true if the file can be deleted.
+     * Returns true only for some supported providers.
      */
     @Override
     public boolean isDeletable() {
@@ -112,30 +118,31 @@ public class ContentFile extends AbstractFileFile {
         }
         return false;
     }
-    
+
     /**
-     *  Returns true if the original file is writable
-     *  and is located on the same filesystem as the move destination.
+     * Returns true if the original file is writable
+     * and is located on the same filesystem as the move destination.
      */
     @Override
     public boolean isMovable(File dest, List<File> roots) {
         queryContent();
         return super.isMovable(dest, roots);
     }
-    
+
     /**
-     *  Moves the file using the filesystem operations.
-     *  Deletes the record in content resolver.
+     * Moves the file using the filesystem operations.
+     * Deletes the record in content resolver.
      */
     @Override
     public void moveTo(File dest) throws IOException {
         super.moveTo(dest);
         delete();
     }
-    
+
     /**
-     *  Deleted the original file via ContentResolver.
-     *  @throws IOException if the file was not deleted
+     * Deleted the original file via ContentResolver.
+     *
+     * @throws IOException if the file was not deleted
      */
     @Override
     public void delete() throws IOException {
@@ -144,10 +151,10 @@ public class ContentFile extends AbstractFileFile {
             throw new IOException(this.uri + " was not deleted");
         }
     }
-    
+
     @Override
     public String toString() {
-    	return "content: [" + this.type + "] " + this.uri + " -> " + this.file;
+        return "content: [" + this.type + "] " + this.uri + " -> " + this.file;
     }
 
 }

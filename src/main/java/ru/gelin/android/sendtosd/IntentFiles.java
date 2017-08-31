@@ -3,18 +3,22 @@ package ru.gelin.android.sendtosd;
 import ru.gelin.android.sendtosd.intent.IntentFile;
 
 /**
- *  Singleton storage for intent files.
+ * Singleton storage for intent files.
  */
 public class IntentFiles {
-    
-    /** Instance */
-    static IntentFiles instance;
-    
-    /** Array of files */
-    IntentFile[] files;
-    
+
     /**
-     *  Returns the instance of the storage.
+     * Instance
+     */
+    static IntentFiles instance;
+
+    /**
+     * Array of files
+     */
+    IntentFile[] files;
+
+    /**
+     * Returns the instance of the storage.
      */
     public static IntentFiles getInstance() {
         if (instance == null) {
@@ -24,14 +28,14 @@ public class IntentFiles {
     }
 
     /**
-     *  Initializes the storage.
+     * Initializes the storage.
      */
     public void init(IntentFile[] files) {
         this.files = files;
     }
-    
+
     /**
-     *  Returns the stored files.
+     * Returns the stored files.
      */
     public IntentFile[] getFiles() {
         return files;

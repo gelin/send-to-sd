@@ -2,9 +2,9 @@ package ru.gelin.android.sendtosd;
 
 public class SendToSdException extends Exception {
 
-	private static final long serialVersionUID = 5504323369029781105L;
+    private static final long serialVersionUID = 5504323369029781105L;
 
-	public SendToSdException() {
+    public SendToSdException() {
         super();
     }
 

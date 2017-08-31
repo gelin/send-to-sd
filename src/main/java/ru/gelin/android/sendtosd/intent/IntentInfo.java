@@ -16,22 +16,29 @@ import static ru.gelin.android.sendtosd.PreferenceParams.*;
 import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
- *  Extracts some necessary information from the intent.
+ * Extracts some necessary information from the intent.
  */
 public class IntentInfo {
-    
-    /** Current context */
-    Context context;
-    /** Processing intent */
-    Intent intent;
-    /** Application preferences */
-    SharedPreferences preferences;
-    
+
     /**
-     *  Creates the intent info.
-     *  @param  context current context
-     *  @param  intent  intent to process
-     *  @throws IntentException if it's not possible to create the info from the intent
+     * Current context
+     */
+    Context context;
+    /**
+     * Processing intent
+     */
+    Intent intent;
+    /**
+     * Application preferences
+     */
+    SharedPreferences preferences;
+
+    /**
+     * Creates the intent info.
+     *
+     * @param context current context
+     * @param intent  intent to process
+     * @throws IntentException if it's not possible to create the info from the intent
      */
     public IntentInfo(Context context, Intent intent) throws IntentException {
         this.context = context;
@@ -41,17 +48,17 @@ public class IntentInfo {
             throw new IntentException("invalid intent: " + intent);
         }
     }
-    
+
     /**
-     *  Returns false if this intent doesn't contain STREAM or TEXT extras.
+     * Returns false if this intent doesn't contain STREAM or TEXT extras.
      */
     boolean validate() {
-        return intent.hasExtra(Intent.EXTRA_STREAM) || 
-                intent.hasExtra(Intent.EXTRA_TEXT);
+        return intent.hasExtra(Intent.EXTRA_STREAM) ||
+            intent.hasExtra(Intent.EXTRA_TEXT);
     }
-    
+
     /**
-     *  Returns path on the external storage provided with the intent.
+     * Returns path on the external storage provided with the intent.
      */
     public File getPath() {
         String path = this.intent.getStringExtra(EXTRA_PATH);
@@ -66,14 +73,14 @@ public class IntentInfo {
     }
 
     /**
-     *  Returns true if the intent contains path extra.
+     * Returns true if the intent contains path extra.
      */
     public boolean hasPath() {
         return !this.intent.hasExtra(EXTRA_PATH);
     }
 
     /**
-     *  Returns default path. The return value can differs for different preferences. 
+     * Returns default path. The return value can differs for different preferences.
      */
     File getDefaultPath() {
         String initialFolder = this.preferences.getString(PREF_INITIAL_FOLDER, DEFAULT_INITIAL_FOLDER);
@@ -91,7 +98,7 @@ public class IntentInfo {
     }
 
     /**
-     *  Finds closest existing and readable parent of the folder in case the folder doesn't exist.
+     * Finds closest existing and readable parent of the folder in case the folder doesn't exist.
      */
     File getReadableParent(File path) {
         File result = path;
@@ -106,9 +113,9 @@ public class IntentInfo {
         }
         return result;
     }
-    
+
     /**
-     *  Logs debug information about the intent.
+     * Logs debug information about the intent.
      */
     public void log() {
         Log.i(TAG, "intent: " + intent);

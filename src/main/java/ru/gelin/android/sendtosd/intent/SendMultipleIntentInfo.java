@@ -11,23 +11,24 @@ import android.net.Uri;
 import android.util.Log;
 
 /**
- *  Extracts some necessary information from the SEND_MULTIPLE intent.
+ * Extracts some necessary information from the SEND_MULTIPLE intent.
  */
 public class SendMultipleIntentInfo extends IntentInfo {
-    
+
     /**
-     *  Creates the intent information.
-     *  @param  context current context
-     *  @param  intent  intent to process
-     *  @throws IntentException if it's not possible to create the info from the intent
+     * Creates the intent information.
+     *
+     * @param context current context
+     * @param intent  intent to process
+     * @throws IntentException if it's not possible to create the info from the intent
      */
     public SendMultipleIntentInfo(Context context, Intent intent) throws IntentException {
         super(context, intent);
     }
-    
+
     /**
-     *  Returns false if this intent is not SEND_MULTIPLE or
-     *  doesn't contain STREAM or TEXT extras.
+     * Returns false if this intent is not SEND_MULTIPLE or
+     * doesn't contain STREAM or TEXT extras.
      */
     boolean validate() {
         if (!Intent.ACTION_SEND_MULTIPLE.equals(this.intent.getAction())) {
@@ -37,7 +38,7 @@ public class SendMultipleIntentInfo extends IntentInfo {
     }
 
     /**
-     *  Returns the files provided with the SEND intent.
+     * Returns the files provided with the SEND intent.
      */
     public IntentFile[] getFiles() throws IntentFileException {
         List<IntentFile> result = new ArrayList<IntentFile>();
@@ -69,11 +70,11 @@ public class SendMultipleIntentInfo extends IntentInfo {
         } catch (Exception e) {
             throw new IntentFileException(e);
         }
-        return result.toArray(new IntentFile[] {});
+        return result.toArray(new IntentFile[]{});
     }
 
     /**
-     *  Logs debug information about the intent.
+     * Logs debug information about the intent.
      */
     public void log() {
         super.log();

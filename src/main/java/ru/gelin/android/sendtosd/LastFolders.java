@@ -13,26 +13,34 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 /**
- *  Singleton storage for last folders.
+ * Singleton storage for last folders.
  */
 public class LastFolders {
-    
-    /** Last folders preferences prefix */
+
+    /**
+     * Last folders preferences prefix
+     */
     public static final String PREF_LAST_FOLDERS_PREFIX = "last_folder_";
-    /** Max number of last folders to store */
+    /**
+     * Max number of last folders to store
+     */
     public static final int MAX_NUMBER = 50;
-    
-    /** Preferences */
+
+    /**
+     * Preferences
+     */
     SharedPreferences preferences;
-    /** Instance */
+    /**
+     * Instance
+     */
     static LastFolders instance;
-    
+
     private LastFolders(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
-    
+
     /**
-     *  Returns the instance of the storage.
+     * Returns the instance of the storage.
      */
     public static LastFolders getInstance(Context context) {
         if (instance == null) {
@@ -40,9 +48,9 @@ public class LastFolders {
         }
         return instance;
     }
-    
+
     /**
-     *  Returns true if there are no last folders in the storage.
+     * Returns true if there are no last folders in the storage.
      */
     public boolean isEmpty() {
         if (preferences.contains(PREF_LAST_FOLDERS_PREFIX + 0)) {
@@ -50,10 +58,10 @@ public class LastFolders {
         }
         return true;
     }
-    
+
     /**
-     *  Returns "number" last folders from the storage.
-     *  Non-existed or not-writable folders are excluded.
+     * Returns "number" last folders from the storage.
+     * Non-existed or not-writable folders are excluded.
      */
     public List<File> get(int number) {
         List<File> result = new ArrayList<File>();
@@ -75,7 +83,7 @@ public class LastFolders {
     }
 
     /**
-     *  Puts the last folder to the list.
+     * Puts the last folder to the list.
      */
     public void put(File file) {
         File canonicalFile;
@@ -97,5 +105,5 @@ public class LastFolders {
         }
         editor.commit();
     }
-    
+
 }

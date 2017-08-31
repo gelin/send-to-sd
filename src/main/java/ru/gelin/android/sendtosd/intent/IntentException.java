@@ -4,9 +4,9 @@ import ru.gelin.android.sendtosd.SendToSdException;
 
 public class IntentException extends SendToSdException {
 
-	private static final long serialVersionUID = 3798683935969857872L;
+    private static final long serialVersionUID = 3798683935969857872L;
 
-	public IntentException() {
+    public IntentException() {
         super();
     }
 

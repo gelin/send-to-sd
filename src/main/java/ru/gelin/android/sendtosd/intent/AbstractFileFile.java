@@ -9,27 +9,27 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- *  File which represents real file located on filesystem.
- *  The file is deletable if the original file is writable.
- *  The file is movable if the original file is writable and
- *  is located under the same filesystem root as a destination.
+ * File which represents real file located on filesystem.
+ * The file is deletable if the original file is writable.
+ * The file is movable if the original file is writable and
+ * is located under the same filesystem root as a destination.
  */
 public abstract class AbstractFileFile extends StreamFile {
 
     File file;
-    
+
     public AbstractFileFile(Context context, Intent intent) throws IntentFileException {
         super(context, intent);
     }
-    
+
     public AbstractFileFile(Context context, Uri uri) throws IntentFileException {
         super(context, uri);
     }
-    
+
     /**
-     *  Returns true if the original file is writable
-     *  and is already located on SD card and the move destination
-     *  is located on SD card too.
+     * Returns true if the original file is writable
+     * and is already located on SD card and the move destination
+     * is located on SD card too.
      */
     @Override
     public boolean isMovable(File dest, List<File> roots) {
@@ -52,9 +52,9 @@ public abstract class AbstractFileFile extends StreamFile {
         }
         return false;
     }
-    
+
     /**
-     *  Returns true if the files are on the same filesystem.
+     * Returns true if the files are on the same filesystem.
      */
     static boolean areOnSameFilesystem(File root, File source, File dest) {
         if (root == null || source == null || dest == null) {
@@ -67,7 +67,7 @@ public abstract class AbstractFileFile extends StreamFile {
     }
 
     /**
-     *  Moves the file using the filesystem operations.
+     * Moves the file using the filesystem operations.
      */
     @Override
     public void moveTo(File dest) throws IOException {

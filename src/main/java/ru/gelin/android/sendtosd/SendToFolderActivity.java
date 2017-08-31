@@ -32,55 +32,91 @@ import static ru.gelin.android.sendtosd.PreferenceParams.*;
 import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
- *  Base class for activities to copy/move file/files to folder.
- *  Responses for the directory listing and traversing.
+ * Base class for activities to copy/move file/files to folder.
+ * Responses for the directory listing and traversing.
  */
-public abstract class SendToFolderActivity extends PreferenceActivity 
-        implements FileSaver, FolderChanger {
-    
-    /** "Copy here" preference key */
+public abstract class SendToFolderActivity extends PreferenceActivity
+    implements FileSaver, FolderChanger {
+
+    /**
+     * "Copy here" preference key
+     */
     public static final String PREF_COPY_HERE = "copy_here";
-    /** "Move here" preference key */
+    /**
+     * "Move here" preference key
+     */
     public static final String PREF_MOVE_HERE = "move_here";
-    /** Last folders preference category key */
+    /**
+     * Last folders preference category key
+     */
     public static final String PREF_LAST_FOLDERS = "last_folders";
-    /** "Folders" preference key */
+    /**
+     * "Folders" preference key
+     */
     public static final String PREF_FOLDERS = "folders";
-    
-    /** Key to store the current path */
+
+    /**
+     * Key to store the current path
+     */
     static final String KEY_PATH = "path";
-    /** Key to store the path history */
+    /**
+     * Key to store the path history
+     */
     static final String KEY_PATH_HISTORY = "path_history";
-    
-    /** New Folder dialog ID */
+
+    /**
+     * New Folder dialog ID
+     */
     static final int NEW_FOLDER_DIALOG = 0;
-    /** Copy progress dialog ID */
+    /**
+     * Copy progress dialog ID
+     */
     static final int COPY_DIALOG = 1;
-    /** Move progress dialog ID */
+    /**
+     * Move progress dialog ID
+     */
     static final int MOVE_DIALOG = 2;
-    
-    /** Index of the list head to use list as a stack */
+
+    /**
+     * Index of the list head to use list as a stack
+     */
     static final int HEAD = 0;
-    
-    /** Intent information */
+
+    /**
+     * Intent information
+     */
     IntentInfo intentInfo;
-    /** Current path */
+    /**
+     * Current path
+     */
     File path;
-    /** History of paths */
+    /**
+     * History of paths
+     */
     List<File> pathHistory = new LinkedList<File>();
-    /** List of current subfolders */
+    /**
+     * List of current subfolders
+     */
     List<File> folders;
-    /** Wrapper for MediaScanner */
+    /**
+     * Wrapper for MediaScanner
+     */
     MediaScanner mediaScanner;
-    
-    /** Move here preference. Saved here to remove from or add to hierarchy. */
+
+    /**
+     * Move here preference. Saved here to remove from or add to hierarchy.
+     */
     MoveHerePreference moveHerePreference;
-    /** Last folders preference. Saved here to remove from or add to hierarchy. */
+    /**
+     * Last folders preference. Saved here to remove from or add to hierarchy.
+     */
     Preference lastFoldersPreference;
-    
-    /** Dialog to show the progress */
+
+    /**
+     * Dialog to show the progress
+     */
     volatile Progress progress = new DummyProgress();   //can be used from other threads
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -89,7 +125,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         this.mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
         this.lastFoldersPreference = findPreference(PREF_LAST_FOLDERS);
-        this.moveHerePreference = (MoveHerePreference)findPreference(PREF_MOVE_HERE);
+        this.moveHerePreference = (MoveHerePreference) findPreference(PREF_MOVE_HERE);
         if (getIntent() == null) {
             error(R.string.unsupported_intent);
             return;
@@ -106,64 +142,67 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
 
         if (savedInstanceState != null) {
-        	if (savedInstanceState.containsKey(KEY_PATH)) {
-        		this.path = new File(savedInstanceState.getString(KEY_PATH));
-        	}
-        	if (savedInstanceState.containsKey(KEY_PATH_HISTORY)) {
-        		this.pathHistory.clear();
-        		@SuppressWarnings("unchecked")
-        		Collection<File> restoredHistory = (Collection<File>)savedInstanceState.getSerializable(KEY_PATH_HISTORY);
-        		this.pathHistory.addAll(restoredHistory);
-        	}
+            if (savedInstanceState.containsKey(KEY_PATH)) {
+                this.path = new File(savedInstanceState.getString(KEY_PATH));
+            }
+            if (savedInstanceState.containsKey(KEY_PATH_HISTORY)) {
+                this.pathHistory.clear();
+                @SuppressWarnings("unchecked")
+                Collection<File> restoredHistory = (Collection<File>) savedInstanceState.getSerializable(KEY_PATH_HISTORY);
+                this.pathHistory.addAll(restoredHistory);
+            }
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-    	super.onSaveInstanceState(outState);
-    	outState.putString(KEY_PATH, this.path.toString());
-    	outState.putSerializable(KEY_PATH_HISTORY, (Serializable)this.pathHistory);
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_PATH, this.path.toString());
+        outState.putSerializable(KEY_PATH_HISTORY, (Serializable) this.pathHistory);
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         updateLastFolders();
     }
-    
+
     class InitTask extends AsyncTask<Void, Void, Void> {
-    	@Override
-    	protected void onPreExecute() {
-    		setProgressBarIndeterminateVisibility(true);
-    	}
-		@Override
-		protected Void doInBackground(Void... params) {
-			onInit();
-			return null;
-		}
-    	@Override
-    	protected void onPostExecute(Void result) {
-    		onPostInit();
-    		setProgressBarIndeterminateVisibility(false);
-    		//Log.d(TAG, "history: " + SendToFolderActivity.this.pathHistory);
-    	}
+        @Override
+        protected void onPreExecute() {
+            setProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            onInit();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            onPostInit();
+            setProgressBarIndeterminateVisibility(false);
+            //Log.d(TAG, "history: " + SendToFolderActivity.this.pathHistory);
+        }
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         this.mediaScanner.disconnect();
     }
-    
+
     /**
-     *  Creates IntentInfo.
-     *  @throws IntentException if it's not possible to create intent info
+     * Creates IntentInfo.
+     *
+     * @throws IntentException if it's not possible to create intent info
      */
     abstract protected IntentInfo getIntentInfo() throws IntentException;
-    
+
     /**
-     *  The method is called in a separate thread during the activity creation.
-     *  Avoid UI changes here!
+     * The method is called in a separate thread during the activity creation.
+     * Avoid UI changes here!
      */
     protected void onInit() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -174,35 +213,35 @@ public abstract class SendToFolderActivity extends PreferenceActivity
 
         this.folders = getFolders(this.path);
     }
-    
+
     /**
-     *  The method is called in the UI thread when {@link #onInit} finishes.
-     *  Fills folders list.
-     *  Enables Copy/Move Here for writable folders.
-     *  Hides Move Here for non-deletable files.
+     * The method is called in the UI thread when {@link #onInit} finishes.
+     * Fills folders list.
+     * Enables Copy/Move Here for writable folders.
+     * Hides Move Here for non-deletable files.
      */
     protected void onPostInit() {
         fillFolders();
-        
-        CopyHerePreference copyHerePreference = (CopyHerePreference)findPreference(PREF_COPY_HERE);
+
+        CopyHerePreference copyHerePreference = (CopyHerePreference) findPreference(PREF_COPY_HERE);
         Preference moveHere = findPreference(PREF_MOVE_HERE);
-        
+
         if (hasDeletableFile()) {
-        	if (moveHere == null) {
-        		getPreferenceScreen().addPreference(this.moveHerePreference);
-        	}
+            if (moveHere == null) {
+                getPreferenceScreen().addPreference(this.moveHerePreference);
+            }
         } else {
             getPreferenceScreen().removePreference(this.moveHerePreference);
         }
-        
+
         copyHerePreference.setFileSaver(this);
         this.moveHerePreference.setFileSaver(this);
-        
+
         boolean enable = this.path.canWrite();
         copyHerePreference.setEnabled(enable);
         this.moveHerePreference.setEnabled(enable);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
@@ -212,130 +251,130 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
         return true;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_new_folder:
-            showDialog(NEW_FOLDER_DIALOG);
-            return true;
-        case R.id.menu_preferences:
-            startActivity(new Intent(this, PreferencesActivity.class));
-            return true;
-        default:
-        	return super.onOptionsItemSelected(item);
+            case R.id.menu_new_folder:
+                showDialog(NEW_FOLDER_DIALOG);
+                return true;
+            case R.id.menu_preferences:
+                startActivity(new Intent(this, PreferencesActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case NEW_FOLDER_DIALOG: {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.new_folder);
-            View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, null);
-            final EditText edit = (EditText)content.findViewById(R.id.edit_text);
-            builder.setView(content);
-            builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
-                //@Override
-                public void onClick(DialogInterface dialog, int which) {
-                    createFolder(edit.getText().toString());
-                }
-            });
-            Dialog dialog = builder.create();
-            //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
-            Window window = dialog.getWindow();
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE |
+            case NEW_FOLDER_DIALOG: {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.new_folder);
+                View content = getLayoutInflater().inflate(R.layout.edit_text_dialog, null);
+                final EditText edit = (EditText) content.findViewById(R.id.edit_text);
+                builder.setView(content);
+                builder.setPositiveButton(R.string.create_folder, new OnClickListener() {
+                    //@Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        createFolder(edit.getText().toString());
+                    }
+                });
+                Dialog dialog = builder.create();
+                //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
+                Window window = dialog.getWindow();
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE |
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-            return dialog;
-        }
-        default:
-            return null;
+                return dialog;
+            }
+            default:
+                return null;
         }
     }
-    
+
     /**
-     *  Returns the current folder.
+     * Returns the current folder.
      */
     public File getPath() {
         return this.path;
     }
 
     /**
-     *  Return true if the intent has deletable file which can be moved.
-     *  This implementation always returns false.
+     * Return true if the intent has deletable file which can be moved.
+     * This implementation always returns false.
      */
     public boolean hasDeletableFile() {
         return false;
     }
-    
+
     /**
-     *  Changes the current folder.
+     * Changes the current folder.
      */
     public void changeFolder(File folder) {
-    	this.pathHistory.add(HEAD, this.path);
-    	this.path = folder;
-    	updateLastFolders();
-    	new InitTask().execute();
+        this.pathHistory.add(HEAD, this.path);
+        this.path = folder;
+        updateLastFolders();
+        new InitTask().execute();
     }
-    
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-    	//TODO: check, maybe it's possible to use Android 2.0 onBackPressed() method
-    	//Log.d(TAG, "key down: " + event);
-    	boolean result = false;
-    	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR &&
-    			keyCode == KeyEvent.KEYCODE_BACK) {
-    		result = backPress();
-    	}
-    	if (result == false) {
-    		result = super.onKeyDown(keyCode, event);
-    	}
-    	return result;
+        //TODO: check, maybe it's possible to use Android 2.0 onBackPressed() method
+        //Log.d(TAG, "key down: " + event);
+        boolean result = false;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR &&
+            keyCode == KeyEvent.KEYCODE_BACK) {
+            result = backPress();
+        }
+        if (result == false) {
+            result = super.onKeyDown(keyCode, event);
+        }
+        return result;
     }
-    
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-    	//Log.d(TAG, "key up: " + event);
-    	boolean result = false;
-    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR &&
-    			keyCode == KeyEvent.KEYCODE_BACK) {
-        	result = backPress();
-    	}
-    	if (result == false) {
-    		result = super.onKeyUp(keyCode, event);
-    	}
-    	return result;
-    }
-    
-    boolean backPress() {
-    	if (this.pathHistory.isEmpty()) {
-        	return false;
+        //Log.d(TAG, "key up: " + event);
+        boolean result = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR &&
+            keyCode == KeyEvent.KEYCODE_BACK) {
+            result = backPress();
         }
-    	File oldPath = this.pathHistory.remove(HEAD);
-    	this.path = oldPath;
-    	updateLastFolders();
-    	new InitTask().execute();
-    	return true;
+        if (result == false) {
+            result = super.onKeyUp(keyCode, event);
+        }
+        return result;
     }
-    
+
+    boolean backPress() {
+        if (this.pathHistory.isEmpty()) {
+            return false;
+        }
+        File oldPath = this.pathHistory.remove(HEAD);
+        this.path = oldPath;
+        updateLastFolders();
+        new InitTask().execute();
+        return true;
+    }
+
     /**
-     *  Saves the current folder to the list of last folders.
+     * Saves the current folder to the list of last folders.
      */
     public void saveLastFolder() {
         LastFolders lastFolders = LastFolders.getInstance(this);
         lastFolders.put(this.path);
     }
-    
+
     public abstract void copyFile();
-    
+
     public abstract void moveFile();
-    
-    /** 
-     * 	Updates last folders group. Hides them if necessary.
+
+    /**
+     * Updates last folders group. Hides them if necessary.
      */
     void updateLastFolders() {
-    	Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
+        Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
         if (this.intentInfo == null) {
             return; //not initialized, should be finished immediately from onCreate()
         }
@@ -350,14 +389,14 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             }
         }
     }
-    
+
     /**
-     *  Fills the list of last folders.
+     * Fills the list of last folders.
      */
     void listLastFolders() {
-        PreferenceCategory lastFoldersCategory = 
-                (PreferenceCategory)findPreference(PREF_LAST_FOLDERS);
-        
+        PreferenceCategory lastFoldersCategory =
+            (PreferenceCategory) findPreference(PREF_LAST_FOLDERS);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.getBoolean(PREF_SHOW_LAST_FOLDERS, true)) {
             getPreferenceScreen().removePreference(lastFoldersCategory);
@@ -368,11 +407,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             getPreferenceScreen().removePreference(lastFoldersCategory);
             return;
         }
-        
+
         int lastFoldersNumber;
         try {
             lastFoldersNumber = Integer.parseInt(preferences.getString(
-                    PREF_LAST_FOLDERS_NUMBER, DEFAULT_LAST_FOLDERS_NUMBER));
+                PREF_LAST_FOLDERS_NUMBER, DEFAULT_LAST_FOLDERS_NUMBER));
         } catch (NumberFormatException e) {
             lastFoldersNumber = DEFAULT_LAST_FOLDERS_NUMBER_INT;
         }
@@ -382,14 +421,14 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             PathFolderPreference folderPref = new PathFolderPreference(this, folder, this);
             lastFoldersCategory.addPreference(folderPref);
         }
-        
+
         if (lastFoldersCategory.getPreferenceCount() <= 0) {
-        	getPreferenceScreen().removePreference(lastFoldersCategory);
+            getPreferenceScreen().removePreference(lastFoldersCategory);
         }
     }
 
     /**
-     *  Makes the sorted list of this folder subfolders.
+     * Makes the sorted list of this folder subfolders.
      */
     static List<File> getFolders(File path) {
         List<File> result = new ArrayList<File>();
@@ -403,10 +442,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
         List<File> sortedFolders = Arrays.asList(subFolders);
         Collections.sort(sortedFolders, new Comparator<File>() {
-			public int compare(File file1, File file2) {
-				return String.CASE_INSENSITIVE_ORDER.compare(file1.getName(), file2.getName());
-			}
-		});
+            public int compare(File file1, File file2) {
+                return String.CASE_INSENSITIVE_ORDER.compare(file1.getName(), file2.getName());
+            }
+        });
         for (File subFolder : sortedFolders) {
             File folder;
             try {
@@ -418,12 +457,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
         return result;
     }
-    
+
     /**
-     *  Fills the list of subfolders.
+     * Fills the list of subfolders.
      */
     void fillFolders() {
-        PreferenceCategory folders = (PreferenceCategory)findPreference(PREF_FOLDERS);
+        PreferenceCategory folders = (PreferenceCategory) findPreference(PREF_FOLDERS);
         folders.removeAll();
         if (!"/".equals(this.path.getAbsolutePath())) {
             Preference upFolder = new FolderPreference(this, this.path.getParentFile(), this);
@@ -437,38 +476,40 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             }
         }
     }
-    
+
     /**
-     *  Runs getting of the folders list in a separate thread.
-     *  After updates the list of folders.
+     * Runs getting of the folders list in a separate thread.
+     * After updates the list of folders.
      */
     void listFolders() {
-    	new ListFoldersTask().execute(this.path);
+        new ListFoldersTask().execute(this.path);
     }
-    
+
     class ListFoldersTask extends AsyncTask<File, Void, List<File>> {
-    	@Override
-    	protected void onPreExecute() {
-    		setProgressBarIndeterminateVisibility(true);
-    	}
-		@Override
-		protected List<File> doInBackground(File... params) {
-	        return getFolders(params[0]);
-		}
-    	@Override
-    	protected void onPostExecute(List<File> result) {
-    		SendToFolderActivity.this.folders = result;
-    		fillFolders();
+        @Override
+        protected void onPreExecute() {
+            setProgressBarIndeterminateVisibility(true);
+        }
+
+        @Override
+        protected List<File> doInBackground(File... params) {
+            return getFolders(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<File> result) {
+            SendToFolderActivity.this.folders = result;
+            fillFolders();
             setProgressBarIndeterminateVisibility(false);
-    	}
+        }
     }
-    
+
     /**
-     *  Returns unique file name for this folder.
-     *  If the filename is not exists in the current folder,
-     *  it returns unchanged.
-     *  Otherwise the integer suffix will be added to the filename:
-     *  "-1", "-2" etc...
+     * Returns unique file name for this folder.
+     * If the filename is not exists in the current folder,
+     * it returns unchanged.
+     * Otherwise the integer suffix will be added to the filename:
+     * "-1", "-2" etc...
      */
     String getUniqueFileName(String fileName) {
         if (fileName == null) {
@@ -489,16 +530,16 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             if (dotIndex < 0) {
                 newName = fileName + "-" + index;
             } else {
-                newName = fileName.substring(0, dotIndex) + "-" + index + 
+                newName = fileName.substring(0, dotIndex) + "-" + index +
                     fileName.substring(dotIndex);
             }
             index++;
         } while (new File(this.path, newName).exists());
         return newName;
     }
-    
+
     /**
-     *  Creates the new folder.
+     * Creates the new folder.
      */
     void createFolder(String folderName) {
         File newFolder = new File(this.path, folderName);
@@ -513,23 +554,24 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     }
 
     /**
-     *  Shows the error message.
+     * Shows the error message.
      */
     void warn(int messageId) {
         warn(messageId, null);
     }
-    
+
     /**
-     *  Shows the error message and finishes the activity.
+     * Shows the error message and finishes the activity.
      */
     void error(int messageId) {
         error(messageId, null);
     }
-    
+
     /**
-     *  Shows and logs the error message.
-     *  @param  messageId   ID of the message to show
-     *  @param  exception   exception to write to logs (can be null)
+     * Shows and logs the error message.
+     *
+     * @param messageId ID of the message to show
+     * @param exception exception to write to logs (can be null)
      */
     void warn(int messageId, Throwable exception) {
         if (exception != null) {
@@ -537,12 +579,13 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
     }
-    
+
     /**
-     *  Shows and logs the error message and finished the activity
-     *  (with canceled result).
-     *  @param  messageId   ID of the message to show
-     *  @param  exception   exception to write to logs (can be null)
+     * Shows and logs the error message and finished the activity
+     * (with canceled result).
+     *
+     * @param messageId ID of the message to show
+     * @param exception exception to write to logs (can be null)
      */
     void error(int messageId, Throwable exception) {
         if (exception != null) {
@@ -551,17 +594,17 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         finish();
     }
-    
+
     /**
-     *  Complete the action.
+     * Complete the action.
      */
     void complete(int messageId) {
         Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
         finish();
     }
-    
+
     /**
-     *  Complete the action.
+     * Complete the action.
      */
     void complete(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
