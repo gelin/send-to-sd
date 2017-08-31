@@ -303,6 +303,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        this.permissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     /**
      * Returns the current folder.
      */

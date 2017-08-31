@@ -6,14 +6,19 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Encapsulates some actions related to check and grant necessary permissions.
  */
 public class PermissionChecker {
 
-    private static final int PERMISSION_REQUEST = 0;
+    private static final int PERMISSION_REQUEST = 1;
 
     private final Activity activity;
+
+    private final Map<String, Integer> results = new HashMap<>();
 
     public PermissionChecker(Activity activity) {
         this.activity = activity;
@@ -44,8 +49,22 @@ public class PermissionChecker {
         if (isGranted(permission)) {
             return;
         }
-        ActivityCompat.requestPermissions(this.activity,
-            new String[] { permission }, PERMISSION_REQUEST);
+        if (!this.results.containsKey(permission)) {
+            ActivityCompat.requestPermissions(this.activity, new String[]{permission}, PERMISSION_REQUEST);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
+                this.results.put(permission, grantResult);
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    this.activity.recreate();
+                }
+            }
+        }
     }
 
 }
