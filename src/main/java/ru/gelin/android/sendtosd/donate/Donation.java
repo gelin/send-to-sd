@@ -23,17 +23,17 @@ import java.util.ArrayList;
 public class Donation {
 
     //    static final String PRODUCT_ID = "android.test.purchased";	//for tests
-    static final String PRODUCT_ID = "donate";
+    private static final String PRODUCT_ID = "donate";
 
-    static final int API_VERSION = 3;
-    static final int RESULT_OK = 0;
-    static final String ITEM_TYPE = "inapp";
+    private static final int API_VERSION = 3;
+    private static final int RESULT_OK = 0;
+    private static final String ITEM_TYPE = "inapp";
 
-    DonateStatus status = DonateStatus.NONE;
-    Context context;
-    DonateStatusListener listener;
-    ServiceConnection connection;
-    IInAppBillingService billingService;
+    private DonateStatus status = DonateStatus.NONE;
+    private final Context context;
+    private final DonateStatusListener listener;
+    private ServiceConnection connection;
+    private IInAppBillingService billingService;
 
     public Donation(Context context, DonateStatusListener listener) {
         this.context = context;
@@ -107,7 +107,7 @@ public class Donation {
      * Do it in background thread, calls {@link ru.gelin.android.sendtosd.donate.DonateStatusListener}
      * if the status is changed.
      */
-    void init() {
+    private void init() {
         this.connection = new ServiceConnection() {
             @Override
             public void onServiceDisconnected(ComponentName name) {
@@ -146,14 +146,14 @@ public class Donation {
         }
     }
 
-    void setStatus(DonateStatus status) {
+    private void setStatus(DonateStatus status) {
         this.status = status;
         if (this.listener != null) {
             this.listener.onDonateStatusChanged(status);
         }
     }
 
-    boolean checkBillingSupported() {
+    private boolean checkBillingSupported() {
         if (this.billingService == null) {
             return false;
         }
@@ -171,7 +171,7 @@ public class Donation {
         }
     }
 
-    boolean checkDonatePurchased() {
+    private boolean checkDonatePurchased() {
         if (this.billingService == null) {
             return false;
         }

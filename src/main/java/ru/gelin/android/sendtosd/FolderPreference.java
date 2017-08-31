@@ -1,9 +1,9 @@
 package ru.gelin.android.sendtosd;
 
-import java.io.File;
-
 import android.content.Context;
 import android.preference.Preference;
+
+import java.io.File;
 
 /**
  * Preference which displays one folder.
@@ -14,11 +14,11 @@ public class FolderPreference extends Preference {
     /**
      * Current folder
      */
-    File folder;
+    private final File folder;
     /**
      * Folder changer
      */
-    FolderChanger changer;
+    private final FolderChanger changer;
 
     public FolderPreference(Context context, File folder, FolderChanger changer) {
         super(context);

@@ -1,13 +1,13 @@
 package ru.gelin.android.sendtosd;
 
-import java.io.File;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
+
+import java.io.File;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Wrapper for {@link MediaScannerConnection}.
@@ -20,15 +20,15 @@ public class MediaScanner {
     /**
      * Context
      */
-    Context context;
+    private final Context context;
     /**
      * Connection to MediaScanner
      */
-    MediaScannerConnection mediaScanner;
+    private MediaScannerConnection mediaScanner;
     /**
      * Queue of the scan requests which comes while connecting
      */
-    Queue<FileInfo> waitScans = new ConcurrentLinkedQueue<FileInfo>();
+    private final Queue<FileInfo> waitScans = new ConcurrentLinkedQueue<>();
 
     /**
      * Creates the scanner for context.
@@ -69,7 +69,7 @@ public class MediaScanner {
         mediaScanner.disconnect();
     }
 
-    void createMediaScanner() {
+    private void createMediaScanner() {
         mediaScanner = new MediaScannerConnection(context,
             new MediaScannerClient());
         mediaScanner.connect();
@@ -79,7 +79,7 @@ public class MediaScanner {
      * Returns true if the connection to media scanner is established and
      * the queue of the scans, which came while connecting, is empty.
      */
-    boolean isConnected() {
+    private boolean isConnected() {
         if (mediaScanner == null) {
             return false;
         }
@@ -90,8 +90,8 @@ public class MediaScanner {
     }
 
     static private class FileInfo {
-        public File path;
-        public String type;
+        public final File path;
+        public final String type;
 
         public FileInfo(File path, String type) {
             this.path = path;

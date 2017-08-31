@@ -126,7 +126,7 @@ public abstract class IntentFile {
     /**
      * Returns true if the file is plain/text.
      */
-    static boolean isText(Intent intent) {
+    private static boolean isText(Intent intent) {
         //return "text/plain".equals(intent.getType());
         return intent.hasExtra(Intent.EXTRA_TEXT) &&
             !intent.hasExtra(Intent.EXTRA_STREAM);  //stream is more preferable

@@ -10,16 +10,16 @@ public interface FileSaver {
     /**
      * Returns path to the current folder
      */
-    public File getPath();
+    File getPath();
 
     /**
      * Copies the file to the new location.
      */
-    public void copyFile();
+    void copyFile();
 
     /**
      * Moves the file to the new location.
      */
-    public void moveFile();
+    void moveFile();
 
 }

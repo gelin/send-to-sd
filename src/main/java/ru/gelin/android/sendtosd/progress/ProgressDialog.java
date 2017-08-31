@@ -11,21 +11,21 @@ public class ProgressDialog extends Dialog implements Progress {
     /**
      * Activity for which the dialog is created
      */
-    Activity activity;
+    private final Activity activity;
 
     /**
      * Progress manager for the dialog
      */
-    ProgressManager manager = new ProgressManager();
+    final ProgressManager manager = new ProgressManager();
 
     /**
      * Last tooOften() check.
      */
-    long lastTooOftenCheck = 0;
+    private long lastTooOftenCheck = 0;
     /**
      * Interval which is not too often
      */
-    static long TOO_OFTEN_INTERVAL = 1000;  //1 second
+    private static final long TOO_OFTEN_INTERVAL = 1000;  //1 second
 
     /**
      * Creates the customized progress dialog for
@@ -72,7 +72,7 @@ public class ProgressDialog extends Dialog implements Progress {
     void updateTotalProgress() {
     }
 
-    void updateFileName(File file) {
+    private void updateFileName(File file) {
         if (file == null) {
             return;
         }
@@ -80,7 +80,7 @@ public class ProgressDialog extends Dialog implements Progress {
         view.setText(file.getName());
     }
 
-    void updateFileProgress() {
+    private void updateFileProgress() {
         ProgressBar progress = (ProgressBar) findViewById(R.id.file_progress);
         if (manager.getProgressInUnits() < 0) {
             progress.setIndeterminate(true);
@@ -99,7 +99,7 @@ public class ProgressDialog extends Dialog implements Progress {
      * if the method is called more frequently than once per second, returns
      * true.
      */
-    boolean tooOften() {
+    private boolean tooOften() {
         long now = System.currentTimeMillis();
         if (now - lastTooOftenCheck < TOO_OFTEN_INTERVAL) {
             return true;

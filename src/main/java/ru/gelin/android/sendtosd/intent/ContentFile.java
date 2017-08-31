@@ -23,7 +23,7 @@ public class ContentFile extends AbstractFileFile {
     /**
      * content:// URIs which are writable
      */
-    static final String[] DELETABLE_URIS = {
+    private static final String[] DELETABLE_URIS = {
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
@@ -32,7 +32,7 @@ public class ContentFile extends AbstractFileFile {
     /**
      * Projection to select some useful data
      */
-    static final String[] PROJECTION = {
+    private static final String[] PROJECTION = {
         MediaStore.MediaColumns.DATA,
         MediaStore.MediaColumns.MIME_TYPE,
         MediaStore.MediaColumns.SIZE,
@@ -43,7 +43,7 @@ public class ContentFile extends AbstractFileFile {
     /**
      * Content size, in bytes
      */
-    long size = ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
+    private long size = ru.gelin.android.sendtosd.progress.File.UNKNOWN_SIZE;
 
     ContentFile(Context context, Intent intent) throws IntentFileException {
         super(context, intent);

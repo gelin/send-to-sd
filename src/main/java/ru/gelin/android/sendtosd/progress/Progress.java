@@ -5,7 +5,7 @@ package ru.gelin.android.sendtosd.progress;
  */
 public interface Progress {
 
-    public static enum ProgressEventType {
+    enum ProgressEventType {
         SET_FILES,
         NEXT_FILE,
         UPDATE_FILE,
@@ -13,7 +13,7 @@ public interface Progress {
         COMPLETE,
     }
 
-    public static class ProgressEvent {
+    class ProgressEvent {
 
         public final ProgressEventType type;
         public final int files;
@@ -48,6 +48,6 @@ public interface Progress {
         }
     }
 
-    public void progress(ProgressEvent event);
+    void progress(ProgressEvent event);
 
 }

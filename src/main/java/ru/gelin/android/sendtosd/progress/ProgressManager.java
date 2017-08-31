@@ -26,7 +26,7 @@ public class ProgressManager implements Progress {
     /**
      * SizeUnit to display the current file progress
      */
-    SizeUnit unit;
+    private SizeUnit unit;
 
     /**
      * Private constructor. For tests.
@@ -54,7 +54,7 @@ public class ProgressManager implements Progress {
         }
     }
 
-    void setFiles(int files) {
+    private void setFiles(int files) {
         this.files = files;
         this.file = -1;
     }
@@ -66,7 +66,7 @@ public class ProgressManager implements Progress {
         return this.files;
     }
 
-    void nextFile(File file) {
+    private void nextFile(File file) {
         if (this.file < files) {
             this.file++;
             if (file != null) {
@@ -77,7 +77,7 @@ public class ProgressManager implements Progress {
         }
     }
 
-    void updateFile(File file) {
+    private void updateFile(File file) {
         if (file != null) {
             this.size = file.getSize();
             this.processed = 0;
@@ -92,13 +92,13 @@ public class ProgressManager implements Progress {
         return this.file;
     }
 
-    void processBytes(long bytes) {
+    private void processBytes(long bytes) {
         if (this.processed + bytes <= size) {
             this.processed += bytes;
         }
     }
 
-    void complete() {
+    private void complete() {
         this.file = this.files;
         this.processed = this.size;
     }
@@ -133,7 +133,7 @@ public class ProgressManager implements Progress {
     /**
      * Finds most appropriate size unit for the file.
      */
-    SizeUnit findSizeUnit(long size) {
+    private SizeUnit findSizeUnit(long size) {
         for (SizeUnit unit : SizeUnit.values()) {
             if (size > unit.limit) {
                 return unit;

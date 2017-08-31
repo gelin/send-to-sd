@@ -8,11 +8,11 @@ public class FileInfo implements File {
     /**
      * File name
      */
-    String name;
+    private final String name;
     /**
      * File size
      */
-    long size = UNKNOWN_SIZE;
+    private long size = UNKNOWN_SIZE;
 
     /**
      * Constructs information about file.

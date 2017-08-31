@@ -21,12 +21,12 @@ public class StreamFile extends IntentFile {
     /**
      * Content resolver to read Uri
      */
-    ContentResolver contentResolver;
+    final ContentResolver contentResolver;
 
     /**
      * Uri of the stream
      */
-    Uri uri;
+    final Uri uri;
     /**
      * Mime type of the stream
      */
@@ -168,7 +168,7 @@ public class StreamFile extends IntentFile {
     /**
      * Returns the file as stream.
      */
-    InputStream getStream() throws FileNotFoundException {
+    private InputStream getStream() throws FileNotFoundException {
         return this.contentResolver.openInputStream(this.uri);
     }
 

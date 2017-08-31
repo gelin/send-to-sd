@@ -22,7 +22,7 @@ public class TextFile extends IntentFile {
     /**
      * The text content of the file
      */
-    CharSequence text = "";
+    private CharSequence text = "";
 
     TextFile(Intent intent) throws IntentFileException {
         this.text = intent.getCharSequenceExtra(Intent.EXTRA_TEXT);

@@ -42,33 +42,33 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * "Copy here" preference key
      */
-    public static final String PREF_COPY_HERE = "copy_here";
+    private static final String PREF_COPY_HERE = "copy_here";
     /**
      * "Move here" preference key
      */
-    public static final String PREF_MOVE_HERE = "move_here";
+    private static final String PREF_MOVE_HERE = "move_here";
     /**
      * Last folders preference category key
      */
-    public static final String PREF_LAST_FOLDERS = "last_folders";
+    private static final String PREF_LAST_FOLDERS = "last_folders";
     /**
      * "Folders" preference key
      */
-    public static final String PREF_FOLDERS = "folders";
+    private static final String PREF_FOLDERS = "folders";
 
     /**
      * Key to store the current path
      */
-    static final String KEY_PATH = "path";
+    private static final String KEY_PATH = "path";
     /**
      * Key to store the path history
      */
-    static final String KEY_PATH_HISTORY = "path_history";
+    private static final String KEY_PATH_HISTORY = "path_history";
 
     /**
      * New Folder dialog ID
      */
-    static final int NEW_FOLDER_DIALOG = 0;
+    private static final int NEW_FOLDER_DIALOG = 0;
     /**
      * Copy progress dialog ID
      */
@@ -81,7 +81,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Index of the list head to use list as a stack
      */
-    static final int HEAD = 0;
+    private static final int HEAD = 0;
 
     /**
      * Intent information
@@ -94,11 +94,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * History of paths
      */
-    List<File> pathHistory = new LinkedList<File>();
+    final List<File> pathHistory = new LinkedList<>();
     /**
      * List of current subfolders
      */
-    List<File> folders;
+    private List<File> folders;
     /**
      * Wrapper for MediaScanner
      */
@@ -107,11 +107,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Move here preference. Saved here to remove from or add to hierarchy.
      */
-    MoveHerePreference moveHerePreference;
+    private MoveHerePreference moveHerePreference;
     /**
      * Last folders preference. Saved here to remove from or add to hierarchy.
      */
-    Preference lastFoldersPreference;
+    private Preference lastFoldersPreference;
 
     /**
      * Dialog to show the progress
@@ -121,7 +121,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Permission checker.
      */
-    PermissionChecker permissions = new PermissionChecker(this);
+    final PermissionChecker permissions = new PermissionChecker(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -363,7 +363,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         return result;
     }
 
-    boolean backPress() {
+    private boolean backPress() {
         if (this.pathHistory.isEmpty()) {
             return false;
         }
@@ -389,7 +389,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Updates last folders group. Hides them if necessary.
      */
-    void updateLastFolders() {
+    private void updateLastFolders() {
         Preference existedLastFolders = findPreference(PREF_LAST_FOLDERS);
         if (this.intentInfo == null) {
             return; //not initialized, should be finished immediately from onCreate()
@@ -409,7 +409,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Fills the list of last folders.
      */
-    void listLastFolders() {
+    private void listLastFolders() {
         PreferenceCategory lastFoldersCategory =
             (PreferenceCategory) findPreference(PREF_LAST_FOLDERS);
 
@@ -446,8 +446,8 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Makes the sorted list of this folder subfolders.
      */
-    static List<File> getFolders(File path) {
-        List<File> result = new ArrayList<File>();
+    private static List<File> getFolders(File path) {
+        List<File> result = new ArrayList<>();
         File[] subFolders = path.listFiles(new FileFilter() {
             public boolean accept(File pathname) {
                 return pathname.isDirectory();
@@ -477,7 +477,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Fills the list of subfolders.
      */
-    void fillFolders() {
+    private void fillFolders() {
         PreferenceCategory folders = (PreferenceCategory) findPreference(PREF_FOLDERS);
         folders.removeAll();
         if (!"/".equals(this.path.getAbsolutePath())) {
@@ -497,7 +497,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      * Runs getting of the folders list in a separate thread.
      * After updates the list of folders.
      */
-    void listFolders() {
+    private void listFolders() {
         new ListFoldersTask().execute(this.path);
     }
 
@@ -557,7 +557,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     /**
      * Creates the new folder.
      */
-    void createFolder(String folderName) {
+    private void createFolder(String folderName) {
         File newFolder = new File(this.path, folderName);
         boolean result = newFolder.mkdirs();
         if (result) {

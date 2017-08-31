@@ -11,6 +11,6 @@ public interface DonateStatusListener {
      *
      * @param status new status
      */
-    public void onDonateStatusChanged(DonateStatus status);
+    void onDonateStatusChanged(DonateStatus status);
 
 }

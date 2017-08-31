@@ -56,7 +56,7 @@ public abstract class AbstractFileFile extends StreamFile {
     /**
      * Returns true if the files are on the same filesystem.
      */
-    static boolean areOnSameFilesystem(File root, File source, File dest) {
+    private static boolean areOnSameFilesystem(File root, File source, File dest) {
         if (root == null || source == null || dest == null) {
             return false;
         }

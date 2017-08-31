@@ -1,16 +1,16 @@
 package ru.gelin.android.sendtosd;
 
-import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDER;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
+import static ru.gelin.android.sendtosd.PreferenceParams.PREF_LAST_FOLDER;
 
 /**
  * Singleton storage for last folders.
@@ -29,11 +29,11 @@ public class LastFolders {
     /**
      * Preferences
      */
-    SharedPreferences preferences;
+    private final SharedPreferences preferences;
     /**
      * Instance
      */
-    static LastFolders instance;
+    private static LastFolders instance;
 
     private LastFolders(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -64,7 +64,7 @@ public class LastFolders {
      * Non-existed or not-writable folders are excluded.
      */
     public List<File> get(int number) {
-        List<File> result = new ArrayList<File>();
+        List<File> result = new ArrayList<>();
         for (int i = 0; i < MAX_NUMBER; i++) {
             String pref = preferences.getString(PREF_LAST_FOLDERS_PREFIX + i, null);
             if (pref == null) {

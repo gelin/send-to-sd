@@ -10,12 +10,12 @@ public class IntentFiles {
     /**
      * Instance
      */
-    static IntentFiles instance;
+    private static IntentFiles instance;
 
     /**
      * Array of files
      */
-    IntentFile[] files;
+    private IntentFile[] files;
 
     /**
      * Returns the instance of the storage.

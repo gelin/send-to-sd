@@ -13,9 +13,9 @@ import java.util.*;
  */
 public class ExternalStorageRoots {
 
-    static final File MOUNT_FILE = new File("/proc/mounts");
+    private static final File MOUNT_FILE = new File("/proc/mounts");
 
-    static final Set FILESYSTEMS = new HashSet<String>();
+    private static final Set<String> FILESYSTEMS = new HashSet<>();
 
     static {
         FILESYSTEMS.add("ext4");
@@ -23,7 +23,7 @@ public class ExternalStorageRoots {
         FILESYSTEMS.add("fuse");
     }
 
-    List<File> roots = new ArrayList<File>();
+    private final List<File> roots = new ArrayList<>();
 
     /**
      * Scans mounted filesystems and returns mount paths for filesystems which are available to write.
@@ -43,14 +43,14 @@ public class ExternalStorageRoots {
         return Collections.unmodifiableList(this.roots);
     }
 
-    void addPrimaryExternalStorage() {
+    private void addPrimaryExternalStorage() {
         File root = Environment.getExternalStorageDirectory();
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             this.roots.add(root.getAbsoluteFile());     // always add this root, if mounted
         }
     }
 
-    void addMounts() {
+    private void addMounts() {
         if (!(MOUNT_FILE.isFile() && MOUNT_FILE.canRead())) {
             return;
         }
@@ -75,7 +75,7 @@ public class ExternalStorageRoots {
         }
     }
 
-    void addWritableDir(File path) {
+    private void addWritableDir(File path) {
         File absPath = path.getAbsoluteFile();
         if (this.roots.contains(absPath)) {
             return;

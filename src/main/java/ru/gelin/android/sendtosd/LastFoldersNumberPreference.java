@@ -34,7 +34,7 @@ public class LastFoldersNumberPreference extends ListPreference {
         setSummary(formatSummary());
     }
 
-    String formatSummary() {
+    private String formatSummary() {
         try {
             return MessageFormat.format(
                 getContext().getString(R.string.show_last_folders_number),

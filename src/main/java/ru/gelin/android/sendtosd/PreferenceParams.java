@@ -44,8 +44,8 @@ public class PreferenceParams {
      */
     public static final int DEFAULT_LAST_FOLDERS_NUMBER_INT = 5;
 
-    public static enum ViewType {
-        FULL_SCREEN, DIALOG;
+    public enum ViewType {
+        FULL_SCREEN, DIALOG
     }
 
     /**

@@ -61,7 +61,7 @@ public class FileFile extends AbstractFileFile {
      *
      * @throws IntentFileException if the URI cannot be converted to file
      */
-    File getFile() throws IntentFileException {
+    private File getFile() throws IntentFileException {
         try {
             List<String> pathSegments = this.uri.getPathSegments();
             File result = new File("/");

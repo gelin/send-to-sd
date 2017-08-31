@@ -27,21 +27,21 @@ import static ru.gelin.android.sendtosd.PreferenceParams.PREF_INITIAL_FOLDER;
  */
 public class PreferencesActivity extends PreferenceActivity implements DonateStatusListener {
 
-    static final String PREF_DONATE = "donate";
-    static final String PREF_DONATE_CATEGORY = "donate_category";
+    private static final String PREF_DONATE = "donate";
+    private static final String PREF_DONATE_CATEGORY = "donate_category";
 
     /**
      * Special package name for donate version of the app
      */
-    static final String DONATE_PACKAGE_NAME = "ru.gelin.android.sendtosd.donate";
+    private static final String DONATE_PACKAGE_NAME = "ru.gelin.android.sendtosd.donate";
 
-    static final int REQUEST_CODE = 1;
+    private static final int REQUEST_CODE = 1;
 
-    Preference donateCategory;
-    Preference donate;
+    private Preference donateCategory;
+    private Preference donate;
 
-    Donation donation;
-    Handler handler = new Handler();
+    private Donation donation;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +77,11 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
         }
     }
 
-    void updateInitialFolderView() {
+    private void updateInitialFolderView() {
         ListPreference initialFolder = (ListPreference) findPreference(PREF_INITIAL_FOLDER);
         String value = initialFolder.getValue();
-        List<String> entries = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
+        List<String> entries = new ArrayList<>();
+        List<String> values = new ArrayList<>();
         entries.add(getString(R.string.last_folder));
         values.add(DEFAULT_INITIAL_FOLDER);
         for (File root : new ExternalStorageRoots().getRoots()) {
@@ -94,7 +94,7 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
         initialFolder.setValue(value);
     }
 
-    void updateDonateView(DonateStatus status) {
+    private void updateDonateView(DonateStatus status) {
         Preference category = findPreference(PREF_DONATE_CATEGORY);
         switch (status) {
             case NONE:
@@ -124,7 +124,7 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
         updateDonateView(status);
     }
 
-    void startDonatePurchase() {
+    private void startDonatePurchase() {
         if (this.donation == null) {
             return;
         }

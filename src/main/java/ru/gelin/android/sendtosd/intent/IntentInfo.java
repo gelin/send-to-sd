@@ -23,15 +23,15 @@ public class IntentInfo {
     /**
      * Current context
      */
-    Context context;
+    final Context context;
     /**
      * Processing intent
      */
-    Intent intent;
+    final Intent intent;
     /**
      * Application preferences
      */
-    SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     /**
      * Creates the intent info.
@@ -82,7 +82,7 @@ public class IntentInfo {
     /**
      * Returns default path. The return value can differs for different preferences.
      */
-    File getDefaultPath() {
+    private File getDefaultPath() {
         String initialFolder = this.preferences.getString(PREF_INITIAL_FOLDER, DEFAULT_INITIAL_FOLDER);
         File safeRoot = Environment.getExternalStorageDirectory();
         safeRoot = getReadableParent(safeRoot);
@@ -100,7 +100,7 @@ public class IntentInfo {
     /**
      * Finds closest existing and readable parent of the folder in case the folder doesn't exist.
      */
-    File getReadableParent(File path) {
+    private File getReadableParent(File path) {
         File result = path;
         if (result.isDirectory() && result.canWrite()) {
             return result;

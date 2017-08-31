@@ -28,21 +28,21 @@ public class SendActivity extends SendToFolderActivity
     /**
      * Choose File Name dialog ID
      */
-    static final int FILE_NAME_DIALOG = 10;
+    private static final int FILE_NAME_DIALOG = 10;
 
     /**
      * Key to store the file name
      */
-    static final String KEY_FILE_NAME = "file_name";
+    private static final String KEY_FILE_NAME = "file_name";
 
     /**
      * File to save from intent
      */
-    IntentFile intentFile;
+    private IntentFile intentFile;
     /**
      * Filename to save
      */
-    String fileName;
+    private String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +155,8 @@ public class SendActivity extends SendToFolderActivity
         return this.intentFile.isDeletable();
     }
 
-    static enum Result {
-        MOVED, COPIED, ERROR;
+    enum Result {
+        MOVED, COPIED, ERROR
     }
 
     abstract class ProgressTask extends AsyncTask<IntentFile, ProgressEvent, Result> implements Progress {

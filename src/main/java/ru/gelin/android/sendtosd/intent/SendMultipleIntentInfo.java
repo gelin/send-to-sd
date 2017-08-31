@@ -1,14 +1,14 @@
 package ru.gelin.android.sendtosd.intent;
 
-import static ru.gelin.android.sendtosd.Tag.TAG;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
  * Extracts some necessary information from the SEND_MULTIPLE intent.
@@ -41,7 +41,7 @@ public class SendMultipleIntentInfo extends IntentInfo {
      * Returns the files provided with the SEND intent.
      */
     public IntentFile[] getFiles() throws IntentFileException {
-        List<IntentFile> result = new ArrayList<IntentFile>();
+        List<IntentFile> result = new ArrayList<>();
         try {
             if (this.intent.hasExtra(Intent.EXTRA_TEXT)) {
                 List<String> texts = this.intent.getStringArrayListExtra(Intent.EXTRA_TEXT);

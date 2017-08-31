@@ -21,11 +21,11 @@ public class DonatePreference extends Preference {
             "detail1_description=Send+to+SD+card&" +
             "detail1_text=Donate+your+favorite+Android+application";
     */
-    static final String URL = "https://market.android.com/details?id=ru.gelin.android.sendtosd.donate";
+    private static final String URL = "https://market.android.com/details?id=ru.gelin.android.sendtosd.donate";
     /**
      * Donate page URI
      */
-    static final Uri URI = Uri.parse(URL);
+    private static final Uri URI = Uri.parse(URL);
 
     public DonatePreference(Context context) {
         super(context);
