@@ -126,11 +126,15 @@ public class SendActivity extends SendToFolderActivity
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                 return dialog;
             case COPY_DIALOG: {
+                permissions.requestWritePermission();
+
                 ProgressDialog progress = new SingleCopyDialog(this);
                 this.progress = progress;
                 return progress;
             }
             case MOVE_DIALOG: {
+                permissions.requestWritePermission();
+
                 ProgressDialog progress = new SingleMoveDialog(this);
                 this.progress = progress;
                 return progress;

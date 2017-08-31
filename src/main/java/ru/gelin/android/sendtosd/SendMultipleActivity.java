@@ -65,11 +65,15 @@ public class SendMultipleActivity extends SendToFolderActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case COPY_DIALOG: {
+                permissions.requestWritePermission();
+
                 ProgressDialog progress = new MultipleCopyDialog(this);
                 this.progress = progress;
                 return progress;
             }
             case MOVE_DIALOG: {
+                permissions.requestWritePermission();
+
                 ProgressDialog progress = new MultipleMoveDialog(this);
                 this.progress = progress;
                 return progress;

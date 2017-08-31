@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
+import ru.gelin.android.sendtosd.permissions.PermissionChecker;
 import ru.gelin.android.sendtosd.progress.DummyProgress;
 import ru.gelin.android.sendtosd.progress.Progress;
 
@@ -117,6 +118,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     volatile Progress progress = new DummyProgress();   //can be used from other threads
 
+    /**
+     * Permission checker.
+     */
+    PermissionChecker permissions = new PermissionChecker(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -165,6 +171,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onResume() {
         super.onResume();
         updateLastFolders();
+        permissions.requestReadPermission();
     }
 
     class InitTask extends AsyncTask<Void, Void, Void> {
@@ -281,11 +288,14 @@ public abstract class SendToFolderActivity extends PreferenceActivity
                         createFolder(edit.getText().toString());
                     }
                 });
+
                 Dialog dialog = builder.create();
                 //http://android.git.kernel.org/?p=platform/frameworks/base.git;a=blob;f=core/java/android/preference/DialogPreference.java;h=bbad2b6d432ce44ad05ddbc44487000b150135ef;hb=HEAD
                 Window window = dialog.getWindow();
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE |
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+                permissions.requestWritePermission();
                 return dialog;
             }
             default:
