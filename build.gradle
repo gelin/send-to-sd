@@ -30,10 +30,36 @@ android {
         checkReleaseBuilds true
         abortOnError false
     }
+
+    signingConfigs {
+        release
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+if (project.hasProperty('storeFile')) {
+    android.signingConfigs.release.storeFile = file(storeFile)
+}
+if (project.hasProperty('storePassword')) {
+    android.signingConfigs.release.storePassword = storePassword
+} else {
+    android.signingConfigs.release.storePassword = System.getenv('STORE_PASSWORD')
+}
+if (project.hasProperty('keyAlias')) {
+    android.signingConfigs.release.keyAlias = keyAlias
+}
+if (project.hasProperty('keyPassword')) {
+    android.signingConfigs.release.keyPassword = keyPassword
+} else {
+    android.signingConfigs.release.keyPassword = System.getenv('KEY_PASSWORD')
 }
 
 dependencies {
     compile 'com.android.billingclient:billing:dp-1'
-
     testCompile 'junit:junit:4.12'
 }
