@@ -27,6 +27,7 @@ public class ContentFile extends AbstractFileFile {
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
+        // "content://com.google.android.apps.photos.contentprovider"  // Google Photos ARE NOT writable
     };
 
     /**
