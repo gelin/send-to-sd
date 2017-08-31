@@ -3,6 +3,7 @@ bin/*
 gen/*
 tmp/*
 build/*
+.gradle/*
 .settings/*
 local.properties
 build.properties
