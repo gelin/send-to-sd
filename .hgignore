@@ -2,9 +2,12 @@ syntax: glob
 bin/*
 gen/*
 tmp/*
+build/*
 .settings/*
 local.properties
 build.properties
 upload.credentials.properties
-glob:ant.properties
+ant.properties
+
+*.iml
 .idea/*
