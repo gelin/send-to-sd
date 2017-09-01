@@ -233,7 +233,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         CopyHerePreference copyHerePreference = (CopyHerePreference) findPreference(PREF_COPY_HERE);
         Preference moveHere = findPreference(PREF_MOVE_HERE);
 
-        if (hasDeletableFile()) {
+        if (hasMovableFile()) {
             if (moveHere == null) {
                 getPreferenceScreen().addPreference(this.moveHerePreference);
             }
@@ -317,10 +317,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     }
 
     /**
-     * Return true if the intent has deletable file which can be moved.
+     * Return true if the intent has movable file and it's reasonable to display a "Move To" action.
      * This implementation always returns false.
      */
-    public boolean hasDeletableFile() {
+    public boolean hasMovableFile() {
         return false;
     }
 

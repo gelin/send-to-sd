@@ -84,16 +84,16 @@ public class SendMultipleActivity extends SendToFolderActivity {
     }
 
     /**
-     * Return true if the intent has deletable file which can be moved.
-     * This implementation returns true if one or more files are
-     * deletable.
+     * Return true if the intent has movable file and it's reasonable to display a "Move To" action.
+     * This implementation returns true if one or more files are deletable or movable.
      */
-    public boolean hasDeletableFile() {
+    public boolean hasMovableFile() {
         if (this.intentFiles == null) {
             return false;
         }
+        List<File> roots = new ExternalStorageRoots().getRoots();
         for (IntentFile file : this.intentFiles) {
-            if (file.isDeletable()) {
+            if (file.isDeletable() || file.isMovable(this.path, roots)) {
                 return true;
             }
         }

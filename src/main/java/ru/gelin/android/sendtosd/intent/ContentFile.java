@@ -27,7 +27,8 @@ public class ContentFile extends AbstractFileFile {
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString(),
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString(),
-        // "content://com.google.android.apps.photos.contentprovider"  // Google Photos ARE NOT writable
+        // "content://com.google.android.apps.photos.contentprovider"   // Google Photos ARE NOT writable
+        // "content://com.mobisystems.fileman.RemoteFiles"              // File Commander, UnsupportedOperationException for delete()
     };
 
     /**
@@ -137,7 +138,11 @@ public class ContentFile extends AbstractFileFile {
     @Override
     public void moveTo(File dest) throws IOException {
         super.moveTo(dest);
-        delete();
+        try {
+            delete();
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to delete from content provider", e);
+        }
     }
 
     /**

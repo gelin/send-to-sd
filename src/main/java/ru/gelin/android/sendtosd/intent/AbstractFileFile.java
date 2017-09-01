@@ -42,9 +42,9 @@ public abstract class AbstractFileFile extends StreamFile {
         if (roots == null || roots.isEmpty()) {
             return false;
         }
-        if (!isDeletable()) {
-            return false;
-        }
+//        if (!isDeletable()) {     // some non deletable files can be moved
+//            return false;         // it happens for content providers which gives the real file name on filesystem
+//        }                         // but doesn't provide delete() operation
         for (File root : roots) {
             if (areOnSameFilesystem(root, this.file, dest)) {
                 return true;

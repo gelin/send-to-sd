@@ -145,14 +145,16 @@ public class SendActivity extends SendToFolderActivity
     }
 
     /**
-     * Return true if the intent has deletable file which can be moved.
-     * This implementation returns true if the sending file is deletable.
+     * Return true if the intent has movable file and it's reasonable to display a "Move To" action.
+     * This implementation returns true if the sending file is deletable or movable.
      */
-    public boolean hasDeletableFile() {
+    public boolean hasMovableFile() {
         if (this.intentFile == null) {
             return false;
         }
-        return this.intentFile.isDeletable();
+        List<File> roots = new ExternalStorageRoots().getRoots();
+        return this.intentFile.isDeletable()
+            || this.intentFile.isMovable(this.path, roots);
     }
 
     enum Result {
