@@ -13,8 +13,11 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import ru.gelin.android.sendtosd.intent.IntentException;
@@ -300,6 +303,32 @@ public abstract class SendToFolderActivity extends PreferenceActivity
             }
             default:
                 return null;
+        }
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        super.onPrepareDialog(id, dialog);
+        switch (id) {
+            case NEW_FOLDER_DIALOG: {
+                AlertDialog alertDialog = (AlertDialog) dialog;
+                final Button button = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
+                button.setEnabled(false);
+
+                EditText edit = (EditText) dialog.findViewById(R.id.edit_text);
+                edit.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        button.setEnabled(s.length() > 0);
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+            }
         }
     }
 
