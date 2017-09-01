@@ -61,7 +61,8 @@ public class PermissionChecker {
                 int grantResult = grantResults[i];
                 this.results.put(permission, grantResult);
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    this.activity.recreate();
+                    this.activity.finish();     // don't recreate(), because we don't want to save the path which may point to an inaccessible root folder
+                    this.activity.startActivity(this.activity.getIntent());
                 }
             }
         }

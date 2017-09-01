@@ -102,7 +102,7 @@ public class IntentInfo {
      */
     private File getReadableParent(File path) {
         File result = path;
-        if (result.isDirectory() && result.canWrite()) {
+        if (result.isDirectory() && result.canRead()) {
             return result;
         }
         while (result != null && !(result.isDirectory() && result.canRead())) {
