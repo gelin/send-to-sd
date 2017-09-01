@@ -73,7 +73,9 @@ public class ContentFile extends AbstractFileFile {
             int sizeIndex = cursor.getColumnIndex(MediaStore.MediaColumns.SIZE);
             if (cursor.moveToFirst()) {
                 String data = cursor.getString(dataIndex);
-                this.file = new File(data);
+                if (data != null) {
+                    this.file = new File(data);
+                }
                 this.type = cursor.getString(typeIndex);
                 this.size = cursor.getLong(sizeIndex);
             }

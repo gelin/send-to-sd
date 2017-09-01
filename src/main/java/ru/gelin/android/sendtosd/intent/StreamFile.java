@@ -4,11 +4,14 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
 
 import java.io.*;
 import java.util.List;
+
+import static ru.gelin.android.sendtosd.Tag.TAG;
 
 /**
  * Intent file which reads the content of the file from
@@ -66,8 +69,27 @@ public class StreamFile extends IntentFile {
      */
     @Override
     public String getName() {
-        String fileName = this.uri.getLastPathSegment();
+        String fileName = getLastPathSegment(this.uri);
         return addExtension(removeLeadingDots(fileName));
+    }
+
+    /**
+     * Tries recursively take last path segment to avoid cases when the path segment is URL again.
+     */
+    private String getLastPathSegment(Uri uri) {
+        String segment = uri.getLastPathSegment();
+        try {
+            Uri segmentAsUri = Uri.parse(segment);
+            String againSegment = segmentAsUri.getLastPathSegment();
+            if (segment.equals(againSegment)) {
+                return segment;
+            } else {
+                return getLastPathSegment(segmentAsUri);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to parse " + segment, e);
+            return segment;
+        }
     }
 
     /**
