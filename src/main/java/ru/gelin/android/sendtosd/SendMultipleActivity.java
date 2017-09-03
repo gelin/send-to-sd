@@ -91,7 +91,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
         if (this.intentFiles == null) {
             return false;
         }
-        List<File> roots = new ExternalStorageRoots().getRoots();
+        List<File> roots = new ExternalStorageRoots(this).getRoots();   // TODO: non atomic roots?
         for (IntentFile file : this.intentFiles) {
             if (file.isDeletable() || file.isMovable(this.path, roots)) {
                 return true;
@@ -204,7 +204,7 @@ public class SendMultipleActivity extends SendToFolderActivity {
             Result result = new Result();
             IntentFile[] intentFiles = params[0];
             publishProgress(ProgressEvent.newSetFilesEvent(intentFiles.length));
-            List<File> roots = new ExternalStorageRoots().getRoots();
+            List<File> roots = new ExternalStorageRoots(SendMultipleActivity.this).getRoots(); // TODO: non atomic roots?
             for (IntentFile file : intentFiles) {
                 String uniqueFileName = getUniqueFileName(file.getName());
                 File dest = new File(SendMultipleActivity.this.path, uniqueFileName);
