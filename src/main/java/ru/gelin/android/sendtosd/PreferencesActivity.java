@@ -12,7 +12,7 @@ import android.util.Log;
 import ru.gelin.android.sendtosd.donate.DonateStatus;
 import ru.gelin.android.sendtosd.donate.DonateStatusListener;
 import ru.gelin.android.sendtosd.donate.Donation;
-import ru.gelin.android.sendtosd.intent.ExternalStorageRoots;
+import ru.gelin.android.sendtosd.fs.StartPaths;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,10 +84,10 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
         List<String> values = new ArrayList<>();
         entries.add(getString(R.string.last_folder));
         values.add(DEFAULT_INITIAL_FOLDER);
-        for (File root : new ExternalStorageRoots(this).getRoots()) {
-            String rootName = String.valueOf(root);
-            entries.add(rootName);
-            values.add(rootName);
+        for (File path : new StartPaths(this).getPaths()) {
+            String pathName = String.valueOf(path);
+            entries.add(pathName);
+            values.add(pathName);
         }
         initialFolder.setEntries(entries.toArray(new String[]{}));
         initialFolder.setEntryValues(values.toArray(new String[]{}));

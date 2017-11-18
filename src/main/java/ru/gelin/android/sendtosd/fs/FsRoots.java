@@ -56,17 +56,6 @@ public class FsRoots {
         this.roots.add(root);
     }
 
-    private File findWritableParent(File file) {
-        File parent = file.getParentFile();
-        if (parent == null) {
-            return file;
-        }
-        if (!parent.canWrite() && file.canWrite()) {
-            return file;
-        }
-        return findWritableParent(parent);
-    }
-
     private void addMounts() {
         if (!(MOUNT_FILE.isFile() && MOUNT_FILE.canRead())) {
             return;
@@ -90,7 +79,7 @@ public class FsRoots {
                         continue line;
                     }
                 }
-                addReadableDir(new File(path));     // other roots are added only when writable
+                addReadableDir(new File(path));     // other roots are added only when readable
             }
             reader.close();
         } catch (IOException e) {

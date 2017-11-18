@@ -68,7 +68,13 @@ public class MountedVolumes {
             if (dir == null) {
                 continue;
             }
-            addMount(findReadableParent(dir.getAbsoluteFile()));
+            addMount(findReadableParent(dir.getAbsoluteFile()));    // add most common parents
+        }
+        for (File dir : dirs) {
+            if (dir == null) {
+                continue;
+            }
+            addMount(dir);      // add available files dirs
         }
     }
 
