@@ -35,10 +35,13 @@ public class FsRoots {
 
     /**
      * Scans mounted filesystems and returns mount paths for filesystems which are available to write.
+     * @param addFsRoots true if add result of {@link File#listRoots()}
      */
-    public FsRoots() {
+    FsRoots(boolean addFsRoots) {
         addMounts();
-        addRoots();
+        if (addFsRoots) {
+            addRoots();
+        }
     }
 
     /**

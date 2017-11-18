@@ -17,7 +17,7 @@ public class StartPathsTest {
 
     @Test
     public void testGetRoots() {
-        StartPaths startPaths = new StartPaths(getContext());
+        StartPaths startPaths = new StartPaths(getContext(), true);
         List<File> paths = startPaths.getPaths();
         System.out.println("Start paths:" + paths);
         assertTrue(paths.contains(new File("/")));

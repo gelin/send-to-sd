@@ -84,7 +84,7 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
         List<String> values = new ArrayList<>();
         entries.add(getString(R.string.last_folder));
         values.add(DEFAULT_INITIAL_FOLDER);
-        for (File path : new StartPaths(this).getPaths()) {
+        for (File path : new StartPaths(this, true).getPaths()) {
             String pathName = String.valueOf(path);
             entries.add(pathName);
             values.add(pathName);

@@ -16,16 +16,26 @@ public class StartPaths {
 
     private List<File> paths;
 
-    public StartPaths() {
+    /**
+     * Scans mounted filesystems and external storages to find some paths to be start point for moves.
+     * @param addFsRoots true if add result of {@link File#listRoots()}
+     */
+    public StartPaths(boolean addFsRoots) {
         List<File> mounts = new MountedVolumes().getMounts();
-        List<File> roots = new FsRoots().getRoots();
+        List<File> roots = new FsRoots(addFsRoots).getRoots();
         paths = merge(mounts, roots);
+        Collections.sort(paths, new PathComparator());
     }
 
-    public StartPaths(Context context) {
+    /**
+     * Scans mounted filesystems and external storages to find some paths to be start point for moves.
+     * @param addFsRoots true if add result of {@link File#listRoots()}
+     */
+    public StartPaths(Context context, boolean addFsRoots) {
         List<File> mounts = new MountedVolumes(context).getMounts();
-        List<File> roots = new FsRoots().getRoots();
+        List<File> roots = new FsRoots(addFsRoots).getRoots();
         paths = merge(mounts, roots);
+        Collections.sort(paths, new PathComparator());
     }
 
     public List<File> getPaths() {
