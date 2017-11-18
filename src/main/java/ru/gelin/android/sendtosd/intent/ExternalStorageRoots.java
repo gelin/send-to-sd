@@ -13,6 +13,7 @@ import java.util.*;
 /**
  * Takes care on find roots of possible mounted external storages.
  */
+@Deprecated
 public class ExternalStorageRoots {
 
     private static final File MOUNT_FILE = new File("/proc/mounts");
