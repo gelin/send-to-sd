@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    
+
     <ru.gelin.android.sendtosd.CopyHerePreference
             android:key="copy_here"
             android:persistent="false"
             android:title="@string/copy_here"
             android:enabled="false"/>
-            
+
     <ru.gelin.android.sendtosd.MoveHerePreference
             android:key="move_here"
             android:persistent="false"
             android:title="@string/move_here"
             android:enabled="false"/>
-    
+
     <PreferenceCategory android:key="last_folders"
             android:persistent="false"
             android:title="@string/last_folders">
     </PreferenceCategory>
-    
+
+    <PreferenceCategory android:key="mount_points"
+            android:persistent="false"
+            android:title="@string/mount_points">
+    </PreferenceCategory>
+
     <PreferenceCategory android:key="folders"
             android:persistent="false"
             android:title="@string/folders">
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

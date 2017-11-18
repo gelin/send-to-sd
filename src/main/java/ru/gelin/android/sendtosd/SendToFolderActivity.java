@@ -20,6 +20,7 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import ru.gelin.android.sendtosd.fs.StartPaths;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.permissions.PermissionChecker;
@@ -54,6 +55,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      * Last folders preference category key
      */
     private static final String PREF_LAST_FOLDERS = "last_folders";
+    /**
+     * Mount points preference category key
+     */
+    private static final String PREF_MOUNT_POINTS = "mount_points";
     /**
      * "Folders" preference key
      */
@@ -115,6 +120,10 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      * Last folders preference. Saved here to remove from or add to hierarchy.
      */
     private Preference lastFoldersPreference;
+    /**
+     * Mount points preference. Saved here to show or hide.
+     */
+    private Preference mountPointsPreference;
 
     /**
      * Dialog to show the progress
@@ -134,6 +143,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         this.mediaScanner = new MediaScanner(this);
         addPreferencesFromResource(R.xml.folder_preferences);
         this.lastFoldersPreference = findPreference(PREF_LAST_FOLDERS);
+        this.mountPointsPreference = findPreference(PREF_MOUNT_POINTS);
         this.moveHerePreference = (MoveHerePreference) findPreference(PREF_MOVE_HERE);
         if (getIntent() == null) {
             error(R.string.unsupported_intent);
@@ -174,6 +184,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
     protected void onResume() {
         super.onResume();
         updateLastFolders();
+        updateMountPoints();
         permissions.requestReadPermission();
     }
 
@@ -360,6 +371,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         this.pathHistory.add(HEAD, this.path);
         this.path = folder;
         updateLastFolders();
+        updateMountPoints();
         new InitTask().execute();
     }
 
@@ -399,6 +411,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         File oldPath = this.pathHistory.remove(HEAD);
         this.path = oldPath;
         updateLastFolders();
+        updateMountPoints();
         new InitTask().execute();
         return true;
     }
@@ -469,6 +482,52 @@ public abstract class SendToFolderActivity extends PreferenceActivity
 
         if (lastFoldersCategory.getPreferenceCount() <= 0) {
             getPreferenceScreen().removePreference(lastFoldersCategory);
+        }
+    }
+
+    /**
+     * Updates mount points group. Hides them if necessary.
+     */
+    private void updateMountPoints() {
+        Preference existedMountPoints = findPreference(PREF_MOUNT_POINTS);
+        if (this.intentInfo == null) {
+            return; //not initialized, should be finished immediately from onCreate()
+        }
+        if (this.pathHistory.isEmpty()) {
+            if (existedMountPoints == null) {
+                getPreferenceScreen().addPreference(mountPointsPreference);
+            }
+            listMountPoints();
+        } else {
+            if (existedMountPoints != null) {
+                getPreferenceScreen().removePreference(mountPointsPreference);
+            }
+        }
+    }
+
+    /**
+     * Fills the list of mount points.
+     */
+    private void listMountPoints() {
+        PreferenceCategory mountPointsCategory =
+            (PreferenceCategory) findPreference(PREF_MOUNT_POINTS);
+
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        if (!preferences.getBoolean(PREF_SHOW_LAST_FOLDERS, true)) {
+//            getPreferenceScreen().removePreference(lastFoldersCategory);
+//            return;
+//        }
+        List<File> mountPoints = new StartPaths(this, false).getPaths();
+        if (mountPoints.isEmpty()) {
+            getPreferenceScreen().removePreference(mountPointsCategory);
+            return;
+        }
+
+        mountPointsCategory.removeAll();
+        for (File folder : mountPoints) {
+            Log.d(TAG, folder.toString());
+            PathFolderPreference folderPref = new PathFolderPreference(this, folder, this);
+            mountPointsCategory.addPreference(folderPref);
         }
     }
 

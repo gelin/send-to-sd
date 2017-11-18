@@ -60,4 +60,6 @@
     <string name="view_type">View</string>
     <string name="full_screen_view">Full screen</string>
     <string name="dialog_view">Dialog window</string>
+    <!-- v.0.3.11 -->
+    <string name="mount_points">Mounts</string>
 </resources>

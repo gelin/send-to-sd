@@ -58,4 +58,6 @@
     <string name="view_type">Внешний вид</string>
     <string name="full_screen_view">На весь экран</string>
     <string name="dialog_view">В диалоговом окне</string>
+    <!-- v.0.3.11 -->
+    <string name="mount_points">Устройства</string>
 </resources>

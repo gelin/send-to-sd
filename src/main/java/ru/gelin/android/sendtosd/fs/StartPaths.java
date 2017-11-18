@@ -14,18 +14,9 @@ import java.util.Set;
  */
 public class StartPaths {
 
-    private List<File> paths;
+    private static final File ROOT = new File("/");
 
-    /**
-     * Scans mounted filesystems and external storages to find some paths to be start point for moves.
-     * @param addFsRoots true if add result of {@link File#listRoots()}
-     */
-    public StartPaths(boolean addFsRoots) {
-        List<File> mounts = new MountedVolumes().getMounts();
-        List<File> roots = new FsRoots(addFsRoots).getRoots();
-        paths = merge(mounts, roots);
-        Collections.sort(paths, new PathComparator());
-    }
+    private List<File> paths;
 
     /**
      * Scans mounted filesystems and external storages to find some paths to be start point for moves.
@@ -36,6 +27,9 @@ public class StartPaths {
         List<File> roots = new FsRoots(addFsRoots).getRoots();
         paths = merge(mounts, roots);
         Collections.sort(paths, new PathComparator());
+        if (!addFsRoots) {
+            removeRoot();
+        }
     }
 
     public List<File> getPaths() {
@@ -47,6 +41,10 @@ public class StartPaths {
         merge.addAll(one);
         merge.addAll(two);
         return new ArrayList<>(merge);
+    }
+
+    private void removeRoot() {
+        paths.remove(ROOT);
     }
 
 }

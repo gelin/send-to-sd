@@ -20,14 +20,6 @@ public class MountedVolumes {
     /**
      * Scans external storages which are available.
      * Adds {@link Environment#getExternalStorageDirectory()}.
-     */
-    public MountedVolumes() {
-        addPrimaryExternalStorage();
-    }
-
-    /**
-     * Scans external storages which are available.
-     * Adds {@link Environment#getExternalStorageDirectory()}.
      * Also tries to get mounts from {@link Context#getExternalFilesDirs(String)}.
      */
     public MountedVolumes(Context context) {

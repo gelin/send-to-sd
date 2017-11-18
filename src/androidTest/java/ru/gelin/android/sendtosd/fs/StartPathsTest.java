@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getContext;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -22,6 +23,15 @@ public class StartPathsTest {
         System.out.println("Start paths:" + paths);
         assertTrue(paths.contains(new File("/")));
         assertTrue(paths.contains(new File("/storage/emulated/0")));
+    }
+
+    @Test
+    public void testGetRootsWithoutFsRoots() {
+        StartPaths startPaths = new StartPaths(getContext(), false);
+        List<File> paths = startPaths.getPaths();
+        System.out.println("Start paths:" + paths);
+        assertTrue(paths.contains(new File("/storage/emulated/0")));
+        assertFalse(paths.contains(new File("/")));
     }
 
 }
