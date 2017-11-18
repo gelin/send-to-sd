@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
+import ru.gelin.android.sendtosd.fs.StartPaths;
 import ru.gelin.android.sendtosd.intent.*;
 import ru.gelin.android.sendtosd.progress.*;
 import ru.gelin.android.sendtosd.progress.Progress.ProgressEvent;
@@ -152,7 +153,7 @@ public class SendActivity extends SendToFolderActivity
         if (this.intentFile == null) {
             return false;
         }
-        List<File> roots = new ExternalStorageRoots(this).getRoots();   // TODO: non atomic roots?
+        List<File> roots = new StartPaths(this, false).getPaths();   // TODO: non atomic roots?
         return this.intentFile.isDeletable()
             || this.intentFile.isMovable(this.path, roots);
     }
@@ -253,7 +254,7 @@ public class SendActivity extends SendToFolderActivity
             publishProgress(ProgressEvent.newSetFilesEvent(1));   //single file in this activity
             String uniqueFileName = getUniqueFileName(SendActivity.this.fileName);
             File dest = new File(SendActivity.this.path, uniqueFileName);
-            List<File> roots = new ExternalStorageRoots(SendActivity.this).getRoots();  // TODO: Non atomic roots?
+            List<File> roots = new StartPaths(SendActivity.this, false).getPaths();  // TODO: Non atomic roots?
             if (intentFile.isMovable(dest, roots)) {
                 publishProgress(ProgressEvent.newNextFileEvent(new FileInfo(uniqueFileName)));
                 try {
