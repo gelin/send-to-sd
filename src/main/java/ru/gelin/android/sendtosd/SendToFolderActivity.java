@@ -24,6 +24,13 @@ import ru.gelin.android.sendtosd.fs.StartPaths;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.permissions.PermissionChecker;
+import ru.gelin.android.sendtosd.preferences.action.CopyHerePreference;
+import ru.gelin.android.sendtosd.preferences.action.FileSaver;
+import ru.gelin.android.sendtosd.preferences.folder.FolderChanger;
+import ru.gelin.android.sendtosd.preferences.folder.FolderPreference;
+import ru.gelin.android.sendtosd.preferences.action.MoveHerePreference;
+import ru.gelin.android.sendtosd.preferences.folder.MountPointFolderPreference;
+import ru.gelin.android.sendtosd.preferences.folder.PathFolderPreference;
 import ru.gelin.android.sendtosd.progress.DummyProgress;
 import ru.gelin.android.sendtosd.progress.Progress;
 
@@ -526,7 +533,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         mountPointsCategory.removeAll();
         for (File folder : mountPoints) {
             Log.d(TAG, folder.toString());
-            PathFolderPreference folderPref = new PathFolderPreference(this, folder, this);
+            Preference folderPref = new MountPointFolderPreference(this, folder, this);
             mountPointsCategory.addPreference(folderPref);
         }
     }

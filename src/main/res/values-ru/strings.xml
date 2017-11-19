@@ -60,4 +60,9 @@
     <string name="dialog_view">В диалоговом окне</string>
     <!-- v.0.3.11 -->
     <string name="mount_points">Устройства</string>
+    <string name="internal_storage">Встроенное хранилище</string>
+    <string name="external_storage">Внешнее хранилище</string>
+    <string name="private_internal_storage">Закрытое встроенное хранилище</string>
+    <string name="private_external_storage">Закрытое внешнее хранилище</string>
+    <string name="root_storage">Корень</string>
 </resources>

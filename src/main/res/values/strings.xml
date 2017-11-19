@@ -62,4 +62,9 @@
     <string name="dialog_view">Dialog window</string>
     <!-- v.0.3.11 -->
     <string name="mount_points">Mounts</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="external_storage">External storage</string>
+    <string name="private_internal_storage">Private internal storage</string>
+    <string name="private_external_storage">Private external storage</string>
+    <string name="root_storage">Root</string>
 </resources>

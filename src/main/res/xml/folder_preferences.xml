@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ru.gelin.android.sendtosd.CopyHerePreference
+    <ru.gelin.android.sendtosd.preferences.action.CopyHerePreference
             android:key="copy_here"
             android:persistent="false"
             android:title="@string/copy_here"
             android:enabled="false"/>
 
-    <ru.gelin.android.sendtosd.MoveHerePreference
+    <ru.gelin.android.sendtosd.preferences.action.MoveHerePreference
             android:key="move_here"
             android:persistent="false"
             android:title="@string/move_here"

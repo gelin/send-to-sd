@@ -1,4 +1,4 @@
-package ru.gelin.android.sendtosd;
+package ru.gelin.android.sendtosd.preferences;
 
 import android.content.Context;
 import android.content.Intent;

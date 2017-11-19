@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ru.gelin.android.sendtosd.DialogPreference
+    <ru.gelin.android.sendtosd.preferences.DialogPreference
             android:title="@string/how_to_use"
             android:dialogLayout="@layout/how_to_use_dialog"
             android:negativeButtonText="@null"/>
-            
+
     <PreferenceCategory
             android:title="@string/initial_folder">
 
-        <ru.gelin.android.sendtosd.SummaryListPreference 
+        <ru.gelin.android.sendtosd.preferences.SummaryListPreference
                 android:key="initial_folder"
                 android:title="@string/initial_folder"
                 android:entries="@array/initial_folder_entries"
@@ -17,48 +17,48 @@
                 android:defaultValue="LAST_FOLDER"/>
 
     </PreferenceCategory>
-    
+
     <PreferenceCategory
             android:title="@string/last_folders">
-            
+
         <CheckBoxPreference
                 android:key="show_last_folders"
                 android:title="@string/show_last_folders"
                 android:disableDependentsState="false"
                 android:defaultValue="true"/>
-            
-        <ru.gelin.android.sendtosd.LastFoldersNumberPreference
+
+        <ru.gelin.android.sendtosd.preferences.LastFoldersNumberPreference
                 android:key="last_folders_number"
                 android:title="@string/last_folders_number"
                 android:dependency="show_last_folders"
                 android:entries="@array/last_folders_number_values"
                 android:entryValues="@array/last_folders_number_values"
                 android:defaultValue="5"/>
-    
+
     </PreferenceCategory>
-    
+
     <PreferenceCategory
         android:title="@string/view_type">
-        
-        <ru.gelin.android.sendtosd.SummaryListPreference 
+
+        <ru.gelin.android.sendtosd.preferences.SummaryListPreference
                 android:key="view_type"
                 android:title="@string/view_type"
                 android:entries="@array/view_type_entries"
                 android:entryValues="@array/view_type_values"
                 android:defaultValue="FULL_SCREEN"/>
-        
+
     </PreferenceCategory>
-    
+
     <PreferenceCategory
             android:key="donate_category"
             android:title="@string/donate">
-        
+
         <Preference
                 android:key="donate"
                 android:persistent="false"
                 android:title="@string/donate"
                 android:summary="@string/donate_summary"/>
-        
+
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

@@ -1,9 +1,10 @@
-package ru.gelin.android.sendtosd;
+package ru.gelin.android.sendtosd.preferences;
 
 import android.content.Context;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
 import android.util.Log;
+import ru.gelin.android.sendtosd.R;
 
 import java.text.MessageFormat;
 
