@@ -519,11 +519,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         PreferenceCategory mountPointsCategory =
             (PreferenceCategory) findPreference(PREF_MOUNT_POINTS);
 
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        if (!preferences.getBoolean(PREF_SHOW_LAST_FOLDERS, true)) {
-//            getPreferenceScreen().removePreference(lastFoldersCategory);
-//            return;
-//        }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.getBoolean(PREF_SHOW_MOUNT_POINTS, true)) {
+            getPreferenceScreen().removePreference(mountPointsCategory);
+            return;
+        }
+
         List<File> mountPoints = new StartPaths(this, false).getPaths();
         if (mountPoints.isEmpty()) {
             getPreferenceScreen().removePreference(mountPointsCategory);

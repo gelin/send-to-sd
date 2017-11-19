@@ -44,6 +44,15 @@ public class PreferenceParams {
      */
     public static final int DEFAULT_LAST_FOLDERS_NUMBER_INT = 5;
 
+    /**
+     * Mount points preference key
+     */
+    public static final String PREF_MOUNT_POINTS = "mount_points";
+    /**
+     * Show mount points preference key
+     */
+    public static final String PREF_SHOW_MOUNT_POINTS = "show_mount_points";
+
     public enum ViewType {
         FULL_SCREEN, DIALOG
     }

@@ -67,4 +67,5 @@
     <string name="private_internal_storage">Private internal storage</string>
     <string name="private_external_storage">Private external storage</string>
     <string name="root_storage">Root</string>
+    <string name="show_mount_points">Show mount points</string>
 </resources>

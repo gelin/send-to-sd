@@ -38,6 +38,16 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+            android:title="@string/mount_points">
+
+        <CheckBoxPreference
+                android:key="show_mount_points"
+                android:title="@string/show_mount_points"
+                android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/view_type">
 
         <ru.gelin.android.sendtosd.preferences.SummaryListPreference

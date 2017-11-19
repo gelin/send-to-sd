@@ -65,4 +65,5 @@
     <string name="private_internal_storage">Закрытое встроенное хранилище</string>
     <string name="private_external_storage">Закрытое внешнее хранилище</string>
     <string name="root_storage">Корень</string>
+    <string name="show_mount_points">Показывать папки устройств</string>
 </resources>
