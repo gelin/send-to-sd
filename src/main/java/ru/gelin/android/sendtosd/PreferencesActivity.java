@@ -13,6 +13,7 @@ import ru.gelin.android.sendtosd.donate.DonateStatus;
 import ru.gelin.android.sendtosd.donate.DonateStatusListener;
 import ru.gelin.android.sendtosd.donate.Donation;
 import ru.gelin.android.sendtosd.fs.StartPaths;
+import ru.gelin.android.sendtosd.permissions.PermissionChecker;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 
     private Donation donation;
     private Handler handler = new Handler();
+
+    private final PermissionChecker permissions = new PermissionChecker(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,18 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
 
     private void updateInitialFolderView() {
         ListPreference initialFolder = (ListPreference) findPreference(PREF_INITIAL_FOLDER);
+
+        initialFolder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (permissions.isReadGranted()) {
+                    return false;
+                }
+                permissions.requestReadPermission();
+                return true;
+            }
+        });
+
         String value = initialFolder.getValue();
         List<String> entries = new ArrayList<>();
         List<String> values = new ArrayList<>();
@@ -153,6 +168,12 @@ public class PreferencesActivity extends PreferenceActivity implements DonateSta
             return;
         }
         this.donation.processPurchaseResult(data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        this.permissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 }
