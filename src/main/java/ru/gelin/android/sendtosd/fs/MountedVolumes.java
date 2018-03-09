@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Takes care to find mounts of the internal or external volumes.
+ * Takes care to find mounts of the internal or external volumes by checking external files dir.
  */
 public class MountedVolumes implements PathsSource {
 

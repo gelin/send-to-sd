@@ -18,7 +18,7 @@ public class MountedVolumesTest {
     @Test
     public void testGetMounts() {
         MountedVolumes mountedVolumes = new MountedVolumes(getContext());
-        List<File> mounts = mountedVolumes.getMounts();
+        List<File> mounts = mountedVolumes.getPaths();
         System.out.println("Mounts:" + mounts);
         assertTrue(mounts.contains(new File("/storage/emulated/0")));
     }

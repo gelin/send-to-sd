@@ -17,7 +17,7 @@ public class FsRootsTest {
     @Test
     public void testGetRoots() {
         FsRoots fsRoots = new FsRoots(true);
-        List<File> roots = fsRoots.getRoots();
+        List<File> roots = fsRoots.getPaths();
         System.out.println("Roots:" + roots);
         assertTrue(roots.contains(new File("/")));
     }

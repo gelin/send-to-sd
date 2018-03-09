@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Takes care to find all known roots of any filesystem.
+ * Takes care to find all known roots of any filesystem by looking to `/proc/mounts`.
  */
 public class FsRoots implements PathsSource {
 
