@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Takes care to find mounts of the internal or external volumes.
  */
-public class MountedVolumes {
+public class MountedVolumes implements PathsSource {
 
     private final List<File> mounts = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class MountedVolumes {
      * Returns found mounts.
      * @return the list of mounted and writable external storage mounts.
      */
-    public List<File> getMounts() {
+    public List<File> getPaths() {
         return Collections.unmodifiableList(this.mounts);
     }
 

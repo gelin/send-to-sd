@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Joins together FS roots and mounted points.
  */
-public class StartPaths {
+public class StartPaths implements PathsSource {
 
     private static final File ROOT = new File("/");
 
@@ -23,8 +23,8 @@ public class StartPaths {
      * @param addFsRoots true if add result of {@link File#listRoots()}
      */
     public StartPaths(Context context, boolean addFsRoots) {
-        List<File> mounts = new MountedVolumes(context).getMounts();
-        List<File> roots = new FsRoots(addFsRoots).getRoots();
+        List<File> mounts = new MountedVolumes(context).getPaths();
+        List<File> roots = new FsRoots(addFsRoots).getPaths();
         paths = merge(mounts, roots);
         Collections.sort(paths, new PathComparator());
         if (!addFsRoots) {

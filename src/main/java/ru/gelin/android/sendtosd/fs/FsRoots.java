@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Takes care to find all known roots of any filesystem.
  */
-public class FsRoots {
+public class FsRoots implements PathsSource {
 
     private static final File MOUNT_FILE = new File("/proc/mounts");
 
@@ -48,7 +48,7 @@ public class FsRoots {
      * Returns found roots.
      * @return the list of mounted and writable FS roots.
      */
-    public List<File> getRoots() {
+    public List<File> getPaths() {
         return Collections.unmodifiableList(this.roots);
     }
 
