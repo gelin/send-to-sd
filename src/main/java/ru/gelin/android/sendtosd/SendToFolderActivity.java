@@ -24,6 +24,7 @@ import ru.gelin.android.sendtosd.fs.StartPaths;
 import ru.gelin.android.sendtosd.intent.IntentException;
 import ru.gelin.android.sendtosd.intent.IntentInfo;
 import ru.gelin.android.sendtosd.permissions.PermissionChecker;
+import ru.gelin.android.sendtosd.permissions.StorageVolumeChecker;
 import ru.gelin.android.sendtosd.preferences.action.CopyHerePreference;
 import ru.gelin.android.sendtosd.preferences.action.FileSaver;
 import ru.gelin.android.sendtosd.preferences.folder.FolderChanger;
@@ -142,6 +143,11 @@ public abstract class SendToFolderActivity extends PreferenceActivity
      */
     final PermissionChecker permissions = new PermissionChecker(this);
 
+    /**
+     * StorageVolume access checker.
+     */
+    final StorageVolumeChecker volumeAccess = new StorageVolumeChecker(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -192,6 +198,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         super.onResume();
         updateLastFolders();
         updateMountPoints();
+        volumeAccess.requestAccess(this.path);
         permissions.requestReadPermission();
     }
 
@@ -356,6 +363,12 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         this.permissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        volumeAccess.onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * Returns the current folder.
      */
@@ -379,6 +392,7 @@ public abstract class SendToFolderActivity extends PreferenceActivity
         this.path = folder;
         updateLastFolders();
         updateMountPoints();
+        volumeAccess.requestAccess(this.path);
         new InitTask().execute();
     }
 
