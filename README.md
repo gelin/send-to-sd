@@ -18,9 +18,9 @@ How to use
 3. Choose any folder on SD card
 4. Tap "Copy here"
 
-See [HowToUse animation](https://bitbucket.org/gelin/send-to-sd/wiki/HowToUse).
+See [HowToUse animation](https://github.com/gelin/send-to-sd/wiki/HowToUse).
 
-[FAQ](https://bitbucket.org/gelin/send-to-sd/wiki/FAQ)
+[FAQ](https://github.com/gelin/send-to-sd/wiki/FAQ)
 ==========
 
 Screenshots
@@ -31,5 +31,5 @@ Screenshots
 ![preferences.png](https://bitbucket.org/repo/A9zxob/images/562018267-preferences.png)
 ![how_to_use.png](https://bitbucket.org/repo/A9zxob/images/1497970927-how_to_use.png)
 
-[History](https://bitbucket.org/gelin/send-to-sd/wiki/History)
+[History](https://github.com/gelin/send-to-sd/wiki/History)
 ==================
