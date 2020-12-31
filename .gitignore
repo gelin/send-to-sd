@@ -1,0 +1,13 @@
+bin/*
+gen/*
+tmp/*
+build/*
+.gradle/*
+.settings/*
+local.properties
+build.properties
+upload.credentials.properties
+ant.properties
+
+*.iml
+.idea/*
