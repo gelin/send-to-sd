@@ -2,10 +2,11 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:4.0.2'
     }
 }
 
@@ -19,12 +20,12 @@ repositories {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.1'
+    compileSdkVersion 29
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 29
         versionCode 45
         versionName '0.3.11'
 
@@ -70,11 +71,11 @@ if (project.hasProperty('keyPassword')) {
 }
 
 dependencies {
-    compile 'com.android.support:support-compat:25.4.0'
-    compile 'com.android.billingclient:billing:dp-1'
+    implementation 'com.android.support:support-compat:25.4.0'
+    implementation 'com.android.billingclient:billing:dp-1'
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
-    androidTestCompile 'com.android.support:support-annotations:25.4.0'
-    androidTestCompile 'com.android.support.test:runner:1.0.0'
+    androidTestImplementation 'com.android.support:support-annotations:25.4.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.0'
 }
