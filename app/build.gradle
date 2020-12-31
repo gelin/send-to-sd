@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "ru.gelin.android.sendtosd"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 45
+        versionName "0.3.11"
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    signingConfigs {
+        release
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+if (project.hasProperty('storeFile')) {
+    android.signingConfigs.release.storeFile = file(storeFile)
+}
+if (project.hasProperty('storePassword')) {
+    android.signingConfigs.release.storePassword = storePassword
+} else {
+    android.signingConfigs.release.storePassword = System.getenv('STORE_PASSWORD')
+}
+if (project.hasProperty('keyAlias')) {
+    android.signingConfigs.release.keyAlias = keyAlias
+}
+if (project.hasProperty('keyPassword')) {
+    android.signingConfigs.release.keyPassword = keyPassword
+} else {
+    android.signingConfigs.release.keyPassword = System.getenv('KEY_PASSWORD')
+}
+
+task printVersionName {
+    doLast {
+        println android.defaultConfig.versionName
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+//    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
+//    implementation "androidx.leanback:leanback:1.0.0"
+    implementation 'com.android.support:support-compat:25.4.0'
+    implementation 'com.android.billingclient:billing:dp-1'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test:core:1.3.0'
+    testImplementation 'org.robolectric:robolectric:4.4'
+
+//    androidTestImplementation 'com.android.support:support-annotations:25.4.0'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.0'
+}

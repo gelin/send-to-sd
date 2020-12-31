@@ -1,14 +1,5 @@
 package ru.gelin.android.sendtosd
 
-import ru.gelin.android.sendtosd.SendToFolderActivity.onCreate
-import ru.gelin.android.sendtosd.SendToFolderActivity.error
-import ru.gelin.android.sendtosd.SendToFolderActivity.onSaveInstanceState
-import ru.gelin.android.sendtosd.SendToFolderActivity.onOptionsItemSelected
-import ru.gelin.android.sendtosd.SendToFolderActivity.onCreateDialog
-import ru.gelin.android.sendtosd.SendToFolderActivity.saveLastFolder
-import ru.gelin.android.sendtosd.SendToFolderActivity.getUniqueFileName
-import ru.gelin.android.sendtosd.SendToFolderActivity.complete
-import ru.gelin.android.sendtosd.SendToFolderActivity.warn
 import ru.gelin.android.sendtosd.SendToFolderActivity
 import ru.gelin.android.sendtosd.preferences.action.FileSaver
 import ru.gelin.android.sendtosd.intent.IntentFile
